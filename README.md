@@ -81,7 +81,7 @@ Jogo de palavras de 5 letras com tema de tipografia (tipos móveis de madeira e 
 - Modos **1 palavra** (6 tentativas), **2 palavras** (7) e **4 palavras** (9), que mudam todo dia à meia-noite e são iguais para todo mundo, e **Livre**, com palavras sorteadas sem limite.
 - Acentos e cedilha são preenchidos sozinhos (`acido` → `ácido`); tocar numa casa leva o cursor até ela; teclado na tela com as cores do que já se sabe (dividido por palavra nos modos com várias palavras).
 - Estatísticas por modo (jogos, % de vitórias, sequência, distribuição), compartilhamento em emoji, contagem até a próxima palavra e modo de alto contraste.
-- **Lista de palavras própria**: `games/prensa/palavras.js` é gerado por `tools/prensa_palavras.py` (respostas: palavras comuns; aceitas: respostas + plurais, femininos e conjugações regulares geradas por regra). Para incluir palavras, edite o script e rode `python3 tools/prensa_palavras.py games/prensa/palavras.js`.
+- **Lista de palavras própria**: `games/prensa/palavras.js` é gerado por `tools/prensa_palavras.py` — 894 respostas (palavras comuns, escolhidas à mão) e 2.936 aceitas (respostas + plurais, femininos e conjugações regulares geradas por regra + palavras da lista de frequência FrequencyWords, licença MIT, filtrada sem inglês, nomes próprios e palavrões, em `tools/prensa_frequencia.txt`). Para incluir palavras, edite o script e rode `python3 tools/prensa_palavras.py games/prensa/palavras.js`.
 
 Links diretos: `games/prensa/?mode=um|dois|quatro|livre`.
 

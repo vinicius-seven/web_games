@@ -3,7 +3,17 @@
 # e palavras aceitas como tentativa (respostas + plurais, conjugações e outras palavras válidas).
 import json, sys, unicodedata
 
-ANSWERS = """
+ANSWERS = """ordem clube comum série rádio líder herói vídeo calor geral santo lição costa pizza bolso noivo terno médio lenda ficha coroa cargo
+túnel calça seção tênis golfe atriz ideal mídia abril álbum turnê ídolo motel noção aluno terça bloco bacon praça blusa faixa máfia
+abuso boate rifle refém greve tumor duque testa barão sótão cauda bônus asilo fardo balão fêmea fúria batom verme vício culto ética
+sabão juíza lenha sonda fator latim fruto licor milha névoa corvo treze tango golfo sogra genro prego panda surto capuz motim pombo
+páreo cupom múmia gesso adaga ração zíper sódio moção cesto buquê turbo óbito ducha rapto clipe bacia polar carma átomo fórum furto
+temor loção manta broca pinça pólen truta bazar brasa sabre canil hélio trave aorta oásis saldo jejum vôlei potro lebre harpa linho
+murro ômega âmbar látex fobia tricô farda liceu ânsia boina seiva totem óxido gíria touca êxodo horda pauta edema mamão foice latão
+tufão funil régua átrio polpa nicho amido celta praxe coala feudo vizir ameba longo sério ótimo doido podre bruto sutil letal naval
+ruiva loiro meigo árabe turco vasto torto épico ávido dócil tênue viril árido sagaz voraz atroz tenaz vaias lilás lótus cobre posta
+farra mágoa mecha cinza circo praia pobre perna pilar ontem nunca navio lazer lista litro lápis
+
 abade abrir acaso aceno achar ácido adega adeus aéreo afeto agora agudo águia ainda alado álamo alçar algoz aliás altar
 amado amigo amora amplo andar anexo ânimo antes anual anzol apelo apito apoio aquém arado arame ardor árduo areia arena
 aroma arroz assar astro atlas atrás atual audaz áudio autor aveia avião aviso axila azedo
@@ -164,6 +174,10 @@ for v in words(VERBS_IR6):
     gen_out += [st + 'o', st + 'a', st + 'e']
 GENERATED = ' '.join(gen_out)
 
+import os
+_freq_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'prensa_frequencia.txt')
+FREQ = [l.strip() for l in open(_freq_path, encoding='utf-8') if l.strip() and not l.startswith('#')]
+
 def norm(w):
     w = w.lower()
     nfd = unicodedata.normalize('NFD', w)
@@ -189,7 +203,7 @@ for w in parse(ANSWERS):
     answers.append(w)
 
 valid = dict(seen)
-for w in parse(EXTRA) + GENERATED.split() + [v for b in (VERBS_AR6, VERBS_ER6, VERBS_IR6) for v in words(b)]:
+for w in parse(EXTRA) + GENERATED.split() + FREQ + [v for b in (VERBS_AR6, VERBS_ER6, VERBS_IR6) for v in words(b)]:
     n = norm(w)
     if len(n) != 5 or not n.isalpha() or not n.isascii():
         problems.append(('extra', w)); continue
