@@ -2,7 +2,7 @@
   "id": "./",
   "name": "Jogateca",
   "short_name": "Jogateca",
-  "description": "Catálogo de jogos de navegador: Prensa, Palavra do Dia, Croma, Tamanho Certo, Sudoku, Canteiros, Ponto-Cruz e Pontes.",
+  "description": "Catálogo de jogos de navegador: Prensa, Palavra do Dia, Kakuro, Croma, Tamanho Certo, Sudoku, Canteiros, Ponto-Cruz e Pontes.",
   "lang": "pt-BR",
   "dir": "ltr",
   "start_url": "./",
@@ -42,6 +42,18 @@
     }
   ],
   "shortcuts": [
+    {
+      "name": "Kakuro: lousa do dia",
+      "short_name": "Kakuro",
+      "url": "games/kakuro/index.html?mode=diario",
+      "icons": [
+        {
+          "src": "icons/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
     {
       "name": "Palavra do Dia",
       "short_name": "Palavra do Dia",
@@ -142,18 +154,6 @@
       "name": "Croma: Desafio Diário",
       "short_name": "Diário",
       "url": "games/croma/index.html?mode=diario",
-      "icons": [
-        {
-          "src": "icons/icon-192.png",
-          "sizes": "192x192",
-          "type": "image/png"
-        }
-      ]
-    },
-    {
-      "name": "Croma: Olho Clínico",
-      "short_name": "Olho Clínico",
-      "url": "games/croma/index.html?mode=olho",
       "icons": [
         {
           "src": "icons/icon-192.png",

@@ -97,6 +97,21 @@
       duration: '3–20 min por mapa',
     },
     {
+      id: 'kakuro',
+      title: 'Kakuro',
+      status: 'available',
+      href: 'games/kakuro/index.html',
+      tagline: 'Somas cruzadas na lousa.',
+      description:
+        'Cada sequência de casas soma o número da pista, sem repetir algarismo. Quatro tamanhos e uma lousa do dia, todas resolvíveis só com raciocínio, com ajuda das combinações possíveis de cada soma.',
+      tags: ['Lógica', 'Números', 'Clássico'],
+      year: 2026,
+      age: 'L',
+      meta: '4 tamanhos',
+      match: 95,
+      duration: '5–30 min por lousa',
+    },
+    {
       id: 'prensa',
       title: 'Prensa',
       status: 'available',
@@ -156,6 +171,11 @@
     { id: 'dois', game: 'prensa', art: 'prensa-2', title: '2 palavras', text: 'Duas palavras ao mesmo tempo, 7 tentativas.' },
     { id: 'quatro', game: 'prensa', art: 'prensa-4', title: '4 palavras', text: 'Quatro palavras ao mesmo tempo, 9 tentativas.' },
     { id: 'livre', game: 'prensa', art: 'prensa-livre', title: 'Livre', text: 'Palavras sorteadas sem limite, para treinar.' },
+    { id: 'diario', game: 'kakuro', art: 'kakuro-dia', title: 'Lousa do dia', text: 'A mesma lousa 8×8 para todo mundo hoje.' },
+    { id: '6', game: 'kakuro', art: 'kakuro-6', title: 'Fácil', text: '6×6, para aprender as combinações.' },
+    { id: '8', game: 'kakuro', art: 'kakuro-8', title: 'Médio', text: '8×8, o tamanho clássico.' },
+    { id: '10', game: 'kakuro', art: 'kakuro-10', title: 'Difícil', text: '10×10, somas longas.' },
+    { id: '12', game: 'kakuro', art: 'kakuro-12', title: 'Desafio', text: '12×12, para sessões longas.' },
     { id: 'diario', game: 'pontes', art: 'pontes-dia', title: 'Mapa do dia', text: 'O mesmo mapa 9×9 para todo mundo hoje.' },
     { id: '7', game: 'pontes', art: 'pontes-7', title: 'Enseada', text: '7×7, poucas ilhas. Bom para aprender.' },
     { id: '9', game: 'pontes', art: 'pontes-9', title: 'Baía', text: '9×9, o tamanho clássico.' },
@@ -235,6 +255,14 @@
       if (today && today.done) return today.won ? `Hoje ✓ · sequência ${stats ? stats.streak : 1}` : 'Hoje ✗';
       return 'Novo hoje';
     }
+    if (key === 'kakuro:diario') {
+      const r = store.get(`kakuro:daily:${todayKey()}`);
+      return r ? `Hoje ${fmtTime(r.time)}` : 'Novo hoje';
+    }
+    if (m.game === 'kakuro') {
+      const best = store.get(`kakuro:best:${m.id}`);
+      return best ? `Melhor ${fmtTime(best)}` : '';
+    }
     if (key === 'pontes:diario') {
       const r = store.get(`pontes:daily:${todayKey()}`);
       return r ? `Hoje ${fmtTime(r.time)}` : 'Novo hoje';
@@ -278,6 +306,22 @@
     if (kind === 'diario') {
       const c = ['#e76f51', '#f4a261', '#e9c46a', '#2a9d8f', '#8ab17d'];
       return `<div class="art art-diario">${c.map((x) => `<i style="background:${x}"></i>`).join('')}</div>`;
+    }
+    if (kind.startsWith('kakuro')) {
+      // Trecho de lousa: pistas em giz branco e algarismos em giz amarelo.
+      const g = ['k', 'k:16', 'k:9', 'k', 'k:23\\', '7', '9', 'k:4', '\\17', '9', '8', '3', 'k', '\\6', '2', '1'];
+      const size = kind.match(/^kakuro-(\d+)$/);
+      const badge = kind === 'kakuro-dia'
+        ? `<span class="sudoku-badge day"><b>${new Date().getDate()}</b>${new Date().toLocaleDateString('pt-BR', { month: 'short' }).replace('.', '')}</span>`
+        : size ? `<span class="sudoku-badge">${size[1]}×${size[1]}</span>` : '';
+      const cell = (x) => {
+        if (/^\d$/.test(x)) return `<i class="w">${x}</i>`;
+        if (x === 'k') return '<i class="k"></i>';
+        if (x.startsWith('\\')) return `<i class="k c"><b class="a">${x.slice(1)}</b></i>`;
+        const v = x.slice(2).replace('\\', '');
+        return `<i class="k c"><b class="${x.endsWith('\\') ? 'a' : 'd'}">${v}</b></i>`;
+      };
+      return `<div class="art art-kakuro${big ? ' big' : ''}"><div class="kgrid">${g.map(cell).join('')}</div>${badge}</div>`;
     }
     if (kind === 'palavradodia' || kind.startsWith('pdd-')) {
       const hexes = '<span class="hexes"><i class="c" style="left:33%;top:33%">a</i><i style="left:33%;top:0">r</i><i style="left:58%;top:16%">m</i><i style="left:58%;top:50%">e</i><i style="left:33%;top:66%">c</i><i style="left:8%;top:50%">o</i><i style="left:8%;top:16%">l</i></span>';
@@ -409,7 +453,7 @@
       </a>`;
   }
 
-  // Partidas salvas pelos jogos que guardam progresso (Sudoku, Canteiros, Ponto-Cruz e Pontes).
+  // Partidas salvas pelos jogos que guardam progresso (Sudoku, Canteiros, Ponto-Cruz, Pontes e Kakuro).
   function continueCards() {
     let html = '';
     const sv = store.get('sudoku:save');
@@ -435,6 +479,18 @@
         ${art('canteiros')}
         <span class="record">${fmtTime(Math.floor(cv.elapsed / 1000))}</span>
         <div class="card-title">Canteiros<small>${esc(cv.daily ? 'Do dia' : `${cv.n}×${cv.n}`)}</small></div>
+        <span class="progress" style="--p:${pct}%"></span>
+      </a>`;
+    }
+    const kv = store.get('kakuro:save');
+    if (kv && !kv.won && Array.isArray(kv.values)) {
+      const total = kv.puzzle.split('').filter((c) => c !== '#').length;
+      const pct = Math.round((kv.values.filter(Boolean).length / total) * 100);
+      html += `
+      <a class="card mode" href="games/kakuro/index.html?mode=continuar" aria-label="Continuar Kakuro, ${pct}% preenchida">
+        ${art('kakuro')}
+        <span class="record">${fmtTime(Math.floor(kv.elapsed / 1000))}</span>
+        <div class="card-title">Kakuro<small>${kv.n}×${kv.n}</small></div>
         <span class="progress" style="--p:${pct}%"></span>
       </a>`;
     }

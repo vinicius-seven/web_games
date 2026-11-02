@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Kakuro · Jogateca</title>
+  <meta name="description" content="Kakuro — somas cruzadas numa lousa: cada sequência soma a pista, sem repetir algarismo.">
+  <meta name="theme-color" content="#1d2622">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%232f4a3a'/%3E%3Cpath d='M2 2l28 28' stroke='%23e9efe9' stroke-width='1.5' opacity='.7'/%3E%3Ctext x='22' y='13' font-family='Arial' font-weight='700' font-size='10' text-anchor='middle' fill='%23e9efe9'%3E16%3C/text%3E%3Ctext x='9' y='27' font-family='Arial' font-weight='700' font-size='10' text-anchor='middle' fill='%23e9efe9'%3E9%3C/text%3E%3C/svg%3E">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="apple-touch-icon" href="../../icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Jogateca">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="stylesheet" href="kakuro.css">
+</head>
+<body>
+  <header class="bar">
+    <span class="bar-left">
+      <a href="../../index.html" class="back" id="backLink">‹ Jogateca</a>
+      <button class="menu-back" id="menuBack" hidden><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>Menu</button>
+    </span>
+    <button class="brand" id="homeBtn" aria-label="Menu do Kakuro">KAKURO</button>
+    <span class="bar-right" id="barRight"></span>
+  </header>
+
+  <!-- Menu -->
+  <section class="screen" id="s-home">
+    <div class="wrap">
+      <div class="home-hero">
+        <div class="chalk-sample" aria-hidden="true">
+          <i class="k"><b class="a">16</b><b class="d">9</b></i><i class="w">7</i><i class="w">9</i>
+        </div>
+        <h1 class="logo">Kakuro</h1>
+        <p>Somas cruzadas na lousa. Cada sequência de casas soma o número da pista, sem repetir algarismo.</p>
+      </div>
+      <button class="resume" id="resumeBtn" hidden>
+        <span class="resume-body"><small>Continuar</small><strong id="resumeTitle"></strong><span id="resumeInfo"></span></span>
+        <span class="resume-go" aria-hidden="true">›</span>
+      </button>
+      <div class="home-grid">
+        <div class="panel daily">
+          <h2>Lousa do dia</h2>
+          <p class="muted" id="dailyText"></p>
+          <button class="btn primary" id="dailyBtn"></button>
+        </div>
+        <div class="panel">
+          <h2>Escolha o tamanho</h2>
+          <div class="sizes" id="sizes"></div>
+        </div>
+      </div>
+      <details class="howto">
+        <summary>Como jogar</summary>
+        <ul>
+          <li>Preencha as casas claras com algarismos de <b>1 a 9</b>.</li>
+          <li>O número acima da diagonal de uma casa escura é a soma da sequência <b>à direita</b>; o de baixo, a soma da sequência <b>para baixo</b>.</li>
+          <li>Numa mesma sequência, <b>nenhum algarismo se repete</b>.</li>
+          <li>Comece pelas somas com uma combinação só (3 em 2 casas = 1+2; 24 em 3 = 7+8+9). A barra de combinações mostra as opções da casa selecionada.</li>
+          <li>Teclado: setas, 1–9, Backspace, N (notas), Z (desfazer), H (dica), P (pausa). Toda grade fecha só com raciocínio.</li>
+        </ul>
+      </details>
+      <p class="tip"><button class="btn ghost" data-pwa-install hidden>Instalar a Jogateca como app</button></p>
+    </div>
+  </section>
+
+  <!-- Jogo -->
+  <section class="screen" id="s-play">
+    <div class="play">
+      <div class="play-info">
+        <span id="infoTitle"></span>
+        <span>Erros <b id="infoErrors">0</b></span>
+        <span>Dicas <b id="infoHints">0</b></span>
+        <button class="pause" id="pauseBtn" aria-label="Pausar"><span id="timer">00:00</span>
+          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg></button>
+      </div>
+      <div class="frame">
+        <div class="board" id="board" role="grid" aria-label="Lousa do Kakuro"></div>
+        <div class="paused" id="paused" hidden><p>Pausado</p><button class="btn primary" id="resumePlay">Continuar</button></div>
+      </div>
+      <div class="combos" id="combos" aria-live="polite"></div>
+      <div class="tools">
+        <button class="tool" id="undoBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12.5 8c-2.65 0-5.05 1-6.9 2.6L2 7v9h9l-3.62-3.62A7.95 7.95 0 0 1 12.5 10.5c3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/></svg><span>Desfazer</span></button>
+        <button class="tool" id="eraseBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16.24 3.56 21.19 8.5a2 2 0 0 1 0 2.83L12 20.5H7.5l-4.69-4.69a2 2 0 0 1 0-2.83L13.41 3.56a2 2 0 0 1 2.83 0zM4.22 14.4 8.33 18.5h2.84l3.03-3.03-4.95-4.95-5.03 5.03z"/></svg><span>Apagar</span></button>
+        <button class="tool" id="notesBtn" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg><span>Notas <em id="notesState">desl.</em></span></button>
+        <button class="tool" id="hintBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M9 21h6v-1H9v1zm3-19a7 7 0 0 0-4 12.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26A7 7 0 0 0 12 2z"/></svg><span>Dica</span></button>
+      </div>
+      <div class="pad" id="pad"></div>
+    </div>
+  </section>
+
+  <!-- Vitória -->
+  <section class="screen" id="s-win">
+    <div class="wrap narrow center">
+      <p class="eyebrow" id="winEyebrow"></p>
+      <h2 class="win-title">Conta fechada!</h2>
+      <div class="win-time" id="winTime"></div>
+      <p class="muted" id="winSub"></p>
+      <div class="stats" id="winStats"></div>
+      <div class="end-actions">
+        <button class="btn primary" id="winNew">Nova lousa</button>
+        <button class="btn" id="winShare">Compartilhar</button>
+        <button class="btn ghost" id="winHome">Menu</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="engine.js"></script>
+  <script src="banco.js"></script>
+  <script src="kakuro.js"></script>
+  <script src="../../pwa.js"></script>
+</body>
+</html>

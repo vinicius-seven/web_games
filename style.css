@@ -269,6 +269,24 @@ button { font: inherit; color: inherit; }
 .art-treino i:nth-child(3) { width: 64%; }
 .art-treino i:nth-child(4) { width: 28%; background: #ffcf3f; }
 
+.art-kakuro { background: linear-gradient(180deg, #8a6240, #7a5536 45%, #5a3d26); }
+.art-kakuro .kgrid {
+  position: absolute; top: 50%; right: 6%; transform: translateY(-50%) rotate(-3deg); height: 104%; aspect-ratio: 1;
+  display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(4, 1fr);
+  background: #2f4a3a; border: 5px solid #5a3d26; box-shadow: 0 10px 24px rgba(0,0,0,.4);
+}
+.art-kakuro.big .kgrid { height: 84%; right: 9%; }
+.art-kakuro .kgrid i { position: relative; font-style: normal; display: grid; place-items: center; box-shadow: inset 0 0 0 .5px rgba(238,242,238,.3);
+  font: 700 clamp(14px, 1.7vw, 22px) "Chalkboard SE", "Segoe Print", ui-rounded, sans-serif; color: #ffe9a8; }
+.art-kakuro .kgrid i.k { background: #22362b; }
+.art-kakuro .kgrid i.k.c { background: linear-gradient(to top right, #22362b calc(50% - .8px), rgba(238,242,238,.6) 50%, #22362b calc(50% + .8px)); }
+.art-kakuro .kgrid i b { position: absolute; font-size: .6em; color: #eef2ee; }
+.art-kakuro .kgrid i b.a { top: 6%; right: 8%; }
+.art-kakuro .kgrid i b.d { bottom: 6%; left: 8%; }
+.art-kakuro:not(.big)::after {
+  content: ""; position: absolute; inset: 0; z-index: 1;
+  background: linear-gradient(to top, rgba(14,15,19,.85) 0%, rgba(14,15,19,.3) 45%, transparent 70%);
+}
 .art-pdd { background: linear-gradient(135deg, #2a1f12, #14171f 60%, #0f1a24); }
 .art-pdd.prox { background: radial-gradient(circle at 70% 50%, #203445 0, #0f1a24 70%); }
 .art-pdd .hexes { position: absolute; right: 8%; top: 50%; transform: translateY(-50%); width: 34%; aspect-ratio: 1 / .9; }

@@ -14,6 +14,7 @@ Um catálogo de jogos de navegador no estilo "streaming": destaque no topo, file
 | **Pontes** (`games/pontes/`) | Disponível | Ligar ilhas com pontes (gênero Hashi), num arquipélago tropical |
 | **Prensa** (`games/prensa/`) | Disponível | Adivinhar palavras de 5 letras: 1, 2 ou 4 por dia, e modo livre |
 | **Palavra do Dia** (`games/palavradodia/`) | Disponível | Dois jogos diários: Colmeia (7 letras) e Proximidade (distância de sentido) |
+| **Kakuro** (`games/kakuro/`) | Disponível | Somas cruzadas numa lousa, 4 tamanhos e lousa do dia |
 
 ### Croma
 
@@ -94,6 +95,16 @@ Página inicial com dois jogos de palavras diários (iguais para todo mundo) e m
 - **Proximidade** (`proximidade.html`): digite palavras e veja a posição de cada uma numa fila de ~13.500 palavras ordenadas pela proximidade de sentido com a palavra secreta (1 = acertou). Plural, feminino e verbo conjugado contam como a forma básica. Dica, desistir, 60 jogos anteriores e as 100 palavras mais próximas no fim. Distâncias calculadas por `tools/proximidade_dados.py` com os vetores fastText do modelo `pt_core_news_lg` do spaCy (**CC BY-SA 4.0**; os dados derivados em `games/palavradodia/proximidade/` seguem a mesma licença — veja o `LEIA-ME.txt` da pasta).
 
 Links diretos: `games/palavradodia/?mode=colmeia|colmeia-livre|proximidade|proximidade-livre`.
+
+### Kakuro
+
+Somas cruzadas com tema de lousa de escola: cada sequência de casas claras soma o número da pista, sem repetir algarismo.
+
+- Tamanhos Fácil (6×6), Médio (8×8), Difícil (10×10) e Desafio (12×12), e a **Lousa do dia** (8×8).
+- Grades simétricas geradas por `games/kakuro/engine.js` e conferidas por um resolvedor "humano" (combinações de cada soma × o que cada casa aceita): **solução única e sem chute**. Como gerar as grandes leva segundos, o jogo usa um banco pronto (`games/kakuro/banco.js`), criado por `node tools/kakuro_banco.js [segundos] [processos]`.
+- Barra de **combinações** da casa selecionada (ex.: "16 em 2 casas: 7+9"), anotações, desfazer, dica (a próxima casa dedutível), erros em giz rosa, pausa, progresso salvo e recorde por tamanho.
+
+Links diretos: `games/kakuro/?mode=6|8|10|12|diario|continuar`.
 
 Recordes ficam no `localStorage` do navegador.
 
