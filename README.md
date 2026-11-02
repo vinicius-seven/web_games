@@ -10,6 +10,7 @@ Um catálogo de jogos de navegador no estilo "streaming": destaque no topo, file
 | **Tamanho Certo** (`games/tamanho/`) | Disponível | Estimar tamanhos e proporções sem régua, rodadas sem fim |
 | **Sudoku** (`games/sudoku/`) | Disponível | Sudoku clássico com 4 dificuldades e grade do dia |
 | **Canteiros** (`games/canteiros/`) | Disponível | Lógica: uma flor por linha, coluna e canteiro, sem flores encostadas |
+| **Ponto-Cruz** (`games/pontocruz/`) | Disponível | Nonograma com tema de bordado: coleção de desenhos e motivos infinitos |
 
 ### Croma
 
@@ -49,6 +50,17 @@ Quebra-cabeça do gênero *Star Battle* (1 estrela), com tema e visual próprios
 - Conflitos destacados em vermelho com listras e explicação, marcação automática opcional das casas bloqueadas, dica, desfazer, recomeçar, pausa e progresso salvo.
 
 Links diretos: `games/canteiros/?mode=6|7|8|9|diario|continuar`.
+
+### Ponto-Cruz
+
+Nonograma com tema de bordado: cada casa pintada é um ponto em X sobre etamina, dentro de um bastidor de madeira. Ao terminar, o bordado ganha as cores do desenho.
+
+- **Coleção**: 17 desenhos em pixel art (5×5, 10×10 e 15×15) em `games/pontocruz/pictures.js`, que aparecem bordados no menu conforme você os completa.
+- **Motivos**: padrões simétricos gerados no navegador (5×5, 10×10, 15×15), como os bordados tradicionais, e o **Motivo do dia** (10×10) igual para todo mundo.
+- Todo quebra-cabeça é conferido pelo resolvedor linha a linha (`games/pontocruz/engine.js`): **fecha só com raciocínio, sem chute**.
+- Bordar / Marcar, arrastar ao longo da linha ou coluna, botão direito para marcar, pistas que se apagam quando a linha bate, dica que aponta erros ou mostra uma casa dedutível, desfazer, recomeçar, pausa e progresso salvo.
+
+Links diretos: `games/pontocruz/?mode=5|10|15|diario|colecao|continuar`.
 
 Recordes ficam no `localStorage` do navegador.
 

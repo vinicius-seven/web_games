@@ -65,6 +65,22 @@
       match: 97,
       duration: '2–15 min por jardim',
     },
+    {
+      id: 'pontocruz',
+      title: 'Ponto-Cruz',
+      subtitle: 'Nonograma',
+      status: 'available',
+      href: 'games/pontocruz/index.html',
+      tagline: 'Siga os números e descubra o desenho bordado.',
+      description:
+        'Nonogramas num tecido de bordado: os números dizem quantos pontos seguidos vão em cada linha e coluna. Complete a coleção de desenhos, borde motivos simétricos sem fim ou encare o motivo do dia.',
+      tags: ['Lógica', 'Quebra-cabeça', 'Desenho'],
+      year: 2026,
+      age: 'L',
+      meta: 'Coleção + motivos',
+      match: 96,
+      duration: '2–20 min por bordado',
+    },
   ];
 
   const MODES = [
@@ -83,6 +99,11 @@
     { id: '7', game: 'canteiros', art: 'canteiros-7', title: 'Muda', text: '7×7. Começa a pedir raciocínio.' },
     { id: '8', game: 'canteiros', art: 'canteiros-8', title: 'Canteiro', text: '8×8. O tamanho clássico.' },
     { id: '9', game: 'canteiros', art: 'canteiros-9', title: 'Estufa', text: '9×9. Para quem já pegou o jeito.' },
+    { id: 'diario', game: 'pontocruz', art: 'pontocruz-dia', title: 'Motivo do dia', text: 'O mesmo motivo 10×10 para todo mundo hoje.' },
+    { id: 'colecao', game: 'pontocruz', art: 'pontocruz-colecao', title: 'Coleção', text: 'Desenhos feitos à mão: descubra o próximo.' },
+    { id: '5', game: 'pontocruz', art: 'pontocruz-5', title: 'Rápido', text: 'Motivo 5×5, para aprender.' },
+    { id: '10', game: 'pontocruz', art: 'pontocruz-10', title: 'Clássico', text: 'Motivo 10×10, o tamanho tradicional.' },
+    { id: '15', game: 'pontocruz', art: 'pontocruz-15', title: 'Grande', text: 'Motivo 15×15, para sessões mais longas.' },
   ];
 
   /* ---------- Armazenamento local (tolerante a falhas) ---------- */
@@ -140,6 +161,15 @@
       const r = store.get(`canteiros:daily:${todayKey()}`);
       return r ? `Hoje ${fmtTime(r.time)}` : 'Novo hoje';
     }
+    if (key === 'pontocruz:diario') {
+      const r = store.get(`pontocruz:daily:${todayKey()}`);
+      return r ? `Hoje ${fmtTime(r.time)}` : 'Novo hoje';
+    }
+    if (key === 'pontocruz:colecao') return '';
+    if (m.game === 'pontocruz') {
+      const best = store.get(`pontocruz:best:${m.id}`);
+      return best ? `Melhor ${fmtTime(best)}` : '';
+    }
     if (m.game === 'canteiros') {
       const best = store.get(`canteiros:best:${m.id}`);
       return best ? `Melhor ${fmtTime(best)}` : '';
@@ -166,6 +196,18 @@
     if (kind === 'diario') {
       const c = ['#e76f51', '#f4a261', '#e9c46a', '#2a9d8f', '#8ab17d'];
       return `<div class="art art-diario">${c.map((x) => `<i style="background:${x}"></i>`).join('')}</div>`;
+    }
+    if (kind.startsWith('pontocruz')) {
+      // Motivo de bordado 9×9 em ponto-cruz sobre etamina.
+      const motif = ['r...r...r', '.r.rbr.r.', '..rbbbr..', '.rbb.bbr.', 'rbb.y.bbr', '.rbb.bbr.', '..rbbbr..', '.r.rbr.r.', 'r...r...r'];
+      const col = { r: '#b8243b', b: '#1f3f8a', y: '#d9962a' };
+      const size = kind.match(/^pontocruz-(\d+)$/);
+      const badge = kind === 'pontocruz-dia'
+        ? `<span class="sudoku-badge day"><b>${new Date().getDate()}</b>${new Date().toLocaleDateString('pt-BR', { month: 'short' }).replace('.', '')}</span>`
+        : kind === 'pontocruz-colecao' ? '<span class="sudoku-badge">? ? ?</span>'
+          : size ? `<span class="sudoku-badge">${size[1]}×${size[1]}</span>` : '';
+      return `<div class="art art-pontocruz${big ? ' big' : ''}"><div class="hoopmini"><div class="pgrid">${motif.join('').split('').map((ch) =>
+        `<i${ch !== '.' ? ` style="--st:${col[ch]}"` : ''}></i>`).join('')}</div></div>${badge}</div>`;
     }
     if (kind.startsWith('canteiros')) {
       // Um tabuleiro 6×6 de verdade (com solução única), usado como ilustração.
@@ -252,7 +294,7 @@
       </a>`;
   }
 
-  // Partidas salvas pelos jogos que guardam progresso (Sudoku e Canteiros).
+  // Partidas salvas pelos jogos que guardam progresso (Sudoku, Canteiros e Ponto-Cruz).
   function continueCards() {
     let html = '';
     const sv = store.get('sudoku:save');
@@ -278,6 +320,18 @@
         ${art('canteiros')}
         <span class="record">${fmtTime(Math.floor(cv.elapsed / 1000))}</span>
         <div class="card-title">Canteiros<small>${esc(cv.daily ? 'Do dia' : `${cv.n}×${cv.n}`)}</small></div>
+        <span class="progress" style="--p:${pct}%"></span>
+      </a>`;
+    }
+    const pv = store.get('pontocruz:save');
+    if (pv && !pv.won && Array.isArray(pv.cells)) {
+      const total = pv.grid.filter(Boolean).length;
+      const pct = Math.min(100, Math.round((pv.cells.filter((v) => v === 1).length / total) * 100));
+      html += `
+      <a class="card mode" href="games/pontocruz/index.html?mode=continuar" aria-label="Continuar Ponto-Cruz, ${pct}% bordado">
+        ${art('pontocruz')}
+        <span class="record">${fmtTime(Math.floor(pv.elapsed / 1000))}</span>
+        <div class="card-title">Ponto-Cruz<small>${pv.n}×${pv.n}</small></div>
         <span class="progress" style="--p:${pct}%"></span>
       </a>`;
     }

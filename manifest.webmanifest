@@ -2,7 +2,7 @@
   "id": "./",
   "name": "Jogateca",
   "short_name": "Jogateca",
-  "description": "Catálogo de jogos de navegador: Croma, Tamanho Certo, Sudoku e Canteiros.",
+  "description": "Catálogo de jogos de navegador: Croma, Tamanho Certo, Sudoku, Canteiros e Ponto-Cruz.",
   "lang": "pt-BR",
   "dir": "ltr",
   "start_url": "./",
@@ -42,6 +42,18 @@
     }
   ],
   "shortcuts": [
+    {
+      "name": "Ponto-Cruz: motivo do dia",
+      "short_name": "Ponto-Cruz",
+      "url": "games/pontocruz/index.html?mode=diario",
+      "icons": [
+        {
+          "src": "icons/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
     {
       "name": "Canteiros: jardim do dia",
       "short_name": "Canteiros",

@@ -269,6 +269,27 @@ button { font: inherit; color: inherit; }
 .art-treino i:nth-child(3) { width: 64%; }
 .art-treino i:nth-child(4) { width: 28%; background: #ffcf3f; }
 
+.art-pontocruz {
+  background:
+    repeating-linear-gradient(45deg, rgba(255,255,255,.03) 0 2px, transparent 2px 6px),
+    linear-gradient(135deg, #2a3466, #1c2340);
+}
+.art-pontocruz .hoopmini {
+  position: absolute; top: 50%; right: 7%; transform: translateY(-50%); height: 112%; aspect-ratio: 1; border-radius: 50%;
+  background: #f3eee2; box-shadow: 0 0 0 7px #c99c63, 0 10px 24px rgba(0,0,0,.4); display: grid; place-items: center;
+}
+.art-pontocruz.big .hoopmini { height: 80%; right: 9%; }
+.art-pontocruz .pgrid { width: 62%; aspect-ratio: 1; display: grid; grid-template-columns: repeat(9, 1fr); grid-template-rows: repeat(9, 1fr); }
+.art-pontocruz .pgrid i { position: relative; }
+.art-pontocruz .pgrid i[style]::before, .art-pontocruz .pgrid i[style]::after {
+  content: ""; position: absolute; left: 50%; top: 50%; width: 120%; height: 28%; border-radius: 999px; background: var(--st);
+}
+.art-pontocruz .pgrid i[style]::before { transform: translate(-50%, -50%) rotate(45deg) scaleX(.82); }
+.art-pontocruz .pgrid i[style]::after { transform: translate(-50%, -50%) rotate(-45deg) scaleX(.82); }
+.art-pontocruz:not(.big)::after {
+  content: ""; position: absolute; inset: 0; z-index: 1;
+  background: linear-gradient(to top, rgba(14,15,19,.85) 0%, rgba(14,15,19,.3) 45%, transparent 70%);
+}
 .art-canteiros { background: linear-gradient(135deg, #7a5536, #6b4a2f 40%, #5a3d26); }
 .art-canteiros .cgrid {
   position: absolute; top: 50%; right: 6%; transform: translateY(-50%) rotate(-6deg);
