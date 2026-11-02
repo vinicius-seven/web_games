@@ -269,6 +269,26 @@ button { font: inherit; color: inherit; }
 .art-treino i:nth-child(3) { width: 64%; }
 .art-treino i:nth-child(4) { width: 28%; background: #ffcf3f; }
 
+.art-prensa {
+  background:
+    repeating-linear-gradient(92deg, rgba(255,255,255,.02) 0 3px, transparent 3px 11px, rgba(0,0,0,.08) 11px 13px, transparent 13px 29px),
+    linear-gradient(135deg, #3a2a1f, #231a14);
+}
+.art-prensa .ptype { position: absolute; top: 50%; right: 6%; transform: translateY(-50%) rotate(-4deg); display: grid; gap: 5px; }
+.art-prensa .prow { display: flex; gap: 5px; }
+.art-prensa .prow i {
+  width: clamp(24px, 2.6vw, 34px); aspect-ratio: 1; display: grid; place-items: center; border-radius: 5px;
+  font: 700 clamp(14px, 1.6vw, 20px) Rockwell, "Courier New", Georgia, serif; font-style: normal; color: #2a1e14;
+  background: linear-gradient(160deg, #f0dbb0, #e3c68f 45%, #cfa96a); box-shadow: inset 0 -2px 0 rgba(0,0,0,.2), 0 2px 3px rgba(0,0,0,.35);
+}
+.art-prensa .prow i.o { background: #2f7d4f; color: #fbf4e6; }
+.art-prensa .prow i.n { background: #c98a17; color: #fbf4e6; }
+.art-prensa .prow i.m { background: #4a3f37; color: #cbbfae; }
+.art-prensa.big .ptype { right: 9%; transform: translateY(-50%) rotate(-4deg) scale(1.5); }
+.art-prensa:not(.big)::after {
+  content: ""; position: absolute; inset: 0; z-index: 1;
+  background: linear-gradient(to top, rgba(14,15,19,.85) 0%, rgba(14,15,19,.3) 45%, transparent 70%);
+}
 .art-pontes {
   background:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='20'%3E%3Cpath d='M0 10 Q5 5 10 10 T20 10 T30 10 T40 10' fill='none' stroke='%23ffffff' stroke-opacity='.12' stroke-width='1.5'/%3E%3C/svg%3E") 0 0 / 40px 20px,

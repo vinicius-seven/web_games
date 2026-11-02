@@ -12,6 +12,7 @@ Um catálogo de jogos de navegador no estilo "streaming": destaque no topo, file
 | **Canteiros** (`games/canteiros/`) | Disponível | Lógica: uma flor por linha, coluna e canteiro, sem flores encostadas |
 | **Ponto-Cruz** (`games/pontocruz/`) | Disponível | Nonograma com tema de bordado: coleção de desenhos e motivos infinitos |
 | **Pontes** (`games/pontes/`) | Disponível | Ligar ilhas com pontes (gênero Hashi), num arquipélago tropical |
+| **Prensa** (`games/prensa/`) | Disponível | Adivinhar palavras de 5 letras: 1, 2 ou 4 por dia, e modo livre |
 
 ### Croma
 
@@ -72,6 +73,17 @@ Quebra-cabeça do gênero *Hashi* com tema de arquipélago: cada ilha diz quanta
 - Ilhas completas ficam verdes, ilhas com pontes demais ficam vermelhas; dica, desfazer, recomeçar, pausa e progresso salvo.
 
 Links diretos: `games/pontes/?mode=7|9|11|13|diario|continuar`.
+
+### Prensa
+
+Jogo de palavras de 5 letras com tema de tipografia (tipos móveis de madeira e tinta): verde = letra no lugar certo, ocre = está na palavra em outro lugar, carvão = não está.
+
+- Modos **1 palavra** (6 tentativas), **2 palavras** (7) e **4 palavras** (9), que mudam todo dia à meia-noite e são iguais para todo mundo, e **Livre**, com palavras sorteadas sem limite.
+- Acentos e cedilha são preenchidos sozinhos (`acido` → `ácido`); tocar numa casa leva o cursor até ela; teclado na tela com as cores do que já se sabe (dividido por palavra nos modos com várias palavras).
+- Estatísticas por modo (jogos, % de vitórias, sequência, distribuição), compartilhamento em emoji, contagem até a próxima palavra e modo de alto contraste.
+- **Lista de palavras própria**: `games/prensa/palavras.js` é gerado por `tools/prensa_palavras.py` (respostas: palavras comuns; aceitas: respostas + plurais, femininos e conjugações regulares geradas por regra). Para incluir palavras, edite o script e rode `python3 tools/prensa_palavras.py games/prensa/palavras.js`.
+
+Links diretos: `games/prensa/?mode=um|dois|quatro|livre`.
 
 Recordes ficam no `localStorage` do navegador.
 

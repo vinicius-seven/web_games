@@ -96,6 +96,21 @@
       match: 96,
       duration: '3–20 min por mapa',
     },
+    {
+      id: 'prensa',
+      title: 'Prensa',
+      status: 'available',
+      href: 'games/prensa/index.html',
+      tagline: 'Descubra a palavra do dia.',
+      description:
+        'Jogo de palavras numa oficina de tipografia: adivinhe a palavra de cinco letras e a tinta mostra o quanto você chegou perto. Uma, duas ou quatro palavras por dia, iguais para todo mundo, e um modo livre para treinar.',
+      tags: ['Palavras', 'Diário', 'Casual'],
+      year: 2026,
+      age: 'L',
+      meta: '4 modos',
+      match: 99,
+      duration: '2–10 min',
+    },
   ];
 
   const MODES = [
@@ -118,6 +133,10 @@
     { id: 'colecao', game: 'pontocruz', art: 'pontocruz-colecao', title: 'Coleção', text: 'Desenhos feitos à mão: descubra o próximo.' },
     { id: '5', game: 'pontocruz', art: 'pontocruz-5', title: 'Rápido', text: 'Motivo 5×5, para aprender.' },
     { id: '10', game: 'pontocruz', art: 'pontocruz-10', title: 'Clássico', text: 'Motivo 10×10, o tamanho tradicional.' },
+    { id: 'um', game: 'prensa', art: 'prensa-1', title: '1 palavra', text: 'A palavra do dia em 6 tentativas.' },
+    { id: 'dois', game: 'prensa', art: 'prensa-2', title: '2 palavras', text: 'Duas palavras ao mesmo tempo, 7 tentativas.' },
+    { id: 'quatro', game: 'prensa', art: 'prensa-4', title: '4 palavras', text: 'Quatro palavras ao mesmo tempo, 9 tentativas.' },
+    { id: 'livre', game: 'prensa', art: 'prensa-livre', title: 'Livre', text: 'Palavras sorteadas sem limite, para treinar.' },
     { id: 'diario', game: 'pontes', art: 'pontes-dia', title: 'Mapa do dia', text: 'O mesmo mapa 9×9 para todo mundo hoje.' },
     { id: '7', game: 'pontes', art: 'pontes-7', title: 'Enseada', text: '7×7, poucas ilhas. Bom para aprender.' },
     { id: '9', game: 'pontes', art: 'pontes-9', title: 'Baía', text: '9×9, o tamanho clássico.' },
@@ -181,6 +200,15 @@
       const r = store.get(`canteiros:daily:${todayKey()}`);
       return r ? `Hoje ${fmtTime(r.time)}` : 'Novo hoje';
     }
+    if (m.game === 'prensa') {
+      const d = new Date();
+      const day = Math.round((Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) - Date.UTC(2026, 0, 1)) / 86400000) + 1;
+      const stats = store.get(`prensa:stats:${m.id}`);
+      if (m.id === 'livre') return stats && stats.wins ? `${stats.wins} ${stats.wins === 1 ? 'acerto' : 'acertos'}` : '';
+      const today = store.get(`prensa:state:${m.id}:${day}`);
+      if (today && today.done) return today.won ? `Hoje ✓ · sequência ${stats ? stats.streak : 1}` : 'Hoje ✗';
+      return 'Novo hoje';
+    }
     if (key === 'pontes:diario') {
       const r = store.get(`pontes:daily:${todayKey()}`);
       return r ? `Hoje ${fmtTime(r.time)}` : 'Novo hoje';
@@ -224,6 +252,16 @@
     if (kind === 'diario') {
       const c = ['#e76f51', '#f4a261', '#e9c46a', '#2a9d8f', '#8ab17d'];
       return `<div class="art art-diario">${c.map((x) => `<i style="background:${x}"></i>`).join('')}</div>`;
+    }
+    if (kind.startsWith('prensa')) {
+      // Tipos de madeira com a tinta do resultado.
+      const row = (word, marks) => `<div class="prow">${[...word].map((ch, i) => `<i class="${marks[i] || ''}">${ch}</i>`).join('')}</div>`;
+      let rows;
+      if (kind === 'prensa-2') rows = row('TINTA', ['m', 'o', 'n', 'm', 'm']) + row('PRELO', ['o', 'n', 'o', 'm', 'n']);
+      else if (kind === 'prensa-4') rows = row('TIPOS', ['o', 'n', 'm', 'm', 'o']) + row('LETRA', ['n', 'm', 'o', 'n', 'm']) + row('PAPEL', ['m', 'o', 'n', 'm', 'o']);
+      else if (kind === 'prensa-livre') rows = row('LIVRE', ['o', 'o', 'n', 'm', 'o']) + row('∞', []);
+      else rows = row('PRENSA'.slice(0, 5), ['n', 'm', 'o', 'm', 'n']) + row('PRESA', ['o', 'o', 'o', 'o', 'o']);
+      return `<div class="art art-prensa${big ? ' big' : ''}"><div class="ptype">${rows}</div></div>`;
     }
     if (kind.startsWith('pontes')) {
       // Pequeno arquipélago 5×5 com pontes simples e duplas.
