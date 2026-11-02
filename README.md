@@ -9,6 +9,7 @@ Um catálogo de jogos de navegador no estilo "streaming": destaque no topo, file
 | **Croma** (`games/croma/`) | Disponível | Jogo de percepção de cores com 3 modos |
 | **Tamanho Certo** (`games/tamanho/`) | Disponível | Estimar tamanhos e proporções sem régua, rodadas sem fim |
 | **Sudoku** (`games/sudoku/`) | Disponível | Sudoku clássico com 4 dificuldades e grade do dia |
+| **Canteiros** (`games/canteiros/`) | Disponível | Lógica: uma flor por linha, coluna e canteiro, sem flores encostadas |
 
 ### Croma
 
@@ -36,6 +37,17 @@ Links diretos: `games/tamanho/?mode=ilimitado`, `?mode=treino`.
 - Recorde de tempo por dificuldade (partidas com dica não contam).
 
 Links diretos: `games/sudoku/?mode=facil|medio|dificil|especialista|diario|continuar`.
+
+### Canteiros
+
+Quebra-cabeça do gênero *Star Battle* (1 estrela), com tema e visual próprios: plante uma flor em cada linha, coluna e canteiro, sem que duas flores se encostem (nem na diagonal).
+
+- Tabuleiros de 6×6 a 9×9 gerados no navegador (`games/canteiros/engine.js`), sempre com **solução única** e canteiros contínuos. O motor também roda no Node para testes.
+- **Jardim do dia** (8×8) igual para todo mundo.
+- Toque: vazio → semente (marca "sem flor") → flor. Arrastar marca várias casas. Teclado: setas, Enter/Espaço, X, F, Backspace.
+- Conflitos destacados em vermelho com listras e explicação, marcação automática opcional das casas bloqueadas, dica, desfazer, recomeçar, pausa e progresso salvo.
+
+Links diretos: `games/canteiros/?mode=6|7|8|9|diario|continuar`.
 
 Recordes ficam no `localStorage` do navegador.
 

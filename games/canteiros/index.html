@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Canteiros · Jogateca</title>
+  <meta name="description" content="Canteiros — plante uma flor por linha, por coluna e por canteiro, sem que duas flores se encostem.">
+  <meta name="theme-color" content="#13241b">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2313241b'/%3E%3Cg fill='%23f4978e'%3E%3Ccircle cx='16' cy='9' r='5'/%3E%3Ccircle cx='22.7' cy='13.8' r='5'/%3E%3Ccircle cx='20.1' cy='21.7' r='5'/%3E%3Ccircle cx='11.9' cy='21.7' r='5'/%3E%3Ccircle cx='9.3' cy='13.8' r='5'/%3E%3C/g%3E%3Ccircle cx='16' cy='16' r='4' fill='%23f2c14e'/%3E%3C/svg%3E">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="apple-touch-icon" href="../../icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Jogateca">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="stylesheet" href="canteiros.css">
+</head>
+<body>
+  <!-- Flor usada em todo o jogo -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <symbol id="flor" viewBox="-50 -50 100 100">
+        <g class="petals" style="fill: var(--fp, #6d1f3f)">
+          <ellipse cx="0" cy="-24" rx="15" ry="22"/>
+          <ellipse cx="0" cy="-24" rx="15" ry="22" transform="rotate(72)"/>
+          <ellipse cx="0" cy="-24" rx="15" ry="22" transform="rotate(144)"/>
+          <ellipse cx="0" cy="-24" rx="15" ry="22" transform="rotate(216)"/>
+          <ellipse cx="0" cy="-24" rx="15" ry="22" transform="rotate(288)"/>
+        </g>
+        <circle class="core" r="12" style="fill: var(--fc, #f2c14e)"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <header class="bar">
+    <a href="../../index.html" class="back">‹ Jogateca</a>
+    <button class="brand" id="homeBtn" aria-label="Menu do Canteiros">CANTEIROS</button>
+    <span class="bar-right" id="barRight"></span>
+  </header>
+
+  <!-- Menu -->
+  <section class="screen" id="s-home">
+    <div class="wrap">
+      <div class="home-hero">
+        <svg class="hero-flower" aria-hidden="true"><use href="#flor"/></svg>
+        <h1 class="logo">Canteiros</h1>
+        <p>Plante uma flor em cada linha, em cada coluna e em cada canteiro. Só não deixe duas flores se encostarem.</p>
+      </div>
+
+      <button class="resume" id="resumeBtn" hidden>
+        <span class="resume-body"><small>Continuar</small><strong id="resumeTitle"></strong><span id="resumeInfo"></span></span>
+        <span class="resume-go" aria-hidden="true">›</span>
+      </button>
+
+      <div class="home-grid">
+        <div class="panel daily">
+          <h2>Jardim do dia</h2>
+          <p class="muted" id="dailyText"></p>
+          <button class="btn primary" id="dailyBtn"></button>
+        </div>
+        <div class="panel">
+          <h2>Escolha o tamanho</h2>
+          <div class="sizes" id="sizes"></div>
+        </div>
+      </div>
+
+      <div class="rules">
+        <h2>Regras</h2>
+        <ol>
+          <li><b>Uma flor por linha</b> e <b>uma por coluna</b>.</li>
+          <li><b>Uma flor por canteiro</b>: cada área colorida recebe exatamente uma.</li>
+          <li><b>Flores não se encostam</b>, nem pelas laterais, nem pelas diagonais.</li>
+        </ol>
+        <p class="muted">Toque uma vez para marcar <span class="seed-inline" aria-hidden="true"></span> (aqui não tem flor). Toque de novo para plantar. Arraste o dedo para marcar várias casas de uma vez. Cada tabuleiro tem uma única solução, e dá para chegar nela só com lógica.</p>
+      </div>
+      <p class="tip"><button class="btn ghost" data-pwa-install hidden>Instalar a Jogateca como app</button></p>
+    </div>
+  </section>
+
+  <!-- Jogo -->
+  <section class="screen" id="s-play">
+    <div class="play">
+      <div class="play-info">
+        <span id="infoTitle"></span>
+        <span>Flores <b id="infoFlowers">0</b></span>
+        <button class="pause" id="pauseBtn" aria-label="Pausar">
+          <span id="timer">00:00</span>
+          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>
+        </button>
+      </div>
+
+      <div class="board-frame">
+        <div class="board" id="board" role="grid" aria-label="Jardim"></div>
+        <svg class="walls" id="walls" aria-hidden="true"></svg>
+        <div class="paused" id="paused" hidden>
+          <p>Pausado</p>
+          <button class="btn primary" id="resumePlay">Continuar</button>
+        </div>
+      </div>
+
+      <p class="status" id="status" aria-live="polite"></p>
+
+      <div class="tools">
+        <button class="tool" id="undoBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12.5 8c-2.65 0-5.05 1-6.9 2.6L2 7v9h9l-3.62-3.62A7.95 7.95 0 0 1 12.5 10.5c3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/></svg><span>Desfazer</span></button>
+        <button class="tool" id="autoBtn" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M5 5h14v14H5zM7 7v10h10V7zm2.3 2.3 1.4-1.4L12 9.2l1.3-1.3 1.4 1.4-1.3 1.3 1.3 1.3-1.4 1.4-1.3-1.3-1.3 1.3-1.4-1.4 1.3-1.3z"/></svg><span>Marcar auto <em id="autoState">desl.</em></span></button>
+        <button class="tool" id="hintBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M9 21h6v-1H9v1zm3-19a7 7 0 0 0-4 12.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26A7 7 0 0 0 12 2z"/></svg><span>Dica</span></button>
+        <button class="tool" id="clearBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg><span>Recomeçar</span></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Vitória -->
+  <section class="screen" id="s-win">
+    <div class="wrap narrow center">
+      <p class="eyebrow" id="winEyebrow"></p>
+      <h2 class="win-title">Jardim pronto!</h2>
+      <div class="win-board" id="winBoard" aria-hidden="true"></div>
+      <div class="win-time" id="winTime"></div>
+      <p class="muted" id="winSub"></p>
+      <div class="end-actions">
+        <button class="btn primary" id="winShare">Compartilhar</button>
+        <button class="btn" id="winNew">Novo jardim</button>
+        <button class="btn ghost" id="winHome">Menu</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="engine.js"></script>
+  <script src="canteiros.js"></script>
+  <script src="../../pwa.js"></script>
+</body>
+</html>

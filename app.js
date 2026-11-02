@@ -50,6 +50,21 @@
       match: 97,
       duration: '5–30 min por grade',
     },
+    {
+      id: 'canteiros',
+      title: 'Canteiros',
+      status: 'available',
+      href: 'games/canteiros/index.html',
+      tagline: 'Uma flor por linha, por coluna e por canteiro.',
+      description:
+        'Quebra-cabeça de lógica num jardim: plante uma flor em cada linha, coluna e canteiro, sem que duas flores se encostem. Tabuleiros novos a cada partida, sempre com uma única solução, e um jardim do dia igual para todo mundo.',
+      tags: ['Lógica', 'Quebra-cabeça', 'Casual'],
+      year: 2026,
+      age: 'L',
+      meta: '4 tamanhos',
+      match: 97,
+      duration: '2–15 min por jardim',
+    },
   ];
 
   const MODES = [
@@ -63,6 +78,11 @@
     { id: 'medio', game: 'sudoku', art: 'sudoku-2', title: 'Médio', text: 'Pede um pouco de raciocínio além do óbvio.' },
     { id: 'dificil', game: 'sudoku', art: 'sudoku-3', title: 'Difícil', text: 'Poucas pistas. Anotações ajudam muito.' },
     { id: 'especialista', game: 'sudoku', art: 'sudoku-4', title: 'Especialista', text: 'O mínimo de pistas que a grade permite.' },
+    { id: 'diario', game: 'canteiros', art: 'canteiros-dia', title: 'Jardim do dia', text: 'O mesmo jardim 8×8 para todo mundo hoje. Compare o tempo.' },
+    { id: '6', game: 'canteiros', art: 'canteiros-6', title: 'Broto', text: '6×6. Ótimo para aprender as regras.' },
+    { id: '7', game: 'canteiros', art: 'canteiros-7', title: 'Muda', text: '7×7. Começa a pedir raciocínio.' },
+    { id: '8', game: 'canteiros', art: 'canteiros-8', title: 'Canteiro', text: '8×8. O tamanho clássico.' },
+    { id: '9', game: 'canteiros', art: 'canteiros-9', title: 'Estufa', text: '9×9. Para quem já pegou o jeito.' },
   ];
 
   /* ---------- Armazenamento local (tolerante a falhas) ---------- */
@@ -116,6 +136,14 @@
       const r = store.get(`sudoku:daily:${todayKey()}`);
       return r ? `Hoje ${fmtTime(r.time)}` : 'Novo hoje';
     }
+    if (key === 'canteiros:diario') {
+      const r = store.get(`canteiros:daily:${todayKey()}`);
+      return r ? `Hoje ${fmtTime(r.time)}` : 'Novo hoje';
+    }
+    if (m.game === 'canteiros') {
+      const best = store.get(`canteiros:best:${m.id}`);
+      return best ? `Melhor ${fmtTime(best)}` : '';
+    }
     if (m.game === 'sudoku') {
       const best = store.get(`sudoku:best:${m.id}`);
       return best ? `Melhor ${fmtTime(best)}` : '';
@@ -138,6 +166,21 @@
     if (kind === 'diario') {
       const c = ['#e76f51', '#f4a261', '#e9c46a', '#2a9d8f', '#8ab17d'];
       return `<div class="art art-diario">${c.map((x) => `<i style="background:${x}"></i>`).join('')}</div>`;
+    }
+    if (kind.startsWith('canteiros')) {
+      // Um tabuleiro 6×6 de verdade (com solução única), usado como ilustração.
+      const regions = [2, 0, 1, 1, 1, 1, 2, 0, 1, 1, 1, 1, 2, 3, 3, 3, 1, 1, 5, 3, 3, 5, 4, 4, 5, 5, 5, 5, 4, 4, 5, 5, 5, 5, 4, 4];
+      const sol = [1, 4, 0, 2, 5, 3];
+      const colors = ['#f2c14e', '#f4978e', '#9bd4a4', '#a9b7f0', '#d8b4e2', '#8ecae6'];
+      const flower = '<svg viewBox="-50 -50 100 100"><g fill="#6d1f3f">' +
+        [0, 72, 144, 216, 288].map((a) => `<ellipse cx="0" cy="-24" rx="15" ry="22" transform="rotate(${a})"/>`).join('') +
+        '</g><circle r="12" fill="#f2c14e"/></svg>';
+      const size = kind.match(/^canteiros-(\d)$/);
+      const badge = kind === 'canteiros-dia'
+        ? `<span class="sudoku-badge day"><b>${new Date().getDate()}</b>${new Date().toLocaleDateString('pt-BR', { month: 'short' }).replace('.', '')}</span>`
+        : size ? `<span class="sudoku-badge">${size[1]}×${size[1]}</span>` : '';
+      return `<div class="art art-canteiros${big ? ' big' : ''}"><div class="cgrid">${regions.map((g, i) =>
+        `<i style="background:${colors[g]}">${sol[Math.floor(i / 6)] === i % 6 ? flower : ''}</i>`).join('')}</div>${badge}</div>`;
     }
     if (kind.startsWith('sudoku')) {
       // Trecho de uma grade: 0 = vazio, negativo = número do jogador (tinta azul).
@@ -208,21 +251,36 @@
       </a>`;
   }
 
-  // Partidas salvas pelos jogos (hoje só o Sudoku guarda partida em andamento).
+  // Partidas salvas pelos jogos que guardam progresso (Sudoku e Canteiros).
   function continueCards() {
+    let html = '';
     const sv = store.get('sudoku:save');
-    if (!sv || sv.won || !Array.isArray(sv.values)) return '';
-    const names = { facil: 'Fácil', medio: 'Médio', dificil: 'Difícil', especialista: 'Especialista' };
-    const empty = sv.puzzle.filter((v) => !v).length;
-    const filled = sv.values.filter((v, i) => v && !sv.puzzle[i]).length;
-    const pct = empty ? Math.round((filled / empty) * 100) : 0;
-    return `
+    if (sv && !sv.won && Array.isArray(sv.values)) {
+      const names = { facil: 'Fácil', medio: 'Médio', dificil: 'Difícil', especialista: 'Especialista' };
+      const empty = sv.puzzle.filter((v) => !v).length;
+      const filled = sv.values.filter((v, i) => v && !sv.puzzle[i]).length;
+      const pct = empty ? Math.round((filled / empty) * 100) : 0;
+      html += `
       <a class="card mode" href="games/sudoku/index.html?mode=continuar" aria-label="Continuar Sudoku, ${pct}% preenchido">
         ${art('sudoku')}
         <span class="record">${fmtTime(Math.floor(sv.elapsed / 1000))}</span>
         <div class="card-title">Sudoku<small>${esc(sv.daily ? 'Do dia' : names[sv.diff] || '')}</small></div>
         <span class="progress" style="--p:${pct}%"></span>
       </a>`;
+    }
+    const cv = store.get('canteiros:save');
+    if (cv && !cv.won && Array.isArray(cv.cells)) {
+      const flowers = cv.cells.filter((v) => v === 2).length;
+      const pct = Math.round((flowers / cv.n) * 100);
+      html += `
+      <a class="card mode" href="games/canteiros/index.html?mode=continuar" aria-label="Continuar Canteiros, ${flowers} de ${cv.n} flores">
+        ${art('canteiros')}
+        <span class="record">${fmtTime(Math.floor(cv.elapsed / 1000))}</span>
+        <div class="card-title">Canteiros<small>${esc(cv.daily ? 'Do dia' : `${cv.n}×${cv.n}`)}</small></div>
+        <span class="progress" style="--p:${pct}%"></span>
+      </a>`;
+    }
+    return html;
   }
 
   function row(id, title, cardsHtml, note = '') {
