@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Colmeia · Palavra do Dia</title>
+  <meta name="description" content="Colmeia — forme palavras com as 7 letras do dia, sempre usando a letra do centro.">
+  <meta name="theme-color" content="#1b140b">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpolygon points='8,3 24,3 31,16 24,29 8,29 1,16' fill='%23f5b82e'/%3E%3Ctext x='16' y='22' font-family='Arial' font-weight='900' font-size='16' text-anchor='middle' fill='%231b140b'%3EC%3C/text%3E%3C/svg%3E">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="apple-touch-icon" href="../../icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Jogateca">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="stylesheet" href="comum.css">
+  <link rel="stylesheet" href="colmeia.css">
+</head>
+<body>
+  <header class="bar">
+    <span class="bar-left"><a href="index.html" class="menu-back"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>Menu</a></span>
+    <h1 class="brand">Colmeia</h1>
+    <span class="bar-right">
+      <button class="icon-btn" id="helpBtn" aria-label="Como jogar"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M11 18h2v-2h-2v2zm1-16a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 18a8 8 0 1 1 0-16 8 8 0 0 1 0 16zm0-14a4 4 0 0 0-4 4h2a2 2 0 1 1 4 0c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5a4 4 0 0 0-4-4z"/></svg></button>
+      <button class="icon-btn" id="hintBtn" aria-label="Dicas"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M9 21h6v-1H9v1zm3-19a7 7 0 0 0-4 12.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26A7 7 0 0 0 12 2z"/></svg></button>
+    </span>
+  </header>
+
+  <main class="page">
+    <nav class="tabs" role="tablist" aria-label="Modo">
+      <button role="tab" data-mode="dia">Do dia</button>
+      <button role="tab" data-mode="livre">Livre</button>
+    </nav>
+
+    <section class="rank" aria-label="Pontuação">
+      <div class="rank-top"><b id="rankName">Ovo</b><span><b id="score">0</b> pts</span></div>
+      <div class="rank-bar" id="rankBar"></div>
+    </section>
+
+    <details class="found" id="foundBox">
+      <summary><span id="foundSummary">Nenhuma palavra ainda</span></summary>
+      <ul id="foundList"></ul>
+    </details>
+
+    <div class="entry" id="entry" aria-live="polite"><span class="caret"></span></div>
+
+    <div class="hive" id="hive" role="group" aria-label="Letras da colmeia"></div>
+
+    <div class="actions">
+      <button class="btn" id="delBtn">Apagar</button>
+      <button class="btn round" id="shuffleBtn" aria-label="Embaralhar letras"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M17.65 6.35A7.96 7.96 0 0 0 12 4a8 8 0 1 0 7.73 10h-2.08A6 6 0 1 1 12 6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg></button>
+      <button class="btn primary" id="enterBtn">Enviar</button>
+    </div>
+
+    <div class="extras">
+      <button class="btn" id="yesterdayBtn">Palavras de ontem</button>
+      <button class="btn" id="newBtn" hidden>Nova colmeia</button>
+      <button class="btn" id="revealBtn" hidden>Ver todas as palavras</button>
+      <button class="btn" id="shareBtn">Compartilhar</button>
+    </div>
+  </main>
+
+  <div class="toasts" id="toasts" role="status" aria-live="assertive"></div>
+  <div class="modal" id="modal" hidden>
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <button class="modal-close" data-close aria-label="Fechar">✕</button>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <script src="colmeia-dados.js"></script>
+  <script src="colmeia.js"></script>
+  <script src="../../pwa.js"></script>
+</body>
+</html>

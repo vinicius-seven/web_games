@@ -1,0 +1,86 @@
+/* Colmeia: favos de mel sobre fundo de cera escura; letra central em mel, as outras em cera clara. */
+:root {
+  --page: #1b140b;
+  --page-2: #2a1f12;
+  --page-3: #3a2c19;
+  --text: #fff3d6;
+  --muted: #c9b38a;
+  --line: rgba(255,243,214,.08);
+  --line-strong: rgba(255,243,214,.22);
+  --accent: #f5b82e;
+  --on-accent: #2a1a04;
+  --wax: #f3e2b3;
+  --honey: #f5b82e;
+  --display: "Arial Rounded MT Bold", "Nunito", ui-rounded, system-ui, sans-serif;
+  color-scheme: dark;
+}
+body {
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='97'%3E%3Cpath d='M28 0l28 16v32L28 64 0 48V16z M28 64l28 16v17 M28 64L0 80v17' fill='none' stroke='%23f5b82e' stroke-opacity='.05' stroke-width='1.5'/%3E%3C/svg%3E");
+}
+
+.rank { margin: 4px 0 10px; }
+.rank-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+.rank-top b#rankName { font-family: var(--display); font-size: 18px; color: var(--honey); }
+.rank-top span { color: var(--muted); font-size: 14px; }
+.rank-top span b { color: var(--text); font-size: 16px; font-variant-numeric: tabular-nums; }
+.rank-bar { position: relative; height: 24px; display: flex; align-items: center; justify-content: space-between; }
+.rank-bar::before { content: ""; position: absolute; left: 6px; right: 6px; height: 2px; background: var(--page-3); }
+.rank-bar .fill { position: absolute; left: 6px; height: 2px; background: var(--honey); transition: width .4s; }
+.rank-bar i { position: relative; width: 12px; height: 12px; border-radius: 50%; background: var(--page-3); }
+.rank-bar i.on { background: var(--honey); }
+.rank-bar i.cur { width: 26px; height: 26px; display: grid; place-items: center; font-style: normal; font-size: 12px; font-weight: 800; color: var(--on-accent); }
+
+.found { background: var(--page-2); border: 1px solid var(--line); border-radius: 12px; padding: 0 14px; margin-bottom: 12px; }
+.found summary { cursor: pointer; padding: 11px 0; font-weight: 700; color: var(--muted); list-style: none; }
+.found summary::-webkit-details-marker { display: none; }
+.found summary::after { content: "▾"; float: right; }
+.found[open] summary::after { content: "▴"; }
+.found ul { list-style: none; margin: 0 0 12px; padding: 0; columns: 3 120px; column-gap: 16px; }
+.found li { padding: 3px 0; border-bottom: 1px solid var(--line); font-size: 15px; break-inside: avoid; }
+.found li.pangram { color: var(--honey); font-weight: 800; }
+.found li.missed { color: var(--muted); font-style: italic; }
+
+.entry {
+  min-height: 52px; display: flex; justify-content: center; align-items: center; gap: 1px;
+  font-family: var(--display); font-size: clamp(26px, 7vw, 34px); font-weight: 800; text-transform: uppercase; letter-spacing: .04em;
+}
+.entry .c { color: var(--honey); }
+.entry .x { color: #8a7a5c; }
+.entry .caret { width: 2px; height: 1.1em; background: var(--honey); animation: blink 1s steps(2) infinite; margin-left: 2px; }
+@keyframes blink { 50% { opacity: 0; } }
+.entry.shake { animation: shake .35s; }
+@keyframes shake { 25%, 75% { transform: translateX(-6px); } 50% { transform: translateX(6px); } }
+
+.hive { position: relative; width: min(330px, 86vw); aspect-ratio: 1 / .92; margin: 4px auto 14px; }
+.cell {
+  position: absolute; width: 33%; aspect-ratio: 1 / .866; border: 0; padding: 0; cursor: pointer;
+  clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%);
+  background: var(--wax); color: #2a1a04; font-family: var(--display); font-weight: 800; font-size: clamp(24px, 7vw, 32px);
+  text-transform: uppercase; transform: translate(-50%, -50%); transition: transform .12s, filter .12s;
+}
+.cell.center { background: var(--honey); }
+.cell:active { transform: translate(-50%, -50%) scale(.92); filter: brightness(.9); }
+.hive.spin .cell:not(.center) { animation: fadeLetter .3s; }
+@keyframes fadeLetter { 40% { opacity: 0; } }
+
+.actions { display: flex; justify-content: center; gap: 10px; margin-bottom: 18px; }
+.actions .btn { min-width: 96px; }
+.actions .btn.round { min-width: 0; width: 46px; height: 46px; padding: 0; }
+.extras { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.extras .btn { font-size: 13px; padding: 8px 14px; }
+
+.hints { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; font-size: 14px; }
+.hints th, .hints td { padding: 4px 6px; text-align: center; border-bottom: 1px solid var(--line); }
+.hints th { color: var(--muted); font-weight: 700; }
+.hints td:first-child, .hints th:first-child { text-align: left; text-transform: uppercase; font-weight: 800; }
+.pairs { display: flex; flex-wrap: wrap; gap: 6px 12px; text-transform: uppercase; font-variant-numeric: tabular-nums; }
+.mini-hive { display: flex; gap: 4px; justify-content: center; margin: 4px 0 12px; }
+.mini-hive span { width: 30px; height: 26px; display: grid; place-items: center; clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%); background: var(--wax); color: #2a1a04; font-weight: 800; text-transform: uppercase; }
+.mini-hive span.c { background: var(--honey); }
+.word-cols { columns: 3 110px; column-gap: 14px; font-size: 14px; }
+.word-cols div { break-inside: avoid; padding: 2px 0; }
+.word-cols .pangram { color: var(--honey); font-weight: 800; }
+.word-cols .got::before { content: "✓ "; color: #8fd18f; }
+.levels { display: grid; gap: 4px; font-size: 14px; }
+.levels div { display: flex; justify-content: space-between; }

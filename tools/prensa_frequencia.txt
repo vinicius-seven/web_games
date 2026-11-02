@@ -236,7 +236,6 @@ flash
 greve
 chego
 tumor
-egito
 duque
 nelas
 finja
@@ -647,7 +646,6 @@ latir
 busto
 arcos
 saldo
-abner
 maias
 vôlei
 jejum
@@ -657,7 +655,6 @@ rende
 botes
 potro
 asher
-jasão
 aluga
 banha
 meros
@@ -680,7 +677,6 @@ harpa
 pegas
 gerir
 pagão
-talia
 secou
 citou
 ficas
@@ -707,7 +703,6 @@ débil
 prevê
 lambe
 cobri
-botox
 fugia
 suada
 aspas
@@ -748,7 +743,6 @@ taser
 sutis
 dócil
 ótica
-líbia
 liceu
 faliu
 ânsia
@@ -817,7 +811,6 @@ puxão
 óleos
 caçou
 bucal
-dalia
 lítio
 trupe
 mudos
@@ -902,7 +895,6 @@ telha
 pousa
 coque
 alces
-hiram
 metia
 adido
 rasas
@@ -915,7 +907,6 @@ cromo
 ácida
 exija
 ouros
-jafar
 copie
 retrô
 cegou
@@ -950,9 +941,7 @@ clama
 argel
 amore
 saito
-chade
 revés
-jeter
 birra
 gatão
 vetar
@@ -1023,7 +1012,6 @@ molar
 ouves
 magno
 aster
-áries
 furor
 huber
 optei
@@ -1039,7 +1027,6 @@ bóias
 praxe
 clica
 induz
-tahir
 apela
 acolá
 rolam
@@ -1065,7 +1052,6 @@ lisas
 cocas
 afegã
 ricci
-saulo
 temps
 tacar
 vizir
@@ -1093,7 +1079,6 @@ toras
 silos
 cruas
 fazei
-nasir
 jipes
 cumes
 preza
@@ -1114,7 +1099,6 @@ papos
 lígia
 citei
 ecoam
-adair
 atada
 arara
 aliou

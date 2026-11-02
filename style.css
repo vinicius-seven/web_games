@@ -269,6 +269,22 @@ button { font: inherit; color: inherit; }
 .art-treino i:nth-child(3) { width: 64%; }
 .art-treino i:nth-child(4) { width: 28%; background: #ffcf3f; }
 
+.art-pdd { background: linear-gradient(135deg, #2a1f12, #14171f 60%, #0f1a24); }
+.art-pdd.prox { background: radial-gradient(circle at 70% 50%, #203445 0, #0f1a24 70%); }
+.art-pdd .hexes { position: absolute; right: 8%; top: 50%; transform: translateY(-50%); width: 34%; aspect-ratio: 1 / .9; }
+.art-pdd .hexes i {
+  position: absolute; width: 34%; aspect-ratio: 1 / .866; clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%);
+  background: #f3e2b3; display: grid; place-items: center; font: 800 clamp(11px, 1.3vw, 16px) system-ui, sans-serif; color: #2a1a04; font-style: normal; text-transform: uppercase;
+}
+.art-pdd .hexes i.c { background: #f5b82e; }
+.art-pdd .pbars { position: absolute; right: 8%; top: 50%; transform: translateY(-50%); width: 40%; display: grid; gap: 6px; }
+.art-pdd .hexes + .pbars { right: auto; left: 8%; width: 30%; }
+.art-pdd .pbars i { display: block; height: 10px; border-radius: 4px; }
+.art-pdd.big .hexes { width: 26%; }
+.art-pdd:not(.big)::after {
+  content: ""; position: absolute; inset: 0; z-index: 1;
+  background: linear-gradient(to top, rgba(14,15,19,.85) 0%, rgba(14,15,19,.3) 45%, transparent 70%);
+}
 .art-prensa {
   background:
     repeating-linear-gradient(92deg, rgba(255,255,255,.02) 0 3px, transparent 3px 11px, rgba(0,0,0,.08) 11px 13px, transparent 13px 29px),

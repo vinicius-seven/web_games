@@ -1,0 +1,10 @@
+Dados do modo Proximidade (Palavra do Dia)
+
+vocab.js e r/*.txt foram gerados por tools/proximidade_dados.py a partir dos vetores de palavras
+do modelo pt_core_news_lg 3.7.0 do spaCy (vetores fastText cbow treinados em OSCAR Common Crawl
+e Wikipédia, por Explosion), distribuídos sob a licença Creative Commons Atribuição-CompartilhaIgual
+4.0 (CC BY-SA 4.0): https://creativecommons.org/licenses/by-sa/4.0/deed.pt_BR
+
+Estes arquivos derivados são distribuídos sob a mesma licença CC BY-SA 4.0.
+O vocabulário também foi filtrado com a lista FrequencyWords (Hermit Dave, licença MIT) e com o
+dicionário VERO do LibreOffice (só como filtro; nada dele foi copiado).

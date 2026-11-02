@@ -2,7 +2,7 @@
    Estratégia: rede primeiro (sempre pega a versão nova quando há internet),
    cache como reserva quando está offline.
    Ao adicionar arquivos ou jogos, inclua-os em ASSETS e aumente VERSION. */
-const VERSION = 'jogateca-v11';
+const VERSION = 'jogateca-v12';
 const ASSETS = [
   './',
   './index.html',
@@ -41,6 +41,17 @@ const ASSETS = [
   './games/prensa/prensa.css',
   './games/prensa/prensa.js',
   './games/prensa/palavras.js',
+  './games/palavradodia/index.html',
+  './games/palavradodia/comum.css',
+  './games/palavradodia/colmeia.html',
+  './games/palavradodia/colmeia.css',
+  './games/palavradodia/colmeia.js',
+  './games/palavradodia/colmeia-dados.js',
+  './games/palavradodia/proximidade.html',
+  './games/palavradodia/proximidade.css',
+  './games/palavradodia/proximidade.js',
+  './games/palavradodia/proximidade/vocab.js',
+  // As listas de proximidade (proximidade/r/*.txt) são guardadas no cache conforme cada dia é jogado.
 ];
 
 self.addEventListener('install', (event) => {

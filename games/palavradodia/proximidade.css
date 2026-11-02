@@ -1,0 +1,65 @@
+/* Proximidade: tela de radar noturno; as barras vão do frio (longe) ao quente (perto). */
+:root {
+  --page: #0f1a24;
+  --page-2: #162533;
+  --page-3: #203445;
+  --text: #e8f1f5;
+  --muted: #8fa6b4;
+  --line: rgba(232,241,245,.08);
+  --line-strong: rgba(232,241,245,.2);
+  --accent: #63d2b4;
+  --on-accent: #062a20;
+  --hot: #ff7a59;
+  --warm: #f2c14e;
+  --cold: #4f8fd6;
+  --display: "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  color-scheme: dark;
+}
+body { background-image: radial-gradient(circle at 50% 0, rgba(99,210,180,.10) 0, transparent 55%); }
+
+.info { display: flex; justify-content: center; gap: 18px; font-size: 14px; color: var(--muted); margin-bottom: 10px; flex-wrap: wrap; }
+.info b { color: var(--text); font-variant-numeric: tabular-nums; }
+#gameLabel { color: var(--text); font-weight: 700; }
+
+.guess-form { display: flex; gap: 8px; margin-bottom: 14px; }
+.guess-form input {
+  flex: 1; min-width: 0; padding: 13px 16px; border-radius: 12px; border: 2px solid var(--line-strong); background: var(--page-2);
+  color: var(--text); font-size: 18px; font-weight: 600; outline: none;
+}
+.guess-form input:focus { border-color: var(--accent); }
+.guess-form .btn { border-radius: 12px; }
+
+.row {
+  position: relative; display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  padding: 11px 14px; border-radius: 10px; overflow: hidden; background: var(--page-2); font-weight: 700; font-size: 17px;
+}
+.row .bar { position: absolute; inset: 0 auto 0 0; z-index: 0; opacity: .9; border-radius: 10px; }
+.row span { position: relative; z-index: 1; }
+.row .rank { font-variant-numeric: tabular-nums; }
+.row.hot .bar { background: var(--hot); }
+.row.warm .bar { background: var(--warm); }
+.row.cold .bar { background: var(--cold); }
+.row.hot, .row.warm { color: #1b1206; }
+.row.hot .word, .row.warm .word { text-shadow: 0 1px 0 rgba(255,255,255,.25); }
+.row.win .bar { background: var(--accent); width: 100% !important; }
+.row.win { color: var(--on-accent); }
+.row.hint .word::after { content: " (dica)"; font-weight: 400; font-size: 13px; opacity: .8; }
+.last { margin-bottom: 12px; }
+.last:empty { display: none; }
+.last .row { outline: 2px solid var(--text); outline-offset: 2px; }
+.guesses { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.guesses li.flash .row { animation: flash 1s; }
+@keyframes flash { 30% { outline: 3px solid var(--text); } }
+.empty { text-align: center; margin-top: 24px; line-height: 1.5; }
+
+.top-list { display: grid; gap: 4px; max-height: 50vh; overflow: auto; }
+.top-list .row { padding: 6px 10px; font-size: 14px; }
+.menu-list { display: grid; gap: 8px; }
+.menu-list .btn { justify-content: flex-start; border-radius: 12px; }
+.past { display: grid; grid-template-columns: repeat(auto-fill, minmax(64px, 1fr)); gap: 6px; max-height: 50vh; overflow: auto; }
+.past button { padding: 8px 4px; border-radius: 8px; border: 1px solid var(--line-strong); background: var(--page-3); cursor: pointer; font-weight: 700; font-variant-numeric: tabular-nums; }
+.past button.done { border-color: var(--accent); color: var(--accent); }
+.end-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; margin-top: 16px; }
+.big-word { font-family: var(--display); font-size: 34px; font-weight: 800; color: var(--accent); margin: 4px 0 10px; }
+.legend { display: flex; gap: 12px; flex-wrap: wrap; font-size: 13px; margin: 8px 0; }
+.legend i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; vertical-align: -1px; margin-right: 5px; }

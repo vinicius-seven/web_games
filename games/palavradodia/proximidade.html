@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Proximidade · Palavra do Dia</title>
+  <meta name="description" content="Proximidade — descubra a palavra secreta pela distância de sentido de cada palpite.">
+  <meta name="theme-color" content="#0f1a24">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230f1a24'/%3E%3Ccircle cx='16' cy='16' r='11' fill='none' stroke='%2363d2b4' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%23ff7a59'/%3E%3C/svg%3E">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="apple-touch-icon" href="../../icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Jogateca">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="stylesheet" href="comum.css">
+  <link rel="stylesheet" href="proximidade.css">
+</head>
+<body>
+  <header class="bar">
+    <span class="bar-left"><a href="index.html" class="menu-back"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>Menu</a></span>
+    <h1 class="brand">Proximidade</h1>
+    <span class="bar-right">
+      <button class="icon-btn" id="helpBtn" aria-label="Como jogar"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M11 18h2v-2h-2v2zm1-16a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 18a8 8 0 1 1 0-16 8 8 0 0 1 0 16zm0-14a4 4 0 0 0-4 4h2a2 2 0 1 1 4 0c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5a4 4 0 0 0-4-4z"/></svg></button>
+      <button class="icon-btn" id="menuBtn" aria-label="Mais opções"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm0 6a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/></svg></button>
+    </span>
+  </header>
+
+  <main class="page">
+    <nav class="tabs" role="tablist" aria-label="Modo">
+      <button role="tab" data-mode="dia">Do dia</button>
+      <button role="tab" data-mode="livre">Livre</button>
+    </nav>
+
+    <div class="info"><span id="gameLabel"></span><span>Tentativas <b id="nGuesses">0</b></span><span>Dicas <b id="nHints">0</b></span></div>
+
+    <form class="guess-form" id="form" autocomplete="off">
+      <input id="guess" type="text" inputmode="text" enterkeyhint="send" autocapitalize="none" autocorrect="off" spellcheck="false"
+        placeholder="Digite uma palavra" aria-label="Seu palpite" maxlength="24">
+      <button class="btn primary" type="submit">Enviar</button>
+    </form>
+
+    <div id="last" class="last" aria-live="polite"></div>
+    <ol class="guesses" id="guesses" aria-label="Seus palpites, do mais próximo ao mais distante"></ol>
+    <p class="empty muted" id="empty">Comece com qualquer palavra. Quanto menor o número, mais perto você está da palavra secreta.</p>
+    <p class="loading muted" id="loading" hidden>Carregando…</p>
+  </main>
+
+  <div class="toasts" id="toasts" role="status" aria-live="assertive"></div>
+  <div class="modal" id="modal" hidden>
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <button class="modal-close" data-close aria-label="Fechar">✕</button>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <script src="proximidade/vocab.js"></script>
+  <script src="proximidade.js"></script>
+  <script src="../../pwa.js"></script>
+</body>
+</html>

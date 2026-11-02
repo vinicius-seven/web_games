@@ -111,6 +111,21 @@
       match: 99,
       duration: '2–10 min',
     },
+    {
+      id: 'palavradodia',
+      title: 'Palavra do Dia',
+      status: 'available',
+      href: 'games/palavradodia/index.html',
+      tagline: 'Dois jogos de palavras novos todo dia.',
+      description:
+        'Colmeia: forme palavras com 7 letras, sempre usando a do centro, e ache a palavra-chave. Proximidade: digite palavras e veja o quão perto, em sentido, cada uma está da palavra secreta. Iguais para todo mundo, com modo livre.',
+      tags: ['Palavras', 'Diário', 'Raciocínio'],
+      year: 2026,
+      age: 'L',
+      meta: '2 jogos diários',
+      match: 98,
+      duration: '5–20 min',
+    },
   ];
 
   const MODES = [
@@ -133,6 +148,10 @@
     { id: 'colecao', game: 'pontocruz', art: 'pontocruz-colecao', title: 'Coleção', text: 'Desenhos feitos à mão: descubra o próximo.' },
     { id: '5', game: 'pontocruz', art: 'pontocruz-5', title: 'Rápido', text: 'Motivo 5×5, para aprender.' },
     { id: '10', game: 'pontocruz', art: 'pontocruz-10', title: 'Clássico', text: 'Motivo 10×10, o tamanho tradicional.' },
+    { id: 'colmeia', game: 'palavradodia', art: 'pdd-colmeia', title: 'Colmeia', text: 'Forme palavras com as 7 letras do dia, sempre usando a do centro.' },
+    { id: 'proximidade', game: 'palavradodia', art: 'pdd-prox', title: 'Proximidade', text: 'Ache a palavra secreta pela proximidade de sentido de cada palpite.' },
+    { id: 'colmeia-livre', game: 'palavradodia', art: 'pdd-colmeia', title: 'Colmeia livre', text: 'Colmeias sorteadas, sem limite.' },
+    { id: 'proximidade-livre', game: 'palavradodia', art: 'pdd-prox', title: 'Proximidade livre', text: 'Palavras secretas sorteadas, sem limite.' },
     { id: 'um', game: 'prensa', art: 'prensa-1', title: '1 palavra', text: 'A palavra do dia em 6 tentativas.' },
     { id: 'dois', game: 'prensa', art: 'prensa-2', title: '2 palavras', text: 'Duas palavras ao mesmo tempo, 7 tentativas.' },
     { id: 'quatro', game: 'prensa', art: 'prensa-4', title: '4 palavras', text: 'Quatro palavras ao mesmo tempo, 9 tentativas.' },
@@ -200,6 +219,13 @@
       const r = store.get(`canteiros:daily:${todayKey()}`);
       return r ? `Hoje ${fmtTime(r.time)}` : 'Novo hoje';
     }
+    if (m.game === 'palavradodia') {
+      const d = new Date();
+      const day = Math.round((Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) - Date.UTC(2026, 0, 1)) / 86400000) + 1;
+      if (m.id === 'colmeia') { const c = store.get(`colmeia:dia:${day}`); return c && c.found.length ? `Hoje ${c.found.length} palavras` : 'Novo hoje'; }
+      if (m.id === 'proximidade') { const p = store.get(`proximidade:dia:${day}`); return p && p.won ? `Hoje ✓ ${p.guesses.length} tentativas` : 'Novo hoje'; }
+      return '';
+    }
     if (m.game === 'prensa') {
       const d = new Date();
       const day = Math.round((Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) - Date.UTC(2026, 0, 1)) / 86400000) + 1;
@@ -252,6 +278,12 @@
     if (kind === 'diario') {
       const c = ['#e76f51', '#f4a261', '#e9c46a', '#2a9d8f', '#8ab17d'];
       return `<div class="art art-diario">${c.map((x) => `<i style="background:${x}"></i>`).join('')}</div>`;
+    }
+    if (kind === 'palavradodia' || kind.startsWith('pdd-')) {
+      const hexes = '<span class="hexes"><i class="c" style="left:33%;top:33%">a</i><i style="left:33%;top:0">r</i><i style="left:58%;top:16%">m</i><i style="left:58%;top:50%">e</i><i style="left:33%;top:66%">c</i><i style="left:8%;top:50%">o</i><i style="left:8%;top:16%">l</i></span>';
+      const bars = '<span class="pbars"><i style="width:100%;background:#63d2b4"></i><i style="width:80%;background:#ff7a59"></i><i style="width:58%;background:#f2c14e"></i><i style="width:32%;background:#4f8fd6"></i></span>';
+      const inner = kind === 'pdd-colmeia' ? hexes : kind === 'pdd-prox' ? bars : hexes + bars;
+      return `<div class="art art-pdd ${kind === 'pdd-prox' ? 'prox' : ''}${big ? ' big' : ''}">${inner}</div>`;
     }
     if (kind.startsWith('prensa')) {
       // Tipos de madeira com a tinta do resultado.

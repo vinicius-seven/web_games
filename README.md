@@ -13,6 +13,7 @@ Um catálogo de jogos de navegador no estilo "streaming": destaque no topo, file
 | **Ponto-Cruz** (`games/pontocruz/`) | Disponível | Nonograma com tema de bordado: coleção de desenhos e motivos infinitos |
 | **Pontes** (`games/pontes/`) | Disponível | Ligar ilhas com pontes (gênero Hashi), num arquipélago tropical |
 | **Prensa** (`games/prensa/`) | Disponível | Adivinhar palavras de 5 letras: 1, 2 ou 4 por dia, e modo livre |
+| **Palavra do Dia** (`games/palavradodia/`) | Disponível | Dois jogos diários: Colmeia (7 letras) e Proximidade (distância de sentido) |
 
 ### Croma
 
@@ -84,6 +85,15 @@ Jogo de palavras de 5 letras com tema de tipografia (tipos móveis de madeira e 
 - **Lista de palavras própria**: `games/prensa/palavras.js` é gerado por `tools/prensa_palavras.py` — 894 respostas (palavras comuns, escolhidas à mão) e 2.936 aceitas (respostas + plurais, femininos e conjugações regulares geradas por regra + palavras da lista de frequência FrequencyWords, licença MIT, filtrada sem inglês, nomes próprios e palavrões, em `tools/prensa_frequencia.txt`). Para incluir palavras, edite o script e rode `python3 tools/prensa_palavras.py games/prensa/palavras.js`.
 
 Links diretos: `games/prensa/?mode=um|dois|quatro|livre`.
+
+### Palavra do Dia
+
+Página inicial com dois jogos de palavras diários (iguais para todo mundo) e modo livre em cada um.
+
+- **Colmeia** (`colmeia.html`): forme palavras de 4+ letras com as 7 letras da colmeia, sempre usando a do centro. 1 ponto por palavra de 4 letras, 1 por letra nas maiores, +7 pela palavra-chave (usa as 7 letras). Níveis de Ovo a Rainha, dicas por letra inicial e tamanho, palavras de ontem. Dicionário de ~9.500 palavras (sem S, para não virar lista de plurais) gerado por `tools/colmeia_dados.py` a partir da FrequencyWords (MIT), confirmado pelo dicionário VERO (radicais e conjugações regulares) e sem nomes próprios e palavrões.
+- **Proximidade** (`proximidade.html`): digite palavras e veja a posição de cada uma numa fila de ~13.500 palavras ordenadas pela proximidade de sentido com a palavra secreta (1 = acertou). Plural, feminino e verbo conjugado contam como a forma básica. Dica, desistir, 60 jogos anteriores e as 100 palavras mais próximas no fim. Distâncias calculadas por `tools/proximidade_dados.py` com os vetores fastText do modelo `pt_core_news_lg` do spaCy (**CC BY-SA 4.0**; os dados derivados em `games/palavradodia/proximidade/` seguem a mesma licença — veja o `LEIA-ME.txt` da pasta).
+
+Links diretos: `games/palavradodia/?mode=colmeia|colmeia-livre|proximidade|proximidade-livre`.
 
 Recordes ficam no `localStorage` do navegador.
 

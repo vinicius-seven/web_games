@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Palavra do Dia · Jogateca</title>
+  <meta name="description" content="Palavra do Dia — dois jogos de palavras diários: Colmeia e Proximidade.">
+  <meta name="theme-color" content="#14171f">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2314171f'/%3E%3Ctext x='16' y='22' font-family='Georgia' font-weight='700' font-size='17' text-anchor='middle' fill='%23f5b82e'%3EPd%3C/text%3E%3C/svg%3E">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="apple-touch-icon" href="../../icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Jogateca">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="stylesheet" href="comum.css">
+  <style>
+    :root {
+      --page: #14171f; --page-2: #1d2230; --page-3: #283044; --text: #f1efe8; --muted: #a6abbb;
+      --line: rgba(241,239,232,.08); --line-strong: rgba(241,239,232,.2); --accent: #f5b82e; --on-accent: #2a1a04;
+      --display: Georgia, "Iowan Old Style", serif; color-scheme: dark;
+    }
+    .hero { text-align: center; margin: 3vh 0 22px; }
+    .hero .date { text-transform: uppercase; letter-spacing: .22em; font-size: 12px; color: var(--muted); }
+    .hero h2 { font-family: var(--display); font-size: clamp(40px, 10vw, 64px); margin: 6px 0 8px; font-weight: 700; }
+    .hero p { color: var(--muted); margin: 0 auto; max-width: 44ch; line-height: 1.5; }
+    .modes { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .mode { display: grid; grid-template-rows: auto 1fr; border-radius: 16px; overflow: hidden; text-decoration: none; color: inherit; background: var(--page-2); border: 1px solid var(--line); transition: transform .15s, border-color .15s; }
+    .mode:hover { transform: translateY(-3px); border-color: var(--line-strong); }
+    .mode .art { aspect-ratio: 16 / 9; display: grid; place-items: center; }
+    .mode .body { padding: 14px 16px 16px; display: grid; gap: 6px; align-content: start; }
+    .mode strong { font-family: var(--display); font-size: 22px; }
+    .mode span { color: var(--muted); font-size: 14px; line-height: 1.45; }
+    .mode em { font-style: normal; font-weight: 700; font-size: 13px; color: #8fd18f; }
+    .art.colmeia { background: #1b140b; }
+    .art.prox { background: radial-gradient(circle, #203445 0, #0f1a24 70%); }
+    .hexes { position: relative; width: 120px; height: 104px; }
+    .hexes i { position: absolute; width: 40px; height: 35px; clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%); background: #f3e2b3; display: grid; place-items: center; font: 800 16px system-ui; color: #2a1a04; font-style: normal; text-transform: uppercase; }
+    .hexes i.c { background: #f5b82e; }
+    .bars { display: grid; gap: 6px; width: 70%; }
+    .bars i { display: block; height: 14px; border-radius: 5px; }
+    @media (max-width: 560px) { .modes { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header class="bar">
+    <span class="bar-left"><a href="../../index.html" class="back">‹ Jogateca</a></span>
+    <h1 class="brand">Palavra do Dia</h1>
+    <span class="bar-right"></span>
+  </header>
+  <main class="page">
+    <div class="hero">
+      <div class="date" id="date"></div>
+      <h2>Palavra do Dia</h2>
+      <p>Dois jogos de palavras que mudam todo dia à meia-noite, iguais para todo mundo. E um modo livre em cada um, para jogar quanto quiser.</p>
+    </div>
+    <div class="modes">
+      <a class="mode" href="colmeia.html">
+        <span class="art colmeia" aria-hidden="true"><span class="hexes">
+          <i class="c" style="left:40px;top:35px">a</i><i style="left:40px;top:0">r</i><i style="left:70px;top:17px">m</i><i style="left:70px;top:52px">e</i>
+          <i style="left:40px;top:70px">c</i><i style="left:10px;top:52px">o</i><i style="left:10px;top:17px">l</i></span></span>
+        <span class="body"><strong>Colmeia</strong><span>Forme palavras com as 7 letras do dia, sempre usando a do centro. Ache a palavra-chave que usa todas.</span><em id="stColmeia"></em></span>
+      </a>
+      <a class="mode" href="proximidade.html">
+        <span class="art prox" aria-hidden="true"><span class="bars">
+          <i style="width:100%;background:#63d2b4"></i><i style="width:82%;background:#ff7a59"></i><i style="width:60%;background:#f2c14e"></i><i style="width:34%;background:#4f8fd6"></i></span></span>
+        <span class="body"><strong>Proximidade</strong><span>Digite uma palavra e veja o quão perto ela está, em sentido, da palavra secreta. Vá chegando mais perto até achar.</span><em id="stProx"></em></span>
+      </a>
+    </div>
+  </main>
+  <script>
+    (() => {
+      // Links diretos do catálogo: ?mode=colmeia, colmeia-livre, proximidade, proximidade-livre
+      const m = new URLSearchParams(location.search).get('mode');
+      const go = { colmeia: 'colmeia.html', 'colmeia-livre': 'colmeia.html?mode=livre', proximidade: 'proximidade.html', 'proximidade-livre': 'proximidade.html?mode=livre' }[m];
+      if (go) { location.replace(go); return; }
+      const get = (k) => { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } };
+      const d = new Date();
+      const day = Math.round((Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) - Date.UTC(2026, 0, 1)) / 86400000) + 1;
+      document.getElementById('date').textContent = d.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
+      const c = get('colmeia:dia:' + day);
+      document.getElementById('stColmeia').textContent = c && c.found.length ? `Hoje: ${c.found.length} ${c.found.length === 1 ? 'palavra' : 'palavras'}` : 'Nova colmeia hoje';
+      const p = get('proximidade:dia:' + day);
+      document.getElementById('stProx').textContent = p ? (p.won ? `Hoje: achou em ${p.guesses.length} tentativas` : p.gaveUp ? 'Hoje: desistiu' : `Hoje: ${p.guesses.length} tentativas até agora`) : 'Nova palavra hoje';
+    })();
+  </script>
+  <script src="../../pwa.js"></script>
+</body>
+</html>
