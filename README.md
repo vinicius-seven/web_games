@@ -28,8 +28,27 @@ python3 -m http.server 8000
 
 Para publicar, basta servir a pasta (ex.: GitHub Pages apontando para a raiz do branch).
 
+## Instalar como app (PWA)
+
+O site é um PWA: pode ser instalado no computador e no celular, abre em janela própria e funciona sem internet depois da primeira visita.
+
+- **Chrome / Edge (Windows, Mac, Linux, Android):** botão **Instalar app** no topo do catálogo (ou o ícone de instalar na barra de endereço).
+- **iPhone / iPad (Safari):** Compartilhar › **Adicionar à Tela de Início**. O botão do site mostra esse passo a passo.
+- **Safari no Mac:** Arquivo › **Adicionar ao Dock**.
+
+Requisitos: o site precisa estar em **HTTPS** (GitHub Pages já é) ou em `localhost`.
+
+Arquivos: `manifest.webmanifest` (nome, ícones, atalhos para os modos do Croma), `sw.js` (cache offline) e `pwa.js` (botão de instalar). Ao mudar ou adicionar arquivos, inclua-os em `ASSETS` no `sw.js` e aumente `VERSION`.
+
+## Publicar no GitHub Pages
+
+1. No GitHub, abra o repositório › **Settings** › **Pages**.
+2. Em *Source*, escolha **Deploy from a branch**, selecione o branch e a pasta `/ (root)`, e salve.
+3. Em alguns minutos o site fica em `https://<usuario>.github.io/web_games/`.
+
 ## Adicionar um jogo
 
 1. Crie a pasta `games/<id>/` com o `index.html` do jogo.
 2. Adicione um objeto no array `GAMES` em `app.js` (`status: 'available'` ou `'soon'`).
-3. Opcional: crie a arte do card em `style.css` (`.art-<id>`) e trate o `id` na função `art()`.
+3. Inclua os arquivos do jogo em `ASSETS` no `sw.js` e aumente `VERSION`.
+4. Opcional: crie a arte do card em `style.css` (`.art-<id>`) e trate o `id` na função `art()`.

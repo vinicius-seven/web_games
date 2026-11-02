@@ -1,0 +1,62 @@
+/* Service worker da Jogateca: deixa o app instalável e jogável offline.
+   Estratégia: rede primeiro (sempre pega a versão nova quando há internet),
+   cache como reserva quando está offline.
+   Ao adicionar arquivos ou jogos, inclua-os em ASSETS e aumente VERSION. */
+const VERSION = 'jogateca-v1';
+const ASSETS = [
+  './',
+  './index.html',
+  './style.css',
+  './app.js',
+  './pwa.js',
+  './manifest.webmanifest',
+  './icons/icon.svg',
+  './icons/icon-192.png',
+  './icons/icon-512.png',
+  './icons/apple-touch-icon.png',
+  './games/croma/index.html',
+  './games/croma/croma.css',
+  './games/croma/croma.js',
+];
+
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(VERSION).then((cache) => cache.addAll(ASSETS)).then(() => self.skipWaiting()),
+  );
+});
+
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys()
+      .then((keys) => Promise.all(keys.filter((k) => k !== VERSION).map((k) => caches.delete(k))))
+      .then(() => self.clients.claim()),
+  );
+});
+
+self.addEventListener('fetch', (event) => {
+  const req = event.request;
+  if (req.method !== 'GET') return;
+  const url = new URL(req.url);
+  if (url.origin !== self.location.origin) return;
+
+  // Páginas com ?mode=... usam a mesma entrada de cache da página sem parâmetros.
+  const isPage = req.mode === 'navigate';
+  const key = isPage ? url.origin + url.pathname : req;
+
+  event.respondWith((async () => {
+    const cache = await caches.open(VERSION);
+    try {
+      const res = await fetch(req);
+      if (res.ok && res.type === 'basic') cache.put(key, res.clone());
+      return res;
+    } catch {
+      const cached = await cache.match(key, { ignoreSearch: isPage });
+      if (cached) return cached;
+      if (isPage) {
+        const home = await cache.match('./index.html');
+        if (home) return home;
+      }
+      return Response.error();
+    }
+  })());
+});
