@@ -133,6 +133,18 @@
     setTimeout(() => t.remove(), 3500);
   }
 
+  /* ---------- Sem zoom em telas de toque ----------
+     A meta viewport (user-scalable=no) cobre o Android; o Safari do iPhone/iPad ignora essa
+     regra, então os gestos de pinça são bloqueados aqui. O toque duplo é tratado no CSS
+     (touch-action: manipulation). Nada disso afeta o computador. */
+  if (navigator.maxTouchPoints > 0 || 'ontouchstart' in window) {
+    const stop = (e) => e.preventDefault();
+    ['gesturestart', 'gesturechange', 'gestureend'].forEach((ev) => document.addEventListener(ev, stop, { passive: false }));
+    document.addEventListener('touchmove', (e) => {
+      if (e.touches.length > 1 || (typeof e.scale === 'number' && e.scale !== 1)) e.preventDefault();
+    }, { passive: false });
+  }
+
   matchMedia('(display-mode: standalone)').addEventListener?.('change', update);
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', update);
   else update();
