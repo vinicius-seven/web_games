@@ -269,6 +269,17 @@ button { font: inherit; color: inherit; }
 .art-treino i:nth-child(3) { width: 64%; }
 .art-treino i:nth-child(4) { width: 28%; background: #ffcf3f; }
 
+.art-pontes {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='20'%3E%3Cpath d='M0 10 Q5 5 10 10 T20 10 T30 10 T40 10' fill='none' stroke='%23ffffff' stroke-opacity='.12' stroke-width='1.5'/%3E%3C/svg%3E") 0 0 / 40px 20px,
+    radial-gradient(circle at 30% 25%, #2fb3c8 0, #1a8aa3 45%, #0e5f78 100%);
+}
+.art-pontes .pmap { position: absolute; top: 50%; right: 5%; transform: translateY(-50%); height: 90%; aspect-ratio: 1; overflow: visible; }
+.art-pontes.big .pmap { height: 82%; right: 8%; }
+.art-pontes:not(.big)::after {
+  content: ""; position: absolute; inset: 0; z-index: 1;
+  background: linear-gradient(to top, rgba(14,15,19,.85) 0%, rgba(14,15,19,.3) 45%, transparent 70%);
+}
 .art-pontocruz {
   background:
     repeating-linear-gradient(45deg, rgba(255,255,255,.03) 0 2px, transparent 2px 6px),

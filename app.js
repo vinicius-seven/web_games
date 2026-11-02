@@ -81,6 +81,21 @@
       match: 96,
       duration: '2–20 min por bordado',
     },
+    {
+      id: 'pontes',
+      title: 'Pontes',
+      status: 'available',
+      href: 'games/pontes/index.html',
+      tagline: 'Ligue as ilhas do arquipélago.',
+      description:
+        'Quebra-cabeça de lógica num mar tropical: cada ilha diz quantas pontes saem dela. Pontes retas, no máximo duas entre as mesmas ilhas, sem cruzar, e todas as ilhas ligadas no fim. Mapas novos a cada partida e um mapa do dia.',
+      tags: ['Lógica', 'Quebra-cabeça', 'Casual'],
+      year: 2026,
+      age: 'L',
+      meta: '4 tamanhos',
+      match: 96,
+      duration: '3–20 min por mapa',
+    },
   ];
 
   const MODES = [
@@ -103,6 +118,11 @@
     { id: 'colecao', game: 'pontocruz', art: 'pontocruz-colecao', title: 'Coleção', text: 'Desenhos feitos à mão: descubra o próximo.' },
     { id: '5', game: 'pontocruz', art: 'pontocruz-5', title: 'Rápido', text: 'Motivo 5×5, para aprender.' },
     { id: '10', game: 'pontocruz', art: 'pontocruz-10', title: 'Clássico', text: 'Motivo 10×10, o tamanho tradicional.' },
+    { id: 'diario', game: 'pontes', art: 'pontes-dia', title: 'Mapa do dia', text: 'O mesmo mapa 9×9 para todo mundo hoje.' },
+    { id: '7', game: 'pontes', art: 'pontes-7', title: 'Enseada', text: '7×7, poucas ilhas. Bom para aprender.' },
+    { id: '9', game: 'pontes', art: 'pontes-9', title: 'Baía', text: '9×9, o tamanho clássico.' },
+    { id: '11', game: 'pontes', art: 'pontes-11', title: 'Arquipélago', text: '11×11, mais ilhas e mais cruzamentos.' },
+    { id: '13', game: 'pontes', art: 'pontes-13', title: 'Oceano', text: '13×13, para sessões longas.' },
     { id: '15', game: 'pontocruz', art: 'pontocruz-15', title: 'Grande', text: 'Motivo 15×15, para sessões mais longas.' },
   ];
 
@@ -161,6 +181,14 @@
       const r = store.get(`canteiros:daily:${todayKey()}`);
       return r ? `Hoje ${fmtTime(r.time)}` : 'Novo hoje';
     }
+    if (key === 'pontes:diario') {
+      const r = store.get(`pontes:daily:${todayKey()}`);
+      return r ? `Hoje ${fmtTime(r.time)}` : 'Novo hoje';
+    }
+    if (m.game === 'pontes') {
+      const best = store.get(`pontes:best:${m.id}`);
+      return best ? `Melhor ${fmtTime(best)}` : '';
+    }
     if (key === 'pontocruz:diario') {
       const r = store.get(`pontocruz:daily:${todayKey()}`);
       return r ? `Hoje ${fmtTime(r.time)}` : 'Novo hoje';
@@ -196,6 +224,23 @@
     if (kind === 'diario') {
       const c = ['#e76f51', '#f4a261', '#e9c46a', '#2a9d8f', '#8ab17d'];
       return `<div class="art art-diario">${c.map((x) => `<i style="background:${x}"></i>`).join('')}</div>`;
+    }
+    if (kind.startsWith('pontes')) {
+      // Pequeno arquipélago 5×5 com pontes simples e duplas.
+      const isl = [[0, 0, 4], [0, 4, 3], [2, 0, 3], [2, 2, 3], [4, 2, 3], [4, 4, 2]];
+      const br = [[0, 1, 2], [0, 2, 2], [2, 3, 1], [3, 4, 2], [4, 5, 1], [1, 5, 1]];
+      const size = kind.match(/^pontes-(\d+)$/);
+      const badge = kind === 'pontes-dia'
+        ? `<span class="sudoku-badge day"><b>${new Date().getDate()}</b>${new Date().toLocaleDateString('pt-BR', { month: 'short' }).replace('.', '')}</span>`
+        : size ? `<span class="sudoku-badge">${size[1]}×${size[1]}</span>` : '';
+      const lines = br.map(([a, b, c]) => {
+        const [r1, c1] = isl[a], [r2, c2] = isl[b];
+        const h = r1 === r2;
+        return (c === 2 ? [-0.12, 0.12] : [0]).map((o) =>
+          `<line x1="${c1 + 0.5 + (h ? 0 : o)}" y1="${r1 + 0.5 + (h ? o : 0)}" x2="${c2 + 0.5 + (h ? 0 : o)}" y2="${r2 + 0.5 + (h ? o : 0)}" stroke="#8b5a2b" stroke-width="${c === 2 ? 0.13 : 0.18}"/>`).join('');
+      }).join('');
+      const dots = isl.map(([r, c, v]) => `<circle cx="${c + 0.5}" cy="${r + 0.5}" r="0.38" fill="#f2dca6" stroke="#4e9a3c" stroke-width="0.07"/><text x="${c + 0.5}" y="${r + 0.66}" font-size="0.45" font-weight="700" text-anchor="middle" fill="#3b2a14" font-family="system-ui,sans-serif">${v}</text>`).join('');
+      return `<div class="art art-pontes${big ? ' big' : ''}"><svg class="pmap" viewBox="0 0 5 5">${lines}${dots}</svg>${badge}</div>`;
     }
     if (kind.startsWith('pontocruz')) {
       // Motivo de bordado 9×9 em ponto-cruz sobre etamina.
@@ -294,7 +339,7 @@
       </a>`;
   }
 
-  // Partidas salvas pelos jogos que guardam progresso (Sudoku, Canteiros e Ponto-Cruz).
+  // Partidas salvas pelos jogos que guardam progresso (Sudoku, Canteiros, Ponto-Cruz e Pontes).
   function continueCards() {
     let html = '';
     const sv = store.get('sudoku:save');
@@ -320,6 +365,19 @@
         ${art('canteiros')}
         <span class="record">${fmtTime(Math.floor(cv.elapsed / 1000))}</span>
         <div class="card-title">Canteiros<small>${esc(cv.daily ? 'Do dia' : `${cv.n}×${cv.n}`)}</small></div>
+        <span class="progress" style="--p:${pct}%"></span>
+      </a>`;
+    }
+    const bv = store.get('pontes:save');
+    if (bv && !bv.won && Array.isArray(bv.counts)) {
+      const deg = (i) => bv.edges.reduce((s, e, k) => s + (e.a === i || e.b === i ? bv.counts[k] : 0), 0);
+      const done = bv.islands.filter((s, i) => deg(i) === s.v).length;
+      const pct = Math.round((done / bv.islands.length) * 100);
+      html += `
+      <a class="card mode" href="games/pontes/index.html?mode=continuar" aria-label="Continuar Pontes, ${done} de ${bv.islands.length} ilhas">
+        ${art('pontes')}
+        <span class="record">${fmtTime(Math.floor(bv.elapsed / 1000))}</span>
+        <div class="card-title">Pontes<small>${bv.n}×${bv.n}</small></div>
         <span class="progress" style="--p:${pct}%"></span>
       </a>`;
     }

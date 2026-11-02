@@ -11,6 +11,7 @@ Um catálogo de jogos de navegador no estilo "streaming": destaque no topo, file
 | **Sudoku** (`games/sudoku/`) | Disponível | Sudoku clássico com 4 dificuldades e grade do dia |
 | **Canteiros** (`games/canteiros/`) | Disponível | Lógica: uma flor por linha, coluna e canteiro, sem flores encostadas |
 | **Ponto-Cruz** (`games/pontocruz/`) | Disponível | Nonograma com tema de bordado: coleção de desenhos e motivos infinitos |
+| **Pontes** (`games/pontes/`) | Disponível | Ligar ilhas com pontes (gênero Hashi), num arquipélago tropical |
 
 ### Croma
 
@@ -61,6 +62,16 @@ Nonograma com tema de bordado: cada casa pintada é um ponto em X sobre etamina,
 - Bordar / Marcar, arrastar ao longo da linha ou coluna, botão direito para marcar, pistas que se apagam quando a linha bate, dica que aponta erros ou mostra uma casa dedutível, desfazer, recomeçar, pausa e progresso salvo.
 
 Links diretos: `games/pontocruz/?mode=5|10|15|diario|colecao|continuar`.
+
+### Pontes
+
+Quebra-cabeça do gênero *Hashi* com tema de arquipélago: cada ilha diz quantas pontes saem dela; pontes retas, no máximo duas entre as mesmas ilhas, sem cruzar, e todas as ilhas ligadas no fim.
+
+- Mapas de 7×7 (Enseada) a 13×13 (Oceano) gerados no navegador (`games/pontes/engine.js`), conferidos por um resolvedor "humano" (capacidade das ilhas, limites do vizinho, cruzamentos e "não isolar um grupo"): **solução única e sem chute**. Mapa do dia 9×9.
+- Arraste de uma ilha na direção da vizinha, toque no mar entre as duas ou toque numa ilha e depois na outra. Pontes que cruzariam outra são recusadas com aviso. Teclado: setas escolhem a ilha, Shift + seta põe ponte.
+- Ilhas completas ficam verdes, ilhas com pontes demais ficam vermelhas; dica, desfazer, recomeçar, pausa e progresso salvo.
+
+Links diretos: `games/pontes/?mode=7|9|11|13|diario|continuar`.
 
 Recordes ficam no `localStorage` do navegador.
 
