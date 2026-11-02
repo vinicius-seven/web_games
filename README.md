@@ -8,6 +8,7 @@ Um catálogo de jogos de navegador no estilo "streaming": destaque no topo, file
 | --- | --- | --- |
 | **Croma** (`games/croma/`) | Disponível | Jogo de percepção de cores com 3 modos |
 | **Tamanho Certo** (`games/tamanho/`) | Disponível | Estimar tamanhos e proporções sem régua, rodadas sem fim |
+| **Sudoku** (`games/sudoku/`) | Disponível | Sudoku clássico com 4 dificuldades e grade do dia |
 
 ### Croma
 
@@ -25,6 +26,16 @@ Links diretos para cada modo: `games/croma/?mode=memoria`, `?mode=diario`, `?mod
 Desafios: **Igualar** (deixar B do mesmo tamanho, metade da largura, dobro da área, girado ou com outra forma), **Fração** (marcar X% de uma barra sem marcações), **Quantas vezes?** (razão de largura ou de área) e **Memória** (reproduzir o comprimento de uma linha vista por um instante). O controle tem limites sorteados a cada rodada, então a posição dele não entrega a resposta.
 
 Links diretos: `games/tamanho/?mode=ilimitado`, `?mode=treino`.
+
+### Sudoku
+
+- Grades geradas no próprio navegador, sempre com **solução única**: Fácil (~37 pistas), Médio (~32), Difícil (~27) e Especialista (~24).
+- **Sudoku do dia**: grade Médio gerada a partir da data, igual para todo mundo.
+- Notas (tecla N ou Shift + número), desfazer, apagar, dica, destaque de linha/coluna/bloco e de números iguais, erros em vermelho e contagem de quantos de cada número faltam.
+- Cronômetro com pausa (pausa sozinho quando a aba fica em segundo plano). O progresso é salvo e aparece em **Continuar jogando** no catálogo.
+- Recorde de tempo por dificuldade (partidas com dica não contam).
+
+Links diretos: `games/sudoku/?mode=facil|medio|dificil|especialista|diario|continuar`.
 
 Recordes ficam no `localStorage` do navegador.
 

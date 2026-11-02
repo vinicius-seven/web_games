@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Sudoku · Jogateca</title>
+  <meta name="description" content="Sudoku com 4 dificuldades, desafio diário, anotações, dicas e progresso salvo.">
+  <meta name="theme-color" content="#14161b">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23f4efe3'/%3E%3Cpath d='M11 2v28M21 2v28M2 11h28M2 21h28' stroke='%231d1b18' stroke-width='2'/%3E%3Ctext x='16' y='20.5' font-family='Arial' font-weight='700' font-size='9' text-anchor='middle' fill='%232b59c3'%3E7%3C/text%3E%3C/svg%3E">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="apple-touch-icon" href="../../icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Jogateca">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="stylesheet" href="sudoku.css">
+</head>
+<body>
+  <header class="bar">
+    <a href="../../index.html" class="back">‹ Jogateca</a>
+    <button class="brand" id="homeBtn" aria-label="Menu do Sudoku">SUDOKU</button>
+    <span class="bar-right" id="barRight"></span>
+  </header>
+
+  <!-- Menu -->
+  <section class="screen" id="s-home">
+    <div class="wrap">
+      <div class="home-hero">
+        <h1 class="logo">Sudoku</h1>
+        <p>Preencha a grade para que cada linha, cada coluna e cada bloco 3×3 tenha os números de 1 a 9, sem repetir.</p>
+      </div>
+
+      <button class="resume" id="resumeBtn" hidden>
+        <span class="resume-mini" id="resumeMini" aria-hidden="true"></span>
+        <span class="resume-body">
+          <small>Continuar</small>
+          <strong id="resumeTitle"></strong>
+          <span id="resumeInfo"></span>
+        </span>
+        <span class="resume-go" aria-hidden="true">›</span>
+      </button>
+
+      <div class="home-grid">
+        <div class="panel">
+          <h2>Novo jogo</h2>
+          <div class="diffs" id="diffs"></div>
+        </div>
+        <div class="panel daily">
+          <h2>Sudoku do dia</h2>
+          <p class="muted" id="dailyText"></p>
+          <button class="btn primary" id="dailyBtn"></button>
+        </div>
+      </div>
+
+      <details class="howto">
+        <summary>Como jogar</summary>
+        <ul>
+          <li>Toque numa casa e depois num número. No teclado: setas para mover, 1–9 para escrever, Backspace para apagar.</li>
+          <li><b>Notas</b>: com o modo de notas ligado (tecla N), os números entram pequenos, como rascunho. Shift + número também anota.</li>
+          <li>Ao escrever um número, ele sai automaticamente das notas da mesma linha, coluna e bloco.</li>
+          <li>Números errados ficam em vermelho e contam como erro. A <b>dica</b> revela a casa selecionada (ou uma vazia).</li>
+          <li>O progresso fica salvo: pode fechar e voltar depois.</li>
+        </ul>
+      </details>
+      <p class="tip"><button class="btn ghost" data-pwa-install hidden>Instalar a Jogateca como app</button></p>
+    </div>
+  </section>
+
+  <!-- Jogo -->
+  <section class="screen" id="s-play">
+    <div class="play">
+      <div class="play-info">
+        <span id="infoDiff"></span>
+        <span>Erros <b id="infoErrors">0</b></span>
+        <span>Dicas <b id="infoHints">0</b></span>
+        <button class="pause" id="pauseBtn" aria-label="Pausar">
+          <span id="timer">00:00</span>
+          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>
+        </button>
+      </div>
+
+      <div class="board-wrap">
+        <div class="board" id="board" role="grid" aria-label="Grade do sudoku"></div>
+        <div class="paused" id="paused" hidden>
+          <p>Pausado</p>
+          <button class="btn primary" id="resumePlay">Continuar</button>
+        </div>
+      </div>
+
+      <div class="side">
+        <div class="tools">
+          <button class="tool" id="undoBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12.5 8c-2.65 0-5.05 1-6.9 2.6L2 7v9h9l-3.62-3.62A7.95 7.95 0 0 1 12.5 10.5c3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/></svg><span>Desfazer</span></button>
+          <button class="tool" id="eraseBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16.24 3.56 21.19 8.5a2 2 0 0 1 0 2.83L12 20.5H7.5l-4.69-4.69a2 2 0 0 1 0-2.83L13.41 3.56a2 2 0 0 1 2.83 0zM4.22 14.4 8.33 18.5h2.84l3.03-3.03-4.95-4.95-5.03 5.03z"/></svg><span>Apagar</span></button>
+          <button class="tool" id="notesBtn" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg><span>Notas <em id="notesState">desl.</em></span></button>
+          <button class="tool" id="hintBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M9 21h6v-1H9v1zm3-19a7 7 0 0 0-4 12.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26A7 7 0 0 0 12 2z"/></svg><span>Dica</span></button>
+        </div>
+        <div class="pad" id="pad"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Vitória -->
+  <section class="screen" id="s-win">
+    <div class="wrap narrow center">
+      <p class="eyebrow" id="winEyebrow"></p>
+      <h2 class="win-title">Resolvido!</h2>
+      <div class="win-time" id="winTime"></div>
+      <p class="muted" id="winSub"></p>
+      <div class="stats" id="winStats"></div>
+      <div class="end-actions">
+        <button class="btn primary" id="winShare">Compartilhar</button>
+        <button class="btn" id="winNew">Novo jogo</button>
+        <button class="btn ghost" id="winHome">Menu</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="sudoku.js"></script>
+  <script src="../../pwa.js"></script>
+</body>
+</html>

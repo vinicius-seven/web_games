@@ -35,6 +35,21 @@
       match: 96,
       duration: 'Partidas sem fim',
     },
+    {
+      id: 'sudoku',
+      title: 'Sudoku',
+      status: 'available',
+      href: 'games/sudoku/index.html',
+      tagline: 'O clássico dos números, sem pressa.',
+      description:
+        'Grades novas a cada partida, sempre com solução única, em quatro dificuldades. Anotações, desfazer, dicas e progresso salvo, além de um Sudoku do dia igual para todo mundo.',
+      tags: ['Lógica', 'Números', 'Clássico'],
+      year: 2026,
+      age: 'L',
+      meta: '4 dificuldades',
+      match: 97,
+      duration: '5–30 min por grade',
+    },
   ];
 
   const MODES = [
@@ -43,6 +58,11 @@
     { id: 'olho', game: 'croma', title: 'Olho Clínico', text: 'Ache o quadrado de tom diferente. Cada acerto deixa tudo mais difícil. 60 segundos.' },
     { id: 'ilimitado', game: 'tamanho', title: 'Ilimitado', text: 'Rodadas sem fim com 4 tipos de desafio e 3 vidas. A margem de erro fecha a cada rodada.' },
     { id: 'treino', game: 'tamanho', title: 'Treino', text: 'Escolha um tipo de desafio e pratique sem vidas e sem pontuação.' },
+    { id: 'diario', game: 'sudoku', art: 'sudoku-dia', title: 'Sudoku do dia', text: 'A mesma grade (Médio) para todo mundo hoje. Compare o tempo.' },
+    { id: 'facil', game: 'sudoku', art: 'sudoku-1', title: 'Fácil', text: 'Muitas pistas. Bom para aquecer.' },
+    { id: 'medio', game: 'sudoku', art: 'sudoku-2', title: 'Médio', text: 'Pede um pouco de raciocínio além do óbvio.' },
+    { id: 'dificil', game: 'sudoku', art: 'sudoku-3', title: 'Difícil', text: 'Poucas pistas. Anotações ajudam muito.' },
+    { id: 'especialista', game: 'sudoku', art: 'sudoku-4', title: 'Especialista', text: 'O mínimo de pistas que a grade permite.' },
   ];
 
   /* ---------- Armazenamento local (tolerante a falhas) ---------- */
@@ -70,22 +90,35 @@
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   }
-  function modeRecord(id) {
-    if (id === 'memoria') {
+  function fmtTime(sec) {
+    const m = Math.floor(sec / 60), s = sec % 60;
+    return m >= 60 ? `${Math.floor(m / 60)}h${String(m % 60).padStart(2, '0')}` : `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  }
+  function modeRecord(m) {
+    const key = `${m.game}:${m.id}`;
+    if (key === 'croma:memoria') {
       const best = Math.max(...['facil', 'normal', 'dificil'].map((d) => store.get(`croma:best:memoria:${d}`, 0)));
       return best > 0 ? `Recorde ${best.toFixed(2)}` : '';
     }
-    if (id === 'diario') {
+    if (key === 'croma:diario') {
       const r = store.get(`croma:daily:${todayKey()}`);
       return r ? `Hoje ${r.total.toFixed(2)}` : 'Novo hoje';
     }
-    if (id === 'olho') {
+    if (key === 'croma:olho') {
       const best = store.get('croma:best:olho', 0);
       return best > 0 ? `Recorde nível ${best}` : '';
     }
-    if (id === 'ilimitado') {
+    if (key === 'tamanho:ilimitado') {
       const best = store.get('tamanho:best', 0);
       return best > 0 ? `Recorde ${best} pts` : '';
+    }
+    if (key === 'sudoku:diario') {
+      const r = store.get(`sudoku:daily:${todayKey()}`);
+      return r ? `Hoje ${fmtTime(r.time)}` : 'Novo hoje';
+    }
+    if (m.game === 'sudoku') {
+      const best = store.get(`sudoku:best:${m.id}`);
+      return best ? `Melhor ${fmtTime(best)}` : '';
     }
     return '';
   }
@@ -105,6 +138,16 @@
     if (kind === 'diario') {
       const c = ['#e76f51', '#f4a261', '#e9c46a', '#2a9d8f', '#8ab17d'];
       return `<div class="art art-diario">${c.map((x) => `<i style="background:${x}"></i>`).join('')}</div>`;
+    }
+    if (kind.startsWith('sudoku')) {
+      // Trecho de uma grade: 0 = vazio, negativo = número do jogador (tinta azul).
+      const sample = [5, 3, 0, 0, 7, 0, 0, 0, 0, 6, 0, 0, 1, 9, 5, 0, 0, 0, 0, 9, 8, 0, 0, 0, 0, 6, 0,
+        8, 0, -9, 0, 6, 0, 0, 0, 3, 4, 0, 0, 8, 0, 3, 0, 0, 1];
+      const dots = kind.match(/^sudoku-(\d)$/);
+      const badge = kind === 'sudoku-dia'
+        ? `<span class="sudoku-badge day"><b>${new Date().getDate()}</b>${new Date().toLocaleDateString('pt-BR', { month: 'short' }).replace('.', '')}</span>`
+        : dots ? `<span class="sudoku-badge">${'●'.repeat(+dots[1])}${'○'.repeat(4 - dots[1])}</span>` : '';
+      return `<div class="art art-sudoku${big ? ' big' : ''}"><div class="sgrid">${sample.map((v) => `<i${v < 0 ? ' class="u"' : ''}>${v ? Math.abs(v) : ''}</i>`).join('')}</div>${badge}</div>`;
     }
     if (kind === 'ilimitado') return '<div class="art art-ilimitado"><b>∞</b></div>';
     if (kind === 'treino') return '<div class="art art-treino"><i></i><i></i><i></i><i></i></div>';
@@ -156,12 +199,29 @@
 
   function modeCard(m) {
     const g = GAMES.find((x) => x.id === m.game);
-    const rec = modeRecord(m.id);
+    const rec = modeRecord(m);
     return `
       <a class="card mode" href="${g.href}?mode=${m.id}" aria-label="${esc(g.title)}: ${esc(m.title)}">
-        ${art(m.id)}
+        ${art(m.art || m.id)}
         ${rec ? `<span class="record">${esc(rec)}</span>` : ''}
         <div class="card-title">${esc(m.title)}<small>${esc(g.title)}</small></div>
+      </a>`;
+  }
+
+  // Partidas salvas pelos jogos (hoje só o Sudoku guarda partida em andamento).
+  function continueCards() {
+    const sv = store.get('sudoku:save');
+    if (!sv || sv.won || !Array.isArray(sv.values)) return '';
+    const names = { facil: 'Fácil', medio: 'Médio', dificil: 'Difícil', especialista: 'Especialista' };
+    const empty = sv.puzzle.filter((v) => !v).length;
+    const filled = sv.values.filter((v, i) => v && !sv.puzzle[i]).length;
+    const pct = empty ? Math.round((filled / empty) * 100) : 0;
+    return `
+      <a class="card mode" href="games/sudoku/index.html?mode=continuar" aria-label="Continuar Sudoku, ${pct}% preenchido">
+        ${art('sudoku')}
+        <span class="record">${fmtTime(Math.floor(sv.elapsed / 1000))}</span>
+        <div class="card-title">Sudoku<small>${esc(sv.daily ? 'Do dia' : names[sv.diff] || '')}</small></div>
+        <span class="progress" style="--p:${pct}%"></span>
       </a>`;
   }
 
@@ -185,6 +245,7 @@
     const perception = GAMES.filter((g) => g.tags.includes('Percepção'));
 
     document.getElementById('rows').innerHTML = [
+      row('continuar', 'Continuar jogando', continueCards()),
       row('jogar', 'Jogue agora', available.map(gameCard).join('')),
       row('minha-lista', 'Minha lista', list.map(gameCard).join('')),
       ...available.map((g) => row(`modos-${g.id}`, `Modos de ${esc(g.title)}`,
@@ -237,9 +298,9 @@
         ${modes.length ? `<h3>Modos</h3><div class="mode-list">${modes.map((m, i) => `
           <a class="mode-item" href="${g.href}?mode=${m.id}">
             <span class="n">${i + 1}</span>
-            <span class="thumb">${art(m.id)}</span>
+            <span class="thumb">${art(m.art || m.id)}</span>
             <span><strong>${esc(m.title)}</strong><span>${esc(m.text)}</span></span>
-            <span class="rec">${esc(modeRecord(m.id))}</span>
+            <span class="rec">${esc(modeRecord(m))}</span>
           </a>`).join('')}</div>` : ''}
       </div>`;
     lastFocus = document.activeElement;

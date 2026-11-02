@@ -269,6 +269,34 @@ button { font: inherit; color: inherit; }
 .art-treino i:nth-child(3) { width: 64%; }
 .art-treino i:nth-child(4) { width: 28%; background: #ffcf3f; }
 
+.art-sudoku { background: #f4efe3; }
+.art-sudoku .sgrid {
+  position: absolute; inset: -2px; display: grid; grid-template-columns: repeat(9, 1fr); grid-template-rows: repeat(5, 1fr);
+}
+.art-sudoku .sgrid i {
+  font-style: normal; display: grid; place-items: center; color: #1d1b18;
+  font: 600 clamp(14px, 1.6vw, 22px) ui-rounded, system-ui, sans-serif;
+  border-right: 1px solid #c9c2b2; border-bottom: 1px solid #c9c2b2;
+}
+.art-sudoku .sgrid i:nth-child(9n+3), .art-sudoku .sgrid i:nth-child(9n+6) { border-right: 2px solid #1d1b18; }
+.art-sudoku .sgrid i:nth-child(n+19):nth-child(-n+27) { border-bottom: 2px solid #1d1b18; }
+.art-sudoku .sgrid i.u { color: #2b59c3; background: #ffe680; }
+.art-sudoku.big .sgrid { left: 45%; transform: rotate(-4deg) scale(1.15); transform-origin: right center; opacity: .95; }
+.art-sudoku:not(.big)::after {
+  content: ""; position: absolute; inset: 0; z-index: 1;
+  background: linear-gradient(to top, rgba(14,15,19,.96) 0%, rgba(14,15,19,.75) 38%, rgba(14,15,19,0) 72%);
+}
+.sudoku-badge {
+  position: absolute; top: 10px; left: 10px; z-index: 2; padding: 4px 8px; border-radius: 6px;
+  background: #1d1b18; color: #ffe680; font-size: 12px; letter-spacing: 2px;
+}
+.sudoku-badge.day { display: grid; justify-items: center; letter-spacing: 0; text-transform: uppercase; font-size: 10px; line-height: 1.1; padding: 5px 9px; color: #f4efe3; }
+.sudoku-badge.day b { font-size: 20px; color: #ffe680; }
+.card .progress {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 4px; z-index: 3; background: rgba(255,255,255,.25);
+}
+.card .progress::after { content: ""; position: absolute; inset: 0 auto 0 0; width: var(--p); background: var(--accent); }
+
 .art-memoria { background: linear-gradient(90deg, #ff7a59 50%, #ff8c6a 50%); }
 .art-memoria::before {
   content: ""; position: absolute; left: 50%; top: 0; bottom: 0; width: 3px; background: rgba(0,0,0,.25);
