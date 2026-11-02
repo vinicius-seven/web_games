@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Croma · Jogateca</title>
+  <meta name="description" content="Croma — teste seu olho para cores: memorize e recrie, desafio diário e olho clínico.">
+  <meta name="theme-color" content="#0b0b0f">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='11' cy='12' r='8' fill='%23ff3d6e'/%3E%3Ccircle cx='21' cy='12' r='8' fill='%233a86ff' fill-opacity='.85'/%3E%3Ccircle cx='16' cy='21' r='8' fill='%233ddc97' fill-opacity='.85'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="croma.css">
+</head>
+<body>
+  <header class="bar" id="bar">
+    <a href="../../" class="back">‹ Jogateca</a>
+    <button class="brand" id="homeBtn" aria-label="Menu do Croma">CROMA</button>
+    <span class="bar-right" id="barRight"></span>
+  </header>
+
+  <!-- Menu -->
+  <section class="screen" id="s-home">
+    <div class="wrap">
+      <div class="home-hero">
+        <h1 class="logo-big" aria-label="Croma"><span>C</span><span>R</span><span>O</span><span>M</span><span>A</span></h1>
+        <p>Quão afiado é o seu olho para cores?</p>
+      </div>
+      <div class="modes">
+        <button class="mode" data-go="memoria">
+          <span class="mode-art art-memoria"><i></i><i></i></span>
+          <span class="mode-body">
+            <strong>Memória</strong>
+            <span>Veja uma cor por alguns segundos e recrie-a de cabeça. 5 rodadas, até 50 pontos.</span>
+            <em data-best="memoria"></em>
+          </span>
+        </button>
+        <button class="mode" data-go="diario">
+          <span class="mode-art art-diario" id="dailyArt"></span>
+          <span class="mode-body">
+            <strong>Desafio Diário</strong>
+            <span>As mesmas 5 cores para todo mundo, hoje. Uma tentativa — depois é só compartilhar.</span>
+            <em data-best="diario"></em>
+          </span>
+        </button>
+        <button class="mode" data-go="olho">
+          <span class="mode-art art-olho"></span>
+          <span class="mode-body">
+            <strong>Olho Clínico</strong>
+            <span>Ache o quadrado de tom diferente. Cada acerto deixa tudo mais difícil. 60 segundos.</span>
+            <em data-best="olho"></em>
+          </span>
+        </button>
+      </div>
+      <p class="tip">Dica: use o celular no brilho máximo e sem filtro de luz azul para uma disputa justa.</p>
+    </div>
+  </section>
+
+  <!-- Memória: introdução -->
+  <section class="screen" id="s-mem-intro">
+    <div class="wrap narrow center">
+      <h2>Memória</h2>
+      <p class="lead">Uma cor aparece na tela. Memorize. Depois recrie-a com três controles: <b>matiz</b>, <b>saturação</b> e <b>brilho</b>.</p>
+      <p class="muted">A nota de cada rodada vai de 0 a 10, calculada pela diferença perceptual entre as cores (CIEDE2000).</p>
+      <div class="seg" role="radiogroup" aria-label="Dificuldade" id="diffSeg">
+        <button role="radio" data-diff="facil">Fácil<small>5 s</small></button>
+        <button role="radio" data-diff="normal">Normal<small>3 s</small></button>
+        <button role="radio" data-diff="dificil">Difícil<small>1,5 s</small></button>
+      </div>
+      <p class="muted small" id="diffBest"></p>
+      <button class="btn primary" id="memStart">Começar</button>
+    </div>
+  </section>
+
+  <!-- Mostrar a cor alvo -->
+  <section class="screen full" id="s-show" aria-live="polite">
+    <div class="corner"><span id="showRound"></span><span>Memorize</span></div>
+    <div class="show-num" id="showNum"></div>
+    <div class="countdown"><i id="countBar"></i></div>
+  </section>
+
+  <!-- Recriar -->
+  <section class="screen full" id="s-pick">
+    <div class="corner"><span id="pickRound"></span><span>Recrie a cor</span></div>
+    <div class="pick-panel">
+      <label class="slider">
+        <span>Matiz <output id="oh"></output></span>
+        <input type="range" id="ih" min="0" max="359" step="1">
+      </label>
+      <label class="slider">
+        <span>Saturação <output id="os"></output></span>
+        <input type="range" id="is" min="0" max="100" step="1">
+      </label>
+      <label class="slider">
+        <span>Brilho <output id="ov"></output></span>
+        <input type="range" id="iv" min="0" max="100" step="1">
+      </label>
+      <button class="btn primary block" id="pickOk">Confirmar</button>
+    </div>
+  </section>
+
+  <!-- Resultado da rodada -->
+  <section class="screen full" id="s-result">
+    <div class="split">
+      <div class="half" id="rTarget"><span class="tag">Alvo</span><code></code></div>
+      <div class="half" id="rYours"><span class="tag">Sua</span><code></code></div>
+    </div>
+    <div class="result-card">
+      <div class="score-big" id="rScore">0.00</div>
+      <div class="verdict" id="rVerdict"></div>
+      <div class="diffs" id="rDiffs"></div>
+      <button class="btn primary block" id="rNext">Próxima</button>
+    </div>
+  </section>
+
+  <!-- Fim da partida de Memória / Diário -->
+  <section class="screen" id="s-end">
+    <div class="wrap narrow center">
+      <p class="eyebrow" id="endEyebrow"></p>
+      <div class="total" id="endTotal"></div>
+      <p class="muted" id="endSub"></p>
+      <div class="strip" id="endStrip"></div>
+      <div class="end-actions">
+        <button class="btn primary" id="endShare">Compartilhar</button>
+        <button class="btn" id="endAgain">Jogar de novo</button>
+        <button class="btn ghost" id="endHome">Menu</button>
+      </div>
+      <p class="muted small" id="endNext"></p>
+    </div>
+  </section>
+
+  <!-- Olho Clínico: introdução -->
+  <section class="screen" id="s-odd-intro">
+    <div class="wrap narrow center">
+      <h2>Olho Clínico</h2>
+      <p class="lead">Todos os quadrados são iguais… menos um. Toque nele.</p>
+      <p class="muted">Você tem <b>60 segundos</b>. A cada acerto a grade cresce e a diferença diminui. Errar custa <b>3 segundos</b>.</p>
+      <p class="muted small" id="oddBestIntro"></p>
+      <button class="btn primary" id="oddStart">Começar</button>
+    </div>
+  </section>
+
+  <!-- Olho Clínico: jogo -->
+  <section class="screen" id="s-odd">
+    <div class="wrap odd-wrap">
+      <div class="hud">
+        <div><small>Nível</small><b id="oddLevel">1</b></div>
+        <div class="timebar"><i id="oddTimeBar"></i></div>
+        <div><small>Tempo</small><b id="oddTime">60</b></div>
+      </div>
+      <div class="grid" id="oddGrid"></div>
+    </div>
+  </section>
+
+  <!-- Olho Clínico: fim -->
+  <section class="screen" id="s-odd-end">
+    <div class="wrap narrow center">
+      <p class="eyebrow">Tempo esgotado</p>
+      <div class="total" id="oddEndLevel"></div>
+      <p class="muted" id="oddEndSub"></p>
+      <div class="odd-reveal" id="oddReveal"></div>
+      <div class="end-actions">
+        <button class="btn primary" id="oddShare">Compartilhar</button>
+        <button class="btn" id="oddAgain">Jogar de novo</button>
+        <button class="btn ghost" id="oddHome">Menu</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="croma.js"></script>
+</body>
+</html>

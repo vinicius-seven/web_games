@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Jogateca</title>
+  <meta name="description" content="Jogateca — um catálogo de jogos de navegador para jogar na hora.">
+  <meta name="theme-color" content="#0b0b0f">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b0b0f'/%3E%3Ctext x='16' y='24' font-family='Arial Black,Arial' font-weight='900' font-size='22' text-anchor='middle' fill='%23ff2e4d'%3EJ%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar" id="topbar">
+    <a class="logo" href="./" aria-label="Jogateca, início">JOGATECA</a>
+    <nav class="nav" aria-label="Seções">
+      <a href="#row-jogar">Início</a>
+      <a href="#row-em-breve">Em breve</a>
+      <a href="#row-minha-lista" id="navLista" hidden>Minha lista</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" id="hero" aria-label="Destaque"></section>
+    <div class="rows" id="rows"></div>
+  </main>
+
+  <footer class="footer">
+    <p>Jogateca · jogos de navegador, sem instalar nada.</p>
+    <p class="muted">Seus recordes ficam salvos só neste navegador.</p>
+  </footer>
+
+  <div class="modal" id="modal" hidden>
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <button class="modal-close" data-close aria-label="Fechar">✕</button>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
