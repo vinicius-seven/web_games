@@ -171,8 +171,9 @@
       // Um tabuleiro 6×6 de verdade (com solução única), usado como ilustração.
       const regions = [2, 0, 1, 1, 1, 1, 2, 0, 1, 1, 1, 1, 2, 3, 3, 3, 1, 1, 5, 3, 3, 5, 4, 4, 5, 5, 5, 5, 4, 4, 5, 5, 5, 5, 4, 4];
       const sol = [1, 4, 0, 2, 5, 3];
-      const colors = ['#f2c14e', '#f4978e', '#9bd4a4', '#a9b7f0', '#d8b4e2', '#8ecae6'];
-      const flower = '<svg viewBox="-50 -50 100 100"><g fill="#6d1f3f">' +
+      // Cor do canteiro e da flor dele (as mesmas do jogo).
+      const beds = [['#f6d77a', '#c87f0a'], ['#f7b2aa', '#b3263e'], ['#a9dbb0', '#ffffff'], ['#b7c2f4', '#3d42b5'], ['#ddc2e8', '#7a3aa0'], ['#9fd3ea', '#2a6fc0']];
+      const flower = (fp) => `<svg viewBox="-50 -50 100 100"><g fill="${fp}" stroke="rgba(0,0,0,.15)" stroke-width="2">` +
         [0, 72, 144, 216, 288].map((a) => `<ellipse cx="0" cy="-24" rx="15" ry="22" transform="rotate(${a})"/>`).join('') +
         '</g><circle r="12" fill="#f2c14e"/></svg>';
       const size = kind.match(/^canteiros-(\d)$/);
@@ -180,7 +181,7 @@
         ? `<span class="sudoku-badge day"><b>${new Date().getDate()}</b>${new Date().toLocaleDateString('pt-BR', { month: 'short' }).replace('.', '')}</span>`
         : size ? `<span class="sudoku-badge">${size[1]}×${size[1]}</span>` : '';
       return `<div class="art art-canteiros${big ? ' big' : ''}"><div class="cgrid">${regions.map((g, i) =>
-        `<i style="background:${colors[g]}">${sol[Math.floor(i / 6)] === i % 6 ? flower : ''}</i>`).join('')}</div>${badge}</div>`;
+        `<i style="background:${beds[g][0]}">${sol[Math.floor(i / 6)] === i % 6 ? flower(beds[g][1]) : ''}</i>`).join('')}</div>${badge}</div>`;
     }
     if (kind.startsWith('sudoku')) {
       // Trecho de uma grade: 0 = vazio, negativo = número do jogador (tinta azul).

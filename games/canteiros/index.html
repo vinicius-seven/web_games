@@ -16,24 +16,68 @@
   <link rel="stylesheet" href="canteiros.css">
 </head>
 <body>
-  <!-- Flor usada em todo o jogo -->
+  <!-- Flores: cada canteiro tem a sua. Cores vêm de --fp (pétalas) e --fc (miolo). -->
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
     <defs>
-      <symbol id="flor" viewBox="-50 -50 100 100">
-        <g class="petals" style="fill: var(--fp, #6d1f3f)">
-          <ellipse cx="0" cy="-24" rx="15" ry="22"/>
-          <ellipse cx="0" cy="-24" rx="15" ry="22" transform="rotate(72)"/>
-          <ellipse cx="0" cy="-24" rx="15" ry="22" transform="rotate(144)"/>
-          <ellipse cx="0" cy="-24" rx="15" ry="22" transform="rotate(216)"/>
-          <ellipse cx="0" cy="-24" rx="15" ry="22" transform="rotate(288)"/>
+      <symbol id="f0" viewBox="-50 -50 100 100"><!-- girassol -->
+        <g style="fill: var(--fp)"><ellipse cx="0" cy="-28" rx="7.5" ry="17" transform="rotate(0)"/><ellipse cx="0" cy="-28" rx="7.5" ry="17" transform="rotate(30)"/><ellipse cx="0" cy="-28" rx="7.5" ry="17" transform="rotate(60)"/><ellipse cx="0" cy="-28" rx="7.5" ry="17" transform="rotate(90)"/><ellipse cx="0" cy="-28" rx="7.5" ry="17" transform="rotate(120)"/><ellipse cx="0" cy="-28" rx="7.5" ry="17" transform="rotate(150)"/><ellipse cx="0" cy="-28" rx="7.5" ry="17" transform="rotate(180)"/><ellipse cx="0" cy="-28" rx="7.5" ry="17" transform="rotate(210)"/><ellipse cx="0" cy="-28" rx="7.5" ry="17" transform="rotate(240)"/><ellipse cx="0" cy="-28" rx="7.5" ry="17" transform="rotate(270)"/><ellipse cx="0" cy="-28" rx="7.5" ry="17" transform="rotate(300)"/><ellipse cx="0" cy="-28" rx="7.5" ry="17" transform="rotate(330)"/></g>
+        <circle r="17" style="fill: var(--fc)"/>
+        <g fill="rgba(255,255,255,.22)"><circle cx="-6" cy="-5" r="2.4"/><circle cx="5" cy="-7" r="2.4"/><circle cx="7" cy="4" r="2.4"/><circle cx="-3" cy="7" r="2.4"/><circle cx="0" cy="-1" r="2.4"/></g>
+      </symbol>
+      <symbol id="f1" viewBox="-50 -50 100 100"><!-- tulipa -->
+        <path d="M0 16 V46" stroke="#2f6b1e" stroke-width="6" stroke-linecap="round"/>
+        <path d="M0 42 Q-20 34 -24 16 Q-6 20 0 36 Z" fill="#3f8a2a"/>
+        <path style="fill: var(--fp)" d="M-25 -20 Q-27 22 0 24 Q27 22 25 -20 L14 -8 L8 -32 L0 -12 L-8 -32 L-14 -8 Z"/>
+        <path d="M0 -12 L-8 -32 L-14 -8 Q-12 14 0 24 Z" fill="rgba(255,255,255,.2)"/>
+      </symbol>
+      <symbol id="f2" viewBox="-50 -50 100 100"><!-- margarida -->
+        <g style="fill: var(--fp)" stroke="rgba(40,60,40,.25)" stroke-width="2"><ellipse cx="0" cy="-25" rx="8.5" ry="20" transform="rotate(0)"/><ellipse cx="0" cy="-25" rx="8.5" ry="20" transform="rotate(36)"/><ellipse cx="0" cy="-25" rx="8.5" ry="20" transform="rotate(72)"/><ellipse cx="0" cy="-25" rx="8.5" ry="20" transform="rotate(108)"/><ellipse cx="0" cy="-25" rx="8.5" ry="20" transform="rotate(144)"/><ellipse cx="0" cy="-25" rx="8.5" ry="20" transform="rotate(180)"/><ellipse cx="0" cy="-25" rx="8.5" ry="20" transform="rotate(216)"/><ellipse cx="0" cy="-25" rx="8.5" ry="20" transform="rotate(252)"/><ellipse cx="0" cy="-25" rx="8.5" ry="20" transform="rotate(288)"/><ellipse cx="0" cy="-25" rx="8.5" ry="20" transform="rotate(324)"/></g>
+        <circle r="13" style="fill: var(--fc)"/>
+      </symbol>
+      <symbol id="f3" viewBox="-50 -50 100 100"><!-- campânula -->
+        <path d="M-6 -47 Q10 -42 3 -27" stroke="#2f6b1e" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <path style="fill: var(--fp)" d="M-26 22 Q-28 -24 0 -30 Q28 -24 26 22 L17 13 L9 25 L0 13 L-9 25 L-17 13 Z"/>
+        <path d="M-14 -20 Q-20 0 -16 16" stroke="rgba(255,255,255,.3)" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <circle cx="0" cy="26" r="5" style="fill: var(--fc)"/>
+      </symbol>
+      <symbol id="f4" viewBox="-50 -50 100 100"><!-- lavanda -->
+        <path d="M0 47 V-36" stroke="#4f7a32" stroke-width="5" stroke-linecap="round"/>
+        <g style="fill: var(--fp)">
+          <ellipse cx="0" cy="-40" rx="7" ry="10"/>
+          <ellipse cx="-8" cy="-27" rx="8" ry="11" transform="rotate(-25 -8 -27)"/><ellipse cx="8" cy="-27" rx="8" ry="11" transform="rotate(25 8 -27)"/>
+          <ellipse cx="-9" cy="-12" rx="8.5" ry="11.5" transform="rotate(-25 -9 -12)"/><ellipse cx="9" cy="-12" rx="8.5" ry="11.5" transform="rotate(25 9 -12)"/>
+          <ellipse cx="-9" cy="3" rx="8.5" ry="11.5" transform="rotate(-25 -9 3)"/><ellipse cx="9" cy="3" rx="8.5" ry="11.5" transform="rotate(25 9 3)"/>
+          <ellipse cx="-7" cy="17" rx="7" ry="10" transform="rotate(-25 -7 17)"/><ellipse cx="7" cy="17" rx="7" ry="10" transform="rotate(25 7 17)"/>
         </g>
-        <circle class="core" r="12" style="fill: var(--fc, #f2c14e)"/>
+      </symbol>
+      <symbol id="f5" viewBox="-50 -50 100 100"><!-- miosótis -->
+        <g style="fill: var(--fp)"><circle cx="0" cy="-21" r="17" transform="rotate(0)"/><circle cx="0" cy="-21" r="17" transform="rotate(72)"/><circle cx="0" cy="-21" r="17" transform="rotate(144)"/><circle cx="0" cy="-21" r="17" transform="rotate(216)"/><circle cx="0" cy="-21" r="17" transform="rotate(288)"/></g>
+        <circle r="10" fill="#fff"/><circle r="6.5" style="fill: var(--fc)"/>
+      </symbol>
+      <symbol id="f6" viewBox="-50 -50 100 100"><!-- papoula -->
+        <g style="fill: var(--fp)"><circle cx="0" cy="-16" r="23" transform="rotate(0 0 0) rotate(45)"/><circle cx="0" cy="-16" r="23" transform="rotate(90 0 0) rotate(45)"/><circle cx="0" cy="-16" r="23" transform="rotate(180 0 0) rotate(45)"/><circle cx="0" cy="-16" r="23" transform="rotate(270 0 0) rotate(45)"/></g>
+        <g fill="rgba(0,0,0,.12)"><path d="M0 0 L0 -36" stroke="rgba(0,0,0,.12)" stroke-width="2" transform="rotate(0 0 0) rotate(45)"/><path d="M0 0 L0 -36" stroke="rgba(0,0,0,.12)" stroke-width="2" transform="rotate(90 0 0) rotate(45)"/><path d="M0 0 L0 -36" stroke="rgba(0,0,0,.12)" stroke-width="2" transform="rotate(180 0 0) rotate(45)"/><path d="M0 0 L0 -36" stroke="rgba(0,0,0,.12)" stroke-width="2" transform="rotate(270 0 0) rotate(45)"/></g>
+        <circle r="11" style="fill: var(--fc)"/>
+        <g fill="var(--fc)"><circle cx="0" cy="-15" r="2.2" transform="rotate(0)"/><circle cx="0" cy="-15" r="2.2" transform="rotate(45)"/><circle cx="0" cy="-15" r="2.2" transform="rotate(90)"/><circle cx="0" cy="-15" r="2.2" transform="rotate(135)"/><circle cx="0" cy="-15" r="2.2" transform="rotate(180)"/><circle cx="0" cy="-15" r="2.2" transform="rotate(225)"/><circle cx="0" cy="-15" r="2.2" transform="rotate(270)"/><circle cx="0" cy="-15" r="2.2" transform="rotate(315)"/></g>
+      </symbol>
+      <symbol id="f7" viewBox="-50 -50 100 100"><!-- trevo -->
+        <path d="M2 10 Q8 30 20 44" stroke="#2f6b1e" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <g style="fill: var(--fp)"><g transform="rotate(0) rotate(45)"><circle cx="-8" cy="-20" r="12"/><circle cx="8" cy="-20" r="12"/><path d="M-19 -16 L0 0 L19 -16 Z"/></g><g transform="rotate(90) rotate(45)"><circle cx="-8" cy="-20" r="12"/><circle cx="8" cy="-20" r="12"/><path d="M-19 -16 L0 0 L19 -16 Z"/></g><g transform="rotate(180) rotate(45)"><circle cx="-8" cy="-20" r="12"/><circle cx="8" cy="-20" r="12"/><path d="M-19 -16 L0 0 L19 -16 Z"/></g><g transform="rotate(270) rotate(45)"><circle cx="-8" cy="-20" r="12"/><circle cx="8" cy="-20" r="12"/><path d="M-19 -16 L0 0 L19 -16 Z"/></g></g>
+        <g stroke="rgba(255,255,255,.35)" stroke-width="2.5" stroke-linecap="round"><path d="M0 -4 L0 -24" transform="rotate(0) rotate(45)"/><path d="M0 -4 L0 -24" transform="rotate(90) rotate(45)"/><path d="M0 -4 L0 -24" transform="rotate(180) rotate(45)"/><path d="M0 -4 L0 -24" transform="rotate(270) rotate(45)"/></g>
+      </symbol>
+      <symbol id="f8" viewBox="-50 -50 100 100"><!-- rosa -->
+        <path d="M-30 18 Q-40 34 -20 36 Q-14 26 -24 16 Z M30 18 Q40 34 20 36 Q14 26 24 16 Z" fill="#3f8a2a"/>
+        <circle r="31" style="fill: var(--fp)"/>
+        <path d="M0 0 m-4 0 a4 4 0 1 1 8 0 a8 8 0 1 1 -16 0 a12 12 0 1 1 24 0 a17 17 0 1 1 -34 0 a22 22 0 1 1 44 0" fill="none" stroke="rgba(0,0,0,.3)" stroke-width="3.5" stroke-linecap="round"/>
       </symbol>
     </defs>
   </svg>
 
   <header class="bar">
-    <a href="../../index.html" class="back">‹ Jogateca</a>
+    <span class="bar-left">
+      <a href="../../index.html" class="back" id="backLink">‹ Jogateca</a>
+      <button class="menu-back" id="menuBack" hidden><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>Menu</button>
+    </span>
     <button class="brand" id="homeBtn" aria-label="Menu do Canteiros">CANTEIROS</button>
     <span class="bar-right" id="barRight"></span>
   </header>
@@ -42,7 +86,13 @@
   <section class="screen" id="s-home">
     <div class="wrap">
       <div class="home-hero">
-        <svg class="hero-flower" aria-hidden="true"><use href="#flor"/></svg>
+        <div class="hero-garden" aria-hidden="true">
+          <svg style="--fp:#b3263e"><use href="#f1"/></svg>
+          <svg style="--fp:#c87f0a;--fc:#5a3417"><use href="#f0"/></svg>
+          <svg style="--fp:#2a6fc0;--fc:#f6d55c"><use href="#f5"/></svg>
+          <svg style="--fp:#fff;--fc:#f2b705"><use href="#f2"/></svg>
+          <svg style="--fp:#d1362a;--fc:#2b1a12"><use href="#f6"/></svg>
+        </div>
         <h1 class="logo">Canteiros</h1>
         <p>Plante uma flor em cada linha, em cada coluna e em cada canteiro. Só não deixe duas flores se encostarem.</p>
       </div>
@@ -71,7 +121,7 @@
           <li><b>Uma flor por canteiro</b>: cada área colorida recebe exatamente uma.</li>
           <li><b>Flores não se encostam</b>, nem pelas laterais, nem pelas diagonais.</li>
         </ol>
-        <p class="muted">Toque uma vez para marcar <span class="seed-inline" aria-hidden="true"></span> (aqui não tem flor). Toque de novo para plantar. Arraste o dedo para marcar várias casas de uma vez. Cada tabuleiro tem uma única solução, e dá para chegar nela só com lógica.</p>
+        <p class="muted">Cada canteiro tem a sua espécie de flor. Toque uma vez para marcar uma semente <span class="seed-inline" aria-hidden="true"></span> (aqui não tem flor). Toque de novo para plantar. Arraste o dedo para marcar várias casas de uma vez. Cada tabuleiro tem uma única solução, e dá para chegar nela só com lógica.</p>
       </div>
       <p class="tip"><button class="btn ghost" data-pwa-install hidden>Instalar a Jogateca como app</button></p>
     </div>
@@ -89,7 +139,7 @@
         </button>
       </div>
 
-      <div class="board-frame">
+      <div class="board-frame" id="frame">
         <div class="board" id="board" role="grid" aria-label="Jardim"></div>
         <svg class="walls" id="walls" aria-hidden="true"></svg>
         <div class="paused" id="paused" hidden>
@@ -125,6 +175,7 @@
     </div>
   </section>
 
+  <div class="petals-fall" id="petalsFall" aria-hidden="true"></div>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script src="engine.js"></script>

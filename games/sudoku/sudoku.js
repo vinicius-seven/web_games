@@ -3,10 +3,10 @@
 
   const $ = (s) => document.querySelector(s);
   const DIFFS = {
-    facil: { label: 'Fácil', givens: 38, dots: 1 },
-    medio: { label: 'Médio', givens: 32, dots: 2 },
-    dificil: { label: 'Difícil', givens: 27, dots: 3 },
-    especialista: { label: 'Especialista', givens: 23, dots: 4 },
+    facil: { label: 'Fácil', dots: 1, tech: 'Só casas e números únicos' },
+    medio: { label: 'Médio', dots: 2, tech: 'Pede candidatos travados' },
+    dificil: { label: 'Difícil', dots: 3, tech: 'Pede pares e trios' },
+    especialista: { label: 'Especialista', dots: 4, tech: 'Pede X-Wing ou Y-Wing' },
   };
   const DAILY_DIFF = 'medio';
 
@@ -20,7 +20,7 @@
     del(k) { try { localStorage.removeItem('sudoku:' + k); } catch { /* sem armazenamento */ } },
   };
 
-  /* ================= Motor: gerar e resolver ================= */
+  /* ================= Geometria da grade (a geração fica em engine.js) ================= */
   const ROW = (i) => Math.floor(i / 9);
   const COL = (i) => i % 9;
   const BOX = (i) => Math.floor(ROW(i) / 3) * 3 + Math.floor(COL(i) / 3);
@@ -38,86 +38,6 @@
       (Math.floor(b / 3) * 3 + Math.floor(k / 3)) * 9 + (b % 3) * 3 + (k % 3))),
   ];
   const UNITS_OF = Array.from({ length: 81 }, (_, i) => [ROW(i), 9 + COL(i), 18 + BOX(i)]);
-
-  function shuffle(arr, rnd) {
-    for (let i = arr.length - 1; i > 0; i--) {
-      const j = Math.floor(rnd() * (i + 1));
-      [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
-    return arr;
-  }
-
-  // Conta soluções (até `limit`). Se `out` for passado, copia nele a primeira solução encontrada.
-  function solve(grid, limit, rnd = null, out = null) {
-    const g = Int8Array.from(grid);
-    const rows = new Int16Array(9), cols = new Int16Array(9), boxes = new Int16Array(9);
-    for (let i = 0; i < 81; i++) {
-      const v = g[i];
-      if (!v) continue;
-      const bit = 1 << v;
-      if ((rows[ROW(i)] | cols[COL(i)] | boxes[BOX(i)]) & bit) return 0; // grade inválida
-      rows[ROW(i)] |= bit; cols[COL(i)] |= bit; boxes[BOX(i)] |= bit;
-    }
-    let found = 0;
-    const search = () => {
-      let best = -1, bestMask = 0, bestCount = 10;
-      for (let i = 0; i < 81; i++) {
-        if (g[i]) continue;
-        const mask = ~(rows[ROW(i)] | cols[COL(i)] | boxes[BOX(i)]) & 0x3fe;
-        let n = 0; for (let m = mask; m; m &= m - 1) n++;
-        if (n === 0) return false;
-        if (n < bestCount) { best = i; bestMask = mask; bestCount = n; if (n === 1) break; }
-      }
-      if (best < 0) {
-        if (found === 0 && out) out.set(g);
-        found++;
-        return found >= limit;
-      }
-      const digits = [];
-      for (let d = 1; d <= 9; d++) if (bestMask & (1 << d)) digits.push(d);
-      if (rnd) shuffle(digits, rnd);
-      const r = ROW(best), c = COL(best), b = BOX(best);
-      for (const d of digits) {
-        const bit = 1 << d;
-        g[best] = d; rows[r] |= bit; cols[c] |= bit; boxes[b] |= bit;
-        const stop = search();
-        g[best] = 0; rows[r] &= ~bit; cols[c] &= ~bit; boxes[b] &= ~bit;
-        if (stop) return true;
-      }
-      return false;
-    };
-    search();
-    return found;
-  }
-
-  // Gera uma grade completa aleatória e remove números em pares simétricos,
-  // mantendo sempre solução única, até chegar perto da quantidade de pistas desejada.
-  function generate(givens, rnd) {
-    const solution = new Int8Array(81);
-    solve(new Int8Array(81), 1, rnd, solution);
-    const puzzle = Int8Array.from(solution);
-    let count = 81;
-    const order = shuffle(Array.from({ length: 41 }, (_, i) => i), rnd);
-    for (const i of order) {
-      if (count <= givens) break;
-      const j = 80 - i;
-      const vi = puzzle[i], vj = puzzle[j];
-      puzzle[i] = 0; puzzle[j] = 0;
-      if (solve(puzzle, 2) === 1) count -= i === j ? 1 : 2;
-      else { puzzle[i] = vi; puzzle[j] = vj; }
-    }
-    // Segunda passada, casa a casa, para as dificuldades com poucas pistas.
-    if (count > givens) {
-      for (const i of shuffle(Array.from({ length: 81 }, (_, k) => k), rnd)) {
-        if (count <= givens) break;
-        if (!puzzle[i]) continue;
-        const v = puzzle[i];
-        puzzle[i] = 0;
-        if (solve(puzzle, 2) === 1) count--; else puzzle[i] = v;
-      }
-    }
-    return { puzzle: Array.from(puzzle), solution: Array.from(solution) };
-  }
 
   /* ================= Aleatoriedade com semente (diário) ================= */
   function mulberry32(seed) {
@@ -150,6 +70,9 @@
   function show(id) {
     document.querySelectorAll('.screen').forEach((s) => s.classList.toggle('active', s.id === 's-' + id));
     current = id;
+    // No menu do jogo: link para a Jogateca. Em qualquer outra tela: botão para voltar ao menu do jogo.
+    document.getElementById('backLink').hidden = id !== 'home';
+    document.getElementById('menuBack').hidden = id === 'home';
     window.scrollTo(0, 0);
     syncTimer();
   }
@@ -182,6 +105,7 @@
       return `<button class="diff" data-diff="${id}">
         <strong>${d.label}</strong>
         <span class="dots" aria-hidden="true">${'●'.repeat(d.dots)}${'○'.repeat(4 - d.dots)}</span>
+        <span>${d.tech}</span>
         <span>${best ? `Melhor tempo ${fmtTime(best)}` : 'Sem recorde ainda'}${wins ? ` · ${wins} ${wins === 1 ? 'vitória' : 'vitórias'}` : ''}</span>
       </button>`;
     }).join('');
@@ -218,7 +142,14 @@
     confirmReplace(() => newGame(DAILY_DIFF, todayKey()));
   });
   $('#resumeBtn').addEventListener('click', () => { const s = store.get('save'); if (s) resume(s); });
-  $('#homeBtn').addEventListener('click', renderHome);
+  // O progresso fica salvo, então dá para voltar ao menu a qualquer momento.
+  function leaveToMenu() {
+    const saved = current === 'play' && game && !game.won;
+    renderHome();
+    if (saved) toast('Progresso salvo. Toque em Continuar para voltar.');
+  }
+  $('#homeBtn').addEventListener('click', leaveToMenu);
+  $('#menuBack').addEventListener('click', leaveToMenu);
 
   // Começar outro jogo descarta o salvo; pede uma segunda confirmação tocando de novo.
   let pendingReplace = 0;
@@ -238,7 +169,7 @@
 
   function newGame(diff, daily = null) {
     const rnd = daily ? mulberry32(hashStr('jogateca-sudoku-' + daily)) : Math.random;
-    const { puzzle, solution } = generate(DIFFS[diff].givens, rnd);
+    const { puzzle, solution } = window.SudokuEngine.generate(diff, rnd);
     game = {
       puzzle, solution, values: puzzle.slice(), notes: new Array(81).fill(0),
       diff, daily, elapsed: 0, errors: 0, hints: 0, hinted: [], won: false,

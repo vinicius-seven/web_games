@@ -273,7 +273,7 @@ button { font: inherit; color: inherit; }
 .art-canteiros .cgrid {
   position: absolute; top: 50%; right: 6%; transform: translateY(-50%) rotate(-6deg);
   height: 120%; aspect-ratio: 1; display: grid; grid-template-columns: repeat(6, 1fr); grid-template-rows: repeat(6, 1fr);
-  border: 3px solid #2a1d13; border-radius: 4px; overflow: hidden; box-shadow: 0 10px 24px rgba(0,0,0,.35);
+  border: 3px solid #2e4a23; border-radius: 4px; overflow: hidden; box-shadow: 0 10px 24px rgba(0,0,0,.35);
 }
 .art-canteiros .cgrid i { position: relative; min-height: 0; box-shadow: inset 0 0 0 .5px rgba(42,29,19,.3); }
 .art-canteiros .cgrid svg { position: absolute; left: 13%; top: 13%; width: 74%; height: 74%; }

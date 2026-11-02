@@ -30,7 +30,7 @@ Links diretos: `games/tamanho/?mode=ilimitado`, `?mode=treino`.
 
 ### Sudoku
 
-- Grades geradas no próprio navegador, sempre com **solução única**: Fácil (~37 pistas), Médio (~32), Difícil (~27) e Especialista (~24).
+- Grades geradas no próprio navegador (`games/sudoku/engine.js`) que **fecham só com raciocínio, sem chute**: um resolvedor "humano" confirma cada grade, e a dificuldade é a técnica mais avançada exigida — Fácil (casas e números únicos), Médio (candidatos travados), Difícil (pares e trios) e Especialista (X-Wing / Y-Wing).
 - **Sudoku do dia**: grade Médio gerada a partir da data, igual para todo mundo.
 - Notas (tecla N ou Shift + número), desfazer, apagar, dica, destaque de linha/coluna/bloco e de números iguais, erros em vermelho e contagem de quantos de cada número faltam.
 - Cronômetro com pausa (pausa sozinho quando a aba fica em segundo plano). O progresso é salvo e aparece em **Continuar jogando** no catálogo.
@@ -42,7 +42,8 @@ Links diretos: `games/sudoku/?mode=facil|medio|dificil|especialista|diario|conti
 
 Quebra-cabeça do gênero *Star Battle* (1 estrela), com tema e visual próprios: plante uma flor em cada linha, coluna e canteiro, sem que duas flores se encostem (nem na diagonal).
 
-- Tabuleiros de 6×6 a 9×9 gerados no navegador (`games/canteiros/engine.js`), sempre com **solução única** e canteiros contínuos. O motor também roda no Node para testes.
+- Tabuleiros de 6×6 a 9×9 gerados no navegador (`games/canteiros/engine.js`), com **solução única** e que **fecham só com raciocínio**: um resolvedor confirma cada tabuleiro usando as deduções clássicas do gênero (casa única, eliminação por bloqueio e confinamento de k canteiros em k linhas/colunas). Os de 8×8 e 9×9 exigem confinamento. O motor também roda no Node para testes.
+- Cada canteiro tem a sua flor (girassol, tulipa, margarida, campânula, lavanda, miosótis, papoula, trevo e rosa); divisas em cerca-viva e moldura de madeira.
 - **Jardim do dia** (8×8) igual para todo mundo.
 - Toque: vazio → semente (marca "sem flor") → flor. Arrastar marca várias casas. Teclado: setas, Enter/Espaço, X, F, Backspace.
 - Conflitos destacados em vermelho com listras e explicação, marcação automática opcional das casas bloqueadas, dica, desfazer, recomeçar, pausa e progresso salvo.
@@ -59,6 +60,10 @@ python3 -m http.server 8000
 ```
 
 Para publicar, basta servir a pasta (ex.: GitHub Pages apontando para a raiz do branch).
+
+## Navegação nos jogos
+
+Dentro de qualquer jogo, o botão **Menu** (canto superior esquerdo) volta ao menu do jogo para trocar modo, tamanho ou dificuldade. No Croma e no Tamanho Certo, sair no meio de uma partida pede um segundo toque para confirmar; no Sudoku e no Canteiros o progresso fica salvo.
 
 ## Instalar como app (PWA)
 

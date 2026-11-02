@@ -254,6 +254,9 @@
   function show(id) {
     document.querySelectorAll('.screen').forEach((s) => s.classList.toggle('active', s.id === 's-' + id));
     current = id;
+    // No menu do jogo: link para a Jogateca. Em qualquer outra tela: botão para voltar ao menu do jogo.
+    document.getElementById('backLink').hidden = id !== 'home';
+    document.getElementById('menuBack').hidden = id === 'home';
     window.scrollTo(0, 0);
   }
   let toastTimer;
@@ -291,7 +294,20 @@
     const tp = e.target.closest('[data-type]');
     if (tp) startRun('treino', tp.dataset.type);
   });
-  $('#homeBtn').addEventListener('click', renderHome);
+  // Sair no meio do Ilimitado perde a partida: pede um segundo toque para confirmar.
+  let leaveAsk = 0;
+  function leaveToMenu() {
+    const busy = current === 'play' && run && run.mode === 'ilimitado' && run.history.length > 0;
+    if (busy && Date.now() - leaveAsk > 3500) {
+      leaveAsk = Date.now();
+      toast('Toque de novo em Menu para sair. A partida atual será perdida.');
+      return;
+    }
+    leaveAsk = 0;
+    renderHome();
+  }
+  $('#homeBtn').addEventListener('click', leaveToMenu);
+  $('#menuBack').addEventListener('click', leaveToMenu);
 
   function startMode(mode) {
     if (mode === 'ilimitado') startRun('ilimitado');

@@ -10,8 +10,20 @@
     9: { label: 'Estufa' },
   };
   const DAILY_SIZE = 8;
-  // Tons de flor e terra, distintos entre si e claros o bastante para a flor escura aparecer.
-  const COLORS = ['#f2c14e', '#f4978e', '#9bd4a4', '#a9b7f0', '#d8b4e2', '#8ecae6', '#e5b89a', '#c5d86d', '#cfc6b8'];
+  // Cada canteiro: cor do solo (bg) e a sua flor (símbolo #f0…#f8), com pétalas (fp) e miolo (fc).
+  const BEDS = [
+    { bg: '#f6d77a', fp: '#c87f0a', fc: '#5a3417', name: 'girassol' },
+    { bg: '#f7b2aa', fp: '#b3263e', fc: '#7d1529', name: 'tulipa' },
+    { bg: '#a9dbb0', fp: '#ffffff', fc: '#f2b705', name: 'margarida' },
+    { bg: '#b7c2f4', fp: '#3d42b5', fc: '#f2d16b', name: 'campânula' },
+    { bg: '#ddc2e8', fp: '#7a3aa0', fc: '#7a3aa0', name: 'lavanda' },
+    { bg: '#9fd3ea', fp: '#2a6fc0', fc: '#f6d55c', name: 'miosótis' },
+    { bg: '#efc6a8', fp: '#d1362a', fc: '#2b1a12', name: 'papoula' },
+    { bg: '#d3e48f', fp: '#3f7f22', fc: '#3f7f22', name: 'trevo' },
+    { bg: '#ddd5c8', fp: '#a3245a', fc: '#a3245a', name: 'rosa' },
+  ];
+  const bedStyle = (g) => `--rc:${BEDS[g].bg};--fp:${BEDS[g].fp};--fc:${BEDS[g].fc}`;
+  const flowerSvg = (g) => `<svg aria-hidden="true"><use href="#f${g}"/></svg>`;
   const EMPTY = 0, SEED = 1, FLOWER = 2;
 
   /* ================= Utilidades ================= */
@@ -47,13 +59,15 @@
     const mm = String(m).padStart(2, '0'), ss = String(s).padStart(2, '0');
     return h ? `${h}:${mm}:${ss}` : `${mm}:${ss}`;
   }
-  const FLOWER_SVG = '<svg aria-hidden="true"><use href="#flor"/></svg>';
 
   /* ================= Telas ================= */
   let current = 'home';
   function show(id) {
     document.querySelectorAll('.screen').forEach((s) => s.classList.toggle('active', s.id === 's-' + id));
     current = id;
+    // No menu do jogo: link para a Jogateca. Em qualquer outra tela: botão para voltar ao menu do jogo.
+    document.getElementById('backLink').hidden = id !== 'home';
+    document.getElementById('menuBack').hidden = id === 'home';
     window.scrollTo(0, 0);
     syncTimer();
   }
@@ -117,7 +131,14 @@
     confirmReplace(() => newGame(DAILY_SIZE, todayKey()));
   });
   $('#resumeBtn').addEventListener('click', () => { const s = store.get('save'); if (s) resume(s); });
-  $('#homeBtn').addEventListener('click', renderHome);
+  // O progresso fica salvo, então dá para voltar ao menu a qualquer momento.
+  function leaveToMenu() {
+    const saved = current === 'play' && game && !game.won;
+    renderHome();
+    if (saved) toast('Progresso salvo. Toque em Continuar para voltar.');
+  }
+  $('#homeBtn').addEventListener('click', leaveToMenu);
+  $('#menuBack').addEventListener('click', leaveToMenu);
 
   let pendingReplace = 0;
   function confirmReplace(fn) {
@@ -195,7 +216,7 @@
       c.className = 'cell';
       c.dataset.i = i;
       c.setAttribute('role', 'gridcell');
-      c.style.setProperty('--rc', COLORS[regions[i]]);
+      c.style.cssText = bedStyle(regions[i]);
       c.tabIndex = i === focus ? 0 : -1;
       board.appendChild(c);
       cellEls.push(c);
@@ -252,6 +273,7 @@
     if (!game) return;
     const { n, cells } = game;
     const { flowers, bad, reason, blocked } = analyze();
+    const settled = new Set(flowers.filter((f) => !bad.has(f)).map((f) => game.regions[f]));
     for (let i = 0; i < n * n; i++) {
       const el = cellEls[i], v = cells[i];
       const wasFlower = el.classList.contains('flower');
@@ -259,21 +281,22 @@
       const kind = v === FLOWER ? 'flower' : v === SEED ? 'seed' : autoSeed ? 'auto' : 'empty';
       if (el.dataset.kind !== kind) {
         el.dataset.kind = kind;
-        el.innerHTML = kind === 'flower' ? FLOWER_SVG : kind === 'seed' ? '<span class="seed"></span>' : kind === 'auto' ? '<span class="seed auto"></span>' : '';
+        el.innerHTML = kind === 'flower' ? flowerSvg(game.regions[i]) : kind === 'seed' ? '<span class="seed"></span>' : kind === 'auto' ? '<span class="seed auto"></span>' : '';
       }
       el.classList.toggle('flower', v === FLOWER);
       if (v === FLOWER && !wasFlower) { el.classList.remove('flower'); void el.offsetWidth; el.classList.add('flower'); }
       el.classList.toggle('bad', bad.has(i));
+      el.classList.toggle('settled', settled.has(game.regions[i]));
       el.tabIndex = i === focus ? 0 : -1;
       const r = Math.floor(i / n) + 1, c = (i % n) + 1;
-      el.setAttribute('aria-label', `Linha ${r}, coluna ${c}, canteiro ${game.regions[i] + 1}: ${v === FLOWER ? 'flor' : v === SEED ? 'marcada sem flor' : 'vazia'}${bad.has(i) ? ', em conflito' : ''}`);
+      el.setAttribute('aria-label', `Linha ${r}, coluna ${c}, canteiro de ${BEDS[game.regions[i]].name}: ${v === FLOWER ? 'flor' : v === SEED ? 'marcada sem flor' : 'vazia'}${bad.has(i) ? ', em conflito' : ''}`);
     }
     $('#infoTitle').textContent = game.daily ? `Do dia · ${n}×${n}` : `${SIZES[n].label} · ${n}×${n}`;
     $('#infoFlowers').textContent = `${flowers.length}/${n}`;
     $('#timer').textContent = fmtTime(game.elapsed / 1000);
     const st = $('#status');
     st.classList.toggle('bad', !!reason);
-    st.textContent = reason || (flowers.length ? `Faltam ${n - flowers.length} ${n - flowers.length === 1 ? 'flor' : 'flores'}.` : 'Toque para marcar, toque de novo para plantar.');
+    st.textContent = reason || (flowers.length === n ? 'Jardim completo!' : flowers.length ? `Faltam ${n - flowers.length} ${n - flowers.length === 1 ? 'flor' : 'flores'}.` : 'Toque para marcar, toque de novo para plantar.');
     $('#autoBtn').setAttribute('aria-pressed', String(autoMark));
     $('#autoState').textContent = autoMark ? 'lig.' : 'desl.';
     $('#undoBtn').disabled = history.length === 0;
@@ -432,7 +455,25 @@
     }
     store.del('save');
     const r = { n: game.n, daily: game.daily, regions: game.regions, solution: game.solution, ...result };
-    setTimeout(() => showWin(r, true, prevBest), 900);
+    celebrate();
+    setTimeout(() => showWin(r, true, prevBest), 1800);
+  }
+
+  // Flores dançam em onda e pétalas caem sobre o jardim.
+  function celebrate() {
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const n = game.n;
+    cellEls.forEach((el, i) => el.style.setProperty('--d', `${(Math.floor(i / n) + (i % n)) * 45}ms`));
+    $('#frame').classList.add('celebrate');
+    setTimeout(() => $('#frame').classList.remove('celebrate'), 1800);
+    if (reduce) return;
+    const box = $('#petalsFall');
+    box.innerHTML = Array.from({ length: 36 }, () => {
+      const b = BEDS[Math.floor(Math.random() * BEDS.length)];
+      const color = b.fp === '#ffffff' ? '#fff' : b.fp;
+      return `<i style="left:${Math.random() * 100}%;background:${color};animation-delay:${Math.random() * 1.2}s;animation-duration:${2.4 + Math.random() * 1.8}s;--x:${(Math.random() - 0.5) * 160}px;--r:${Math.random() * 720 - 360}deg"></i>`;
+    }).join('');
+    setTimeout(() => { box.innerHTML = ''; }, 4600);
   }
 
   function showWin(r, fresh, prevBest = null) {
@@ -442,7 +483,7 @@
     wb.style.gridTemplateColumns = `repeat(${r.n}, 1fr)`;
     wb.style.gridTemplateRows = `repeat(${r.n}, 1fr)`;
     wb.innerHTML = r.regions && r.solution
-      ? r.regions.map((g, i) => `<i style="--rc:${COLORS[g]}">${r.solution[Math.floor(i / r.n)] === i % r.n ? FLOWER_SVG : ''}</i>`).join('')
+      ? r.regions.map((g, i) => `<i style="${bedStyle(g)}">${r.solution[Math.floor(i / r.n)] === i % r.n ? flowerSvg(g) : ''}</i>`).join('')
       : '';
     $('#winTime').textContent = fmtTime(r.time);
     let sub;

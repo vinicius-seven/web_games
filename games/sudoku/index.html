@@ -17,7 +17,10 @@
 </head>
 <body>
   <header class="bar">
-    <a href="../../index.html" class="back">‹ Jogateca</a>
+    <span class="bar-left">
+      <a href="../../index.html" class="back" id="backLink">‹ Jogateca</a>
+      <button class="menu-back" id="menuBack" hidden><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>Menu</button>
+    </span>
     <button class="brand" id="homeBtn" aria-label="Menu do Sudoku">SUDOKU</button>
     <span class="bar-right" id="barRight"></span>
   </header>
@@ -59,6 +62,7 @@
           <li><b>Notas</b>: com o modo de notas ligado (tecla N), os números entram pequenos, como rascunho. Shift + número também anota.</li>
           <li>Ao escrever um número, ele sai automaticamente das notas da mesma linha, coluna e bloco.</li>
           <li>Números errados ficam em vermelho e contam como erro. A <b>dica</b> revela a casa selecionada (ou uma vazia).</li>
+          <li>Toda grade fecha só com raciocínio, sem precisar chutar. A dificuldade indica a técnica mais avançada que ela exige.</li>
           <li>O progresso fica salvo: pode fechar e voltar depois.</li>
         </ul>
       </details>
@@ -117,6 +121,7 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+  <script src="engine.js"></script>
   <script src="sudoku.js"></script>
   <script src="../../pwa.js"></script>
 </body>
