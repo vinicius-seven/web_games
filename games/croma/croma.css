@@ -255,3 +255,10 @@ input[type="range"]:focus-visible::-moz-range-thumb { border-color: var(--accent
   .score-big { font-size: 52px; }
   .seg button { padding: 10px 12px; }
 }
+
+/* Telas de toque: pressionar e segurar não seleciona texto nem abre o menu do navegador. */
+@media (hover: none) and (pointer: coarse) {
+  html { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+  a, img { -webkit-user-drag: none; }
+  input, textarea { -webkit-user-select: text; user-select: text; }
+}

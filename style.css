@@ -379,3 +379,10 @@ button { font: inherit; color: inherit; }
   .mode-item .n { display: none; }
   .mode-item .rec { grid-column: 2; }
 }
+
+/* Telas de toque: pressionar e segurar não seleciona texto nem abre o menu do navegador. */
+@media (hover: none) and (pointer: coarse) {
+  html { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+  a, img { -webkit-user-drag: none; }
+  input, textarea { -webkit-user-select: text; user-select: text; }
+}

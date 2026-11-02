@@ -145,6 +145,19 @@
     }, { passive: false });
   }
 
+  /* ---------- Sem menu do navegador ao pressionar e segurar ----------
+     O CSS impede a seleção de texto; aqui o menu de contexto do toque longo (Android) é cancelado.
+     Só vale quando o toque veio do dedo: o clique direito do mouse continua normal. */
+  let lastPointer = 'mouse';
+  document.addEventListener('pointerdown', (e) => { lastPointer = e.pointerType; }, { capture: true, passive: true });
+  document.addEventListener('contextmenu', (e) => {
+    if (lastPointer === 'touch' || lastPointer === 'pen' || (e.sourceCapabilities && e.sourceCapabilities.firesTouchEvents)) e.preventDefault();
+  });
+  document.addEventListener('selectstart', (e) => {
+    const el = e.target.nodeType === 1 ? e.target : e.target.parentElement;
+    if (lastPointer === 'touch' && !(el && el.closest('input, textarea'))) e.preventDefault();
+  });
+
   matchMedia('(display-mode: standalone)').addEventListener?.('change', update);
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', update);
   else update();
