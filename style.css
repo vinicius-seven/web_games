@@ -242,15 +242,32 @@ button { font: inherit; color: inherit; }
 .art-tamanho .shapes i {
   position: absolute; border: 3px solid #e8e8ee; border-radius: 6px;
 }
-.art-tamanho .shapes i:nth-child(1) { width: 22%; aspect-ratio: 1; left: 52%; top: 18%; border-color: #ffd23f; }
-.art-tamanho .shapes i:nth-child(2) { width: 13%; aspect-ratio: 1; left: 78%; top: 40%; border-radius: 50%; }
-.art-tamanho .shapes i:nth-child(3) { width: 30%; height: 10%; left: 56%; top: 66%; background: rgba(255,255,255,.08); }
+.art-tamanho .shapes i:nth-child(1) { width: 20%; aspect-ratio: 1; left: 54%; top: 16%; border-color: #ffd23f; }
+.art-tamanho .shapes i:nth-child(2) { width: 13%; aspect-ratio: 1; left: 80%; top: 30%; border-radius: 50%; }
+.art-tamanho .shapes i:nth-child(3) { width: 22%; height: 9%; left: 70%; top: 58%; background: rgba(255,255,255,.08); }
 .art-tamanho .ruler {
   position: absolute; left: 52%; right: 10%; top: 10%; height: 6px;
   background: repeating-linear-gradient(90deg, #ffd23f 0 2px, transparent 2px 10px);
   opacity: .8;
 }
 .card.soon .art { filter: grayscale(.25) brightness(.85); }
+
+.art-ilimitado {
+  display: grid; place-items: center;
+  background:
+    repeating-linear-gradient(90deg, rgba(255,207,63,.55) 0 2px, transparent 2px 20px) bottom / 100% 12px no-repeat,
+    linear-gradient(135deg, #1b3150, #0d1622);
+}
+.art-ilimitado b { font-size: clamp(56px, 6vw, 84px); line-height: 1; color: #ffcf3f; font-weight: 400; transform: translateY(-14%); }
+.art-treino {
+  display: flex; flex-direction: column; justify-content: center; gap: 9%; padding: 0 12% 12%;
+  background: linear-gradient(135deg, #18304a, #0d1622);
+}
+.art-treino i { display: block; height: 9%; border-radius: 3px; background: #5ab0ff; }
+.art-treino i:nth-child(1) { width: 82%; }
+.art-treino i:nth-child(2) { width: 46%; background: #ffcf3f; }
+.art-treino i:nth-child(3) { width: 64%; }
+.art-treino i:nth-child(4) { width: 28%; background: #ffcf3f; }
 
 .art-memoria { background: linear-gradient(90deg, #ff7a59 50%, #ff8c6a 50%); }
 .art-memoria::before {

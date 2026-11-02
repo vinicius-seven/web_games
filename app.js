@@ -23,15 +23,17 @@
       id: 'tamanho',
       title: 'Tamanho Certo',
       subtitle: 'Ilimitado',
-      status: 'soon',
+      status: 'available',
+      href: 'games/tamanho/index.html',
       tagline: 'Seu olho mede bem?',
       description:
-        'Estime tamanhos, proporções e distâncias sem régua. No modo ilimitado, jogue quantas rodadas quiser e veja até onde vai a sua precisão.',
+        'Iguale figuras, marque frações de uma barra, diga quantas vezes uma forma é maior que a outra e reproduza comprimentos de memória. Rodadas sem fim, com a margem de erro fechando a cada acerto.',
       tags: ['Percepção', 'Estimativa', 'Casual'],
       year: 2026,
       age: 'L',
-      meta: 'Modo ilimitado',
-      duration: 'Em produção',
+      meta: '2 modos',
+      match: 96,
+      duration: 'Partidas sem fim',
     },
   ];
 
@@ -39,6 +41,8 @@
     { id: 'memoria', game: 'croma', title: 'Memória', text: 'Veja uma cor por alguns segundos e recrie-a de cabeça. 5 rodadas, até 50 pontos.' },
     { id: 'diario', game: 'croma', title: 'Desafio Diário', text: 'As mesmas 5 cores para todo mundo. Uma tentativa por dia — compartilhe o resultado.' },
     { id: 'olho', game: 'croma', title: 'Olho Clínico', text: 'Ache o quadrado de tom diferente. Cada acerto deixa tudo mais difícil. 60 segundos.' },
+    { id: 'ilimitado', game: 'tamanho', title: 'Ilimitado', text: 'Rodadas sem fim com 4 tipos de desafio e 3 vidas. A margem de erro fecha a cada rodada.' },
+    { id: 'treino', game: 'tamanho', title: 'Treino', text: 'Escolha um tipo de desafio e pratique sem vidas e sem pontuação.' },
   ];
 
   /* ---------- Armazenamento local (tolerante a falhas) ---------- */
@@ -79,6 +83,10 @@
       const best = store.get('croma:best:olho', 0);
       return best > 0 ? `Recorde nível ${best}` : '';
     }
+    if (id === 'ilimitado') {
+      const best = store.get('tamanho:best', 0);
+      return best > 0 ? `Recorde ${best} pts` : '';
+    }
     return '';
   }
 
@@ -98,6 +106,8 @@
       const c = ['#e76f51', '#f4a261', '#e9c46a', '#2a9d8f', '#8ab17d'];
       return `<div class="art art-diario">${c.map((x) => `<i style="background:${x}"></i>`).join('')}</div>`;
     }
+    if (kind === 'ilimitado') return '<div class="art art-ilimitado"><b>∞</b></div>';
+    if (kind === 'treino') return '<div class="art art-treino"><i></i><i></i><i></i><i></i></div>';
     if (kind === 'olho') {
       return `<div class="art art-olho">${Array.from({ length: 24 }, (_, i) => `<i${i === 15 ? ' class="odd"' : ''}></i>`).join('')}</div>`;
     }
@@ -177,11 +187,13 @@
     document.getElementById('rows').innerHTML = [
       row('jogar', 'Jogue agora', available.map(gameCard).join('')),
       row('minha-lista', 'Minha lista', list.map(gameCard).join('')),
-      row('modos', 'Modos de Croma', MODES.map(modeCard).join(''), 'escolha e vá direto pro jogo'),
+      ...available.map((g) => row(`modos-${g.id}`, `Modos de ${esc(g.title)}`,
+        MODES.filter((m) => m.game === g.id).map(modeCard).join(''), 'escolha e vá direto pro jogo')),
       row('em-breve', 'Em breve', soon.map(gameCard).join('')),
       row('percepcao', 'Para treinar a percepção', perception.map(gameCard).join('')),
     ].join('');
     document.getElementById('navLista').hidden = list.length === 0;
+    document.getElementById('navBreve').hidden = soon.length === 0;
   }
 
   /* ---------- Modal ---------- */

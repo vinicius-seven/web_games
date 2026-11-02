@@ -7,7 +7,7 @@ Um catálogo de jogos de navegador no estilo "streaming": destaque no topo, file
 | Jogo | Status | Descrição |
 | --- | --- | --- |
 | **Croma** (`games/croma/`) | Disponível | Jogo de percepção de cores com 3 modos |
-| **Tamanho Certo — Ilimitado** | Em breve | Estimar tamanhos e proporções, rodadas sem fim |
+| **Tamanho Certo** (`games/tamanho/`) | Disponível | Estimar tamanhos e proporções sem régua, rodadas sem fim |
 
 ### Croma
 
@@ -16,6 +16,15 @@ Um catálogo de jogos de navegador no estilo "streaming": destaque no topo, file
 - **Olho Clínico** — ache o quadrado de tom diferente; a grade cresce e a diferença diminui a cada nível. 60 s, erro custa 3 s.
 
 Links diretos para cada modo: `games/croma/?mode=memoria`, `?mode=diario`, `?mode=olho`.
+
+### Tamanho Certo
+
+- **Ilimitado** — rodadas sem fim com 3 vidas. A margem de erro fecha 3% a cada rodada (até 45% da inicial). Dentro da margem você ganha de 10 a 100 pontos; fora dela, perde uma vida. Três acertos "na mosca" seguidos devolvem uma vida.
+- **Treino** — escolha um tipo de desafio e pratique sem vidas.
+
+Desafios: **Igualar** (deixar B do mesmo tamanho, metade da largura, dobro da área, girado ou com outra forma), **Fração** (marcar X% de uma barra sem marcações), **Quantas vezes?** (razão de largura ou de área) e **Memória** (reproduzir o comprimento de uma linha vista por um instante). O controle tem limites sorteados a cada rodada, então a posição dele não entrega a resposta.
+
+Links diretos: `games/tamanho/?mode=ilimitado`, `?mode=treino`.
 
 Recordes ficam no `localStorage` do navegador.
 

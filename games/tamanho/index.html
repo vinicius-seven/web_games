@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Tamanho Certo · Jogateca</title>
+  <meta name="description" content="Tamanho Certo — estime tamanhos, proporções e comprimentos sem régua. Rodadas sem fim.">
+  <meta name="theme-color" content="#0d1622">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230d1622'/%3E%3Crect x='6' y='9' width='12' height='12' fill='none' stroke='%235ab0ff' stroke-width='2.5'/%3E%3Crect x='14' y='13' width='13' height='13' fill='none' stroke='%23ffcf3f' stroke-width='2.5'/%3E%3C/svg%3E">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="apple-touch-icon" href="../../icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Jogateca">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="stylesheet" href="tamanho.css">
+</head>
+<body>
+  <header class="bar">
+    <a href="../../index.html" class="back">‹ Jogateca</a>
+    <button class="brand" id="homeBtn" aria-label="Menu do Tamanho Certo">TAMANHO CERTO</button>
+    <span class="bar-right" id="barRight"></span>
+  </header>
+
+  <!-- Menu -->
+  <section class="screen" id="s-home">
+    <div class="wrap">
+      <div class="home-hero">
+        <div class="ruler" aria-hidden="true"></div>
+        <h1 class="logo">Tamanho<span>Certo</span></h1>
+        <p>Seu olho mede bem? Sem régua: só a sua percepção.</p>
+      </div>
+
+      <div class="modes">
+        <button class="mode" data-go="ilimitado">
+          <span class="mode-art art-ilimitado" aria-hidden="true"><b>∞</b></span>
+          <span class="mode-body">
+            <strong>Ilimitado</strong>
+            <span>Rodadas sem fim, desafios variados e a margem de erro fechando a cada rodada. Você tem 3 vidas.</span>
+            <em data-best="ilimitado"></em>
+          </span>
+        </button>
+        <button class="mode" data-go="treino">
+          <span class="mode-art art-treino" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+          <span class="mode-body">
+            <strong>Treino</strong>
+            <span>Escolha um tipo de desafio e pratique sem vidas e sem pontuação.</span>
+            <em></em>
+          </span>
+        </button>
+      </div>
+
+      <h2 class="section-title">Os desafios</h2>
+      <ul class="types">
+        <li><b>Igualar</b><span>Redimensione B até ficar do tamanho pedido: igual a A, metade, o dobro da área…</span></li>
+        <li><b>Fração</b><span>Marque um ponto exato da barra, como 37%, sem nenhuma marcação.</span></li>
+        <li><b>Quantas vezes?</b><span>Diga quantas vezes uma figura é maior que a outra.</span></li>
+        <li><b>Memória</b><span>Uma linha aparece por um instante. Depois, reproduza o comprimento.</span></li>
+      </ul>
+      <p class="tip">Errar dentro da margem dá pontos; quanto mais perto, mais pontos. Errar fora da margem custa uma vida. Três acertos "na mosca" seguidos devolvem uma vida.</p>
+      <p class="tip"><button class="btn ghost" data-pwa-install hidden>Instalar a Jogateca como app</button></p>
+    </div>
+  </section>
+
+  <!-- Treino: escolha do desafio -->
+  <section class="screen" id="s-treino">
+    <div class="wrap narrow center">
+      <h2>Treino</h2>
+      <p class="muted">Escolha o desafio. Sem vidas, sem pressa: encerre quando quiser.</p>
+      <div class="type-pick" id="typePick">
+        <button class="btn" data-type="match">Igualar</button>
+        <button class="btn" data-type="fraction">Fração</button>
+        <button class="btn" data-type="ratio">Quantas vezes?</button>
+        <button class="btn" data-type="memory">Memória</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Jogo -->
+  <section class="screen" id="s-play">
+    <div class="wrap play-wrap">
+      <div class="hud">
+        <div class="hud-item"><small id="hudRoundLabel">Rodada</small><b id="hudRound">1</b></div>
+        <div class="hud-item"><small id="hudScoreLabel">Pontos</small><b id="hudScore">0</b></div>
+        <div class="hud-item lives" id="hudLives" aria-label="Vidas"></div>
+        <button class="btn ghost small-btn" id="quit" hidden>Encerrar</button>
+      </div>
+
+      <p class="prompt" id="prompt" aria-live="polite"></p>
+      <p class="margin" id="margin"></p>
+
+      <div class="stage" id="stageBox">
+        <svg id="stage" viewBox="0 0 400 260" role="img" aria-label="Área do desafio"></svg>
+        <div class="readout" id="readout" aria-live="polite"></div>
+      </div>
+
+      <div class="controls" id="controls">
+        <div class="knob-row">
+          <button class="nudge" id="minus" aria-label="Diminuir">−</button>
+          <input type="range" id="knob" min="0" max="1000" step="1" aria-label="Ajuste">
+          <button class="nudge" id="plus" aria-label="Aumentar">+</button>
+        </div>
+        <p class="hint">Use o controle, os botões − e + ou arraste para os lados sobre a figura.</p>
+        <button class="btn primary block" id="confirm">Confirmar</button>
+      </div>
+
+      <div class="feedback" id="feedback" hidden>
+        <div class="fb-top"><b id="fbVerdict"></b><span id="fbPts"></span></div>
+        <p id="fbDetail"></p>
+        <button class="btn primary block" id="next">Próxima</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Fim -->
+  <section class="screen" id="s-end">
+    <div class="wrap narrow center">
+      <p class="eyebrow">Fim de jogo</p>
+      <div class="total" id="endScore"></div>
+      <p class="muted" id="endSub"></p>
+      <div class="stats" id="endStats"></div>
+      <div class="strip" id="endStrip" aria-label="Resultado de cada rodada"></div>
+      <div class="end-actions">
+        <button class="btn primary" id="endShare">Compartilhar</button>
+        <button class="btn" id="endAgain">Jogar de novo</button>
+        <button class="btn ghost" id="endHome">Menu</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="tamanho.js"></script>
+  <script src="../../pwa.js"></script>
+</body>
+</html>
