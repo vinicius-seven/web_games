@@ -30,6 +30,7 @@ button { font: inherit; color: inherit; }
   position: fixed; inset: 0 0 auto 0; z-index: 50;
   display: flex; align-items: center; gap: 28px;
   padding: 14px var(--gutter);
+  padding-top: max(14px, env(safe-area-inset-top, 0px));
   background: linear-gradient(to bottom, rgba(0,0,0,.75), transparent);
   transition: background .3s;
 }

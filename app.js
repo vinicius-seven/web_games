@@ -8,7 +8,7 @@
       id: 'croma',
       title: 'Croma',
       status: 'available',
-      href: 'games/croma/',
+      href: 'games/croma/index.html',
       tagline: 'Quão afiado é o seu olho para cores?',
       description:
         'Memorize uma cor e recrie-a de cabeça, encare o desafio diário — as mesmas cores para todo mundo — ou ache o quadrado de tom diferente antes que o tempo acabe.',
