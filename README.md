@@ -14,6 +14,7 @@ Um catálogo de jogos de navegador no estilo "streaming": destaque no topo, file
 | **Pontes** (`games/pontes/`) | Disponível | Ligar ilhas com pontes (gênero Hashi), num arquipélago tropical |
 | **Prensa** (`games/prensa/`) | Disponível | Adivinhar palavras de 5 letras: 1, 2 ou 4 por dia, e modo livre |
 | **Palavra do Dia** (`games/palavradodia/`) | Disponível | Dois jogos diários: Colmeia (7 letras) e Proximidade (distância de sentido) |
+| **Cerca** (`games/cerca/`) | Disponível | Lógica: um único cercado; os números dizem quantos lados têm cerca |
 | **Enigma de Einstein** (`games/einstein/`) | Disponível | Quem mora em cada casa: dedução com pistas, 4 tamanhos e enigma do dia |
 | **Travessia** (`games/travessia/`) | Disponível | Atravessar o rio com personagens que não podem ficar ou ir juntos |
 | **Acampamento** (`games/acampamento/`) | Disponível | Lógica: uma barraca ao lado de cada árvore, sem barracas encostadas |
@@ -98,6 +99,16 @@ Página inicial com dois jogos de palavras diários (iguais para todo mundo) e m
 - **Proximidade** (`proximidade.html`): digite palavras e veja a posição de cada uma numa fila de ~13.500 palavras ordenadas pela proximidade de sentido com a palavra secreta (1 = acertou). Plural, feminino e verbo conjugado contam como a forma básica. Dica, desistir, 60 jogos anteriores e as 100 palavras mais próximas no fim. Distâncias calculadas por `tools/proximidade_dados.py` com os vetores fastText do modelo `pt_core_news_lg` do spaCy (**CC BY-SA 4.0**; os dados derivados em `games/palavradodia/proximidade/` seguem a mesma licença — veja o `LEIA-ME.txt` da pasta).
 
 Links diretos: `games/palavradodia/?mode=colmeia|colmeia-livre|proximidade|proximidade-livre`.
+
+### Cerca
+
+Quebra-cabeça do gênero *Slitherlink*, com tema de pasto: ligue os postes formando um único cercado fechado, sem cruzar nem encostar; cada número diz quantos lados daquela casa têm cerca.
+
+- Fácil (5×5), Médio (7×7), Difícil (8×8), Desafio (10×10) e o **Pasto do dia** (8×8), gerados no navegador por `games/cerca/engine.js`: o cercado nasce de uma região sorteada sem buracos nem pontos de encontro, e os números são tirados enquanto o resolvedor ainda fecha tudo.
+- Resolvedor em três níveis, usado para garantir **solução única e sem chute** e para graduar a dificuldade: básico (números, postes com 0 ou 2 cercas, não fechar um cercado menor), **dentro e fora** (relações entre casas vizinhas e os números) e **hipótese curta** (uma suposição que leva logo a contradição). Unicidade conferida por força bruta em centenas de grades.
+- Toque entre postes: cerca → × → vazio; arrastar de poste em poste cerca vários lados; botão direito marca ×. × automático opcional, números em vermelho quando não fecham, poste vermelho com 3 ou mais cercas, dica que explica a dedução e destaca a casa ou o poste. Ao fechar, o pasto ganha capim e ovelhas.
+
+Links diretos: `games/cerca/?mode=5|7|8|10|diario|continuar`.
 
 ### Enigma de Einstein
 

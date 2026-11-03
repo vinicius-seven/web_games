@@ -269,6 +269,16 @@ button { font: inherit; color: inherit; }
 .art-treino i:nth-child(3) { width: 64%; }
 .art-treino i:nth-child(4) { width: 28%; background: #ffcf3f; }
 
+.art-cerca { background: linear-gradient(135deg, #2a4234, #16261e 65%); }
+.art-cerca .cfield {
+  position: absolute; top: 50%; right: 6%; transform: translateY(-50%) rotate(-3deg); height: 100%; aspect-ratio: 1;
+  border: 5px solid #6b4a2b; border-radius: 10px; box-shadow: 0 10px 24px rgba(0,0,0,.4); background: #cfe3a6;
+}
+.art-cerca.big .cfield { height: 82%; right: 9%; }
+.art-cerca:not(.big)::after {
+  content: ""; position: absolute; inset: 0; z-index: 1;
+  background: linear-gradient(to top, rgba(14,15,19,.85) 0%, rgba(14,15,19,.3) 45%, transparent 70%);
+}
 .art-einstein { background: linear-gradient(135deg, #3c3145, #211c26 65%); }
 .art-einstein .erow {
   position: absolute; top: 50%; right: 5%; transform: translateY(-50%) rotate(-2deg); height: 92%;

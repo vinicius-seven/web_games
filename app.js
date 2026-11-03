@@ -97,6 +97,21 @@
       duration: '3–20 min por mapa',
     },
     {
+      id: 'cerca',
+      title: 'Cerca',
+      status: 'available',
+      href: 'games/cerca/index.html',
+      tagline: 'Um cercado só, e os números dizem quantos lados têm cerca.',
+      description:
+        'Quebra-cabeça de lógica num pasto: ligue os postes formando um único cercado fechado, sem cruzar nem encostar. Cada número diz quantos lados daquela casa têm cerca. Pastos novos a cada partida, sempre com uma única solução, e um pasto do dia.',
+      tags: ['Lógica', 'Clássico'],
+      year: 2026,
+      age: 'L',
+      meta: '4 tamanhos',
+      match: 97,
+      duration: '3–25 min por pasto',
+    },
+    {
       id: 'einstein',
       title: 'Enigma de Einstein',
       status: 'available',
@@ -216,6 +231,11 @@
     { id: 'dois', game: 'prensa', art: 'prensa-2', title: '2 palavras', text: 'Duas palavras ao mesmo tempo, 7 tentativas.' },
     { id: 'quatro', game: 'prensa', art: 'prensa-4', title: '4 palavras', text: 'Quatro palavras ao mesmo tempo, 9 tentativas.' },
     { id: 'livre', game: 'prensa', art: 'prensa-livre', title: 'Livre', text: 'Palavras sorteadas sem limite, para treinar.' },
+    { id: 'diario', game: 'cerca', art: 'cerca-dia', title: 'Pasto do dia', text: 'O mesmo pasto 8×8 para todo mundo hoje.' },
+    { id: '5', game: 'cerca', art: 'cerca-5', title: 'Fácil', text: '5×5, para aprender as regras.' },
+    { id: '7', game: 'cerca', art: 'cerca-7', title: 'Médio', text: '7×7, pede pensar em dentro e fora.' },
+    { id: '8', game: 'cerca', art: 'cerca-8', title: 'Difícil', text: '8×8, com deduções em cadeia.' },
+    { id: '10', game: 'cerca', art: 'cerca-10', title: 'Desafio', text: '10×10, para sessões longas.' },
     { id: 'diario', game: 'einstein', art: 'einstein-dia', title: 'Enigma do dia', text: 'O mesmo enigma de 5 casas para todo mundo hoje.' },
     { id: 'facil', game: 'einstein', art: 'einstein-3', title: 'Fácil', text: '3 casas e 3 categorias, para aprender.' },
     { id: 'medio', game: 'einstein', art: 'einstein-4', title: 'Médio', text: '4 casas e 4 categorias.' },
@@ -315,6 +335,14 @@
       if (today && today.done) return today.won ? `Hoje ✓ · sequência ${stats ? stats.streak : 1}` : 'Hoje ✗';
       return 'Novo hoje';
     }
+    if (key === 'cerca:diario') {
+      const r = store.get(`cerca:daily:${todayKey()}`);
+      return r ? `Hoje ${fmtTime(r.time)}` : 'Novo hoje';
+    }
+    if (m.game === 'cerca') {
+      const best = store.get(`cerca:best:${m.id}`);
+      return best ? `Melhor ${fmtTime(best)}` : '';
+    }
     if (key === 'einstein:diario') {
       const r = store.get(`einstein:daily:${todayKey()}`);
       return r ? `Hoje ${fmtTime(r.time)}` : 'Novo hoje';
@@ -390,6 +418,19 @@
     if (kind === 'diario') {
       const c = ['#e76f51', '#f4a261', '#e9c46a', '#2a9d8f', '#8ab17d'];
       return `<div class="art art-diario">${c.map((x) => `<i style="background:${x}"></i>`).join('')}</div>`;
+    }
+    if (kind.startsWith('cerca')) {
+      // Pasto 4×4 com um cercado de madeira e números.
+      const loop = 'M10 10 H30 V20 H40 V40 H20 V30 H10 Z';
+      const clues = [[5, 5, '0'], [25, 5, '1'], [15, 15, '2'], [5, 25, '1'], [35, 15, '2'], [25, 35, '2'], [15, 35, '2']];
+      const posts = [[10, 10], [30, 10], [30, 20], [40, 20], [40, 40], [20, 40], [20, 30], [10, 30]];
+      const size = kind.match(/^cerca-(\d+)$/);
+      const badge = kind === 'cerca-dia'
+        ? `<span class="sudoku-badge day"><b>${new Date().getDate()}</b>${new Date().toLocaleDateString('pt-BR', { month: 'short' }).replace('.', '')}</span>`
+        : size ? `<span class="sudoku-badge">${size[1]}×${size[1]}</span>` : '';
+      const dots = [];
+      for (let y = 0; y <= 40; y += 10) for (let x = 0; x <= 40; x += 10) dots.push(`<circle cx="${x}" cy="${y}" r="0.9" fill="#3a2a18"/>`);
+      return `<div class="art art-cerca${big ? ' big' : ''}"><svg class="cfield" viewBox="-5 -5 50 50"><rect x="-5" y="-5" width="50" height="50" fill="#cfe3a6"/><path d="${loop}" fill="#a9cf74" stroke="#8a5a2b" stroke-width="2.2" stroke-linejoin="round"/>${dots.join('')}${posts.map(([x, y]) => `<circle cx="${x}" cy="${y}" r="1.3" fill="#3a2a18"/>`).join('')}${clues.map(([x, y, t]) => `<text x="${x}" y="${y + 2.2}" font-size="6.5" font-family="Georgia,serif" font-weight="700" text-anchor="middle" fill="#3a2a18">${t}</text>`).join('')}<text x="24" y="25" font-size="6" text-anchor="middle">🐑</text></svg>${badge}</div>`;
     }
     if (kind.startsWith('einstein')) {
       // Rua de casas coloridas com moradores e uma casa ainda em aberto.
@@ -568,7 +609,7 @@
       </a>`;
   }
 
-  // Partidas salvas pelos jogos que guardam progresso (Sudoku, Canteiros, Ponto-Cruz, Pontes, Kakuro, Acampamento, Travessia e Enigma de Einstein).
+  // Partidas salvas pelos jogos que guardam progresso (Sudoku, Canteiros, Ponto-Cruz, Pontes, Kakuro, Acampamento, Travessia, Enigma de Einstein e Cerca).
   function continueCards() {
     let html = '';
     const sv = store.get('sudoku:save');
@@ -595,6 +636,16 @@
         <span class="record">${fmtTime(Math.floor(cv.elapsed / 1000))}</span>
         <div class="card-title">Canteiros<small>${esc(cv.daily ? 'Do dia' : `${cv.n}×${cv.n}`)}</small></div>
         <span class="progress" style="--p:${pct}%"></span>
+      </a>`;
+    }
+    const cc = store.get('cerca:save');
+    if (cc && !cc.won && Array.isArray(cc.edges)) {
+      const lines = cc.edges.filter((v) => v === 1).length;
+      html += `
+      <a class="card mode" href="games/cerca/index.html?mode=continuar" aria-label="Continuar Cerca, ${lines} cercas">
+        ${art('cerca')}
+        <span class="record">${fmtTime(Math.floor(cc.elapsed / 1000))}</span>
+        <div class="card-title">Cerca<small>${esc(cc.daily ? 'Do dia' : `${cc.n}×${cc.n}`)}</small></div>
       </a>`;
     }
     const ev = store.get('einstein:save');
