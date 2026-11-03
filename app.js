@@ -97,6 +97,21 @@
       duration: '3–20 min por mapa',
     },
     {
+      id: 'einstein',
+      title: 'Enigma de Einstein',
+      status: 'available',
+      href: 'games/einstein/index.html',
+      tagline: 'Quem mora em cada casa da rua?',
+      description:
+        'O clássico enigma de lógica: casas em fila, moradores, cores, bichos, bebidas e mais, e uma lista de pistas como "quem tem o gato mora ao lado de quem bebe café". Risque e escolha numa grade até descobrir tudo. Enigmas novos a cada partida, sempre com solução única, e um enigma do dia.',
+      tags: ['Lógica', 'Dedução', 'Clássico'],
+      year: 2026,
+      age: 'L',
+      meta: '4 tamanhos',
+      match: 97,
+      duration: '5–30 min por enigma',
+    },
+    {
       id: 'travessia',
       title: 'Travessia',
       status: 'available',
@@ -201,6 +216,11 @@
     { id: 'dois', game: 'prensa', art: 'prensa-2', title: '2 palavras', text: 'Duas palavras ao mesmo tempo, 7 tentativas.' },
     { id: 'quatro', game: 'prensa', art: 'prensa-4', title: '4 palavras', text: 'Quatro palavras ao mesmo tempo, 9 tentativas.' },
     { id: 'livre', game: 'prensa', art: 'prensa-livre', title: 'Livre', text: 'Palavras sorteadas sem limite, para treinar.' },
+    { id: 'diario', game: 'einstein', art: 'einstein-dia', title: 'Enigma do dia', text: 'O mesmo enigma de 5 casas para todo mundo hoje.' },
+    { id: 'facil', game: 'einstein', art: 'einstein-3', title: 'Fácil', text: '3 casas e 3 categorias, para aprender.' },
+    { id: 'medio', game: 'einstein', art: 'einstein-4', title: 'Médio', text: '4 casas e 4 categorias.' },
+    { id: 'dificil', game: 'einstein', art: 'einstein-5', title: 'Difícil', text: '5 casas e 5 categorias, como o clássico.' },
+    { id: 'genio', game: 'einstein', art: 'einstein-6', title: 'Gênio', text: '5 casas e 6 categorias. Muitas pistas.' },
     { id: 'proxima', game: 'travessia', art: 'travessia', title: 'Próxima fase', text: 'Continue a trilha de onde parou.' },
     { id: 'feira', game: 'travessia', art: 'travessia-1', title: 'Volta da feira', text: 'Fase 1: a onça, a cabra e a couve.' },
     { id: 'gatos', game: 'travessia', art: 'travessia-3', title: 'Gatos e ratos', text: 'Fase 3: os gatos nunca podem ser maioria.' },
@@ -295,6 +315,14 @@
       if (today && today.done) return today.won ? `Hoje ✓ · sequência ${stats ? stats.streak : 1}` : 'Hoje ✗';
       return 'Novo hoje';
     }
+    if (key === 'einstein:diario') {
+      const r = store.get(`einstein:daily:${todayKey()}`);
+      return r ? `Hoje ${fmtTime(r.time)}` : 'Novo hoje';
+    }
+    if (m.game === 'einstein') {
+      const best = store.get(`einstein:best:${m.id}`);
+      return best ? `Melhor ${fmtTime(best)}` : '';
+    }
     if (m.game === 'travessia') {
       const prog = store.get('travessia:prog', {});
       if (m.id === 'proxima') {
@@ -362,6 +390,15 @@
     if (kind === 'diario') {
       const c = ['#e76f51', '#f4a261', '#e9c46a', '#2a9d8f', '#8ab17d'];
       return `<div class="art art-diario">${c.map((x) => `<i style="background:${x}"></i>`).join('')}</div>`;
+    }
+    if (kind.startsWith('einstein')) {
+      // Rua de casas coloridas com moradores e uma casa ainda em aberto.
+      const houses = [['#e5484d', '👩', '🐱'], ['#3e7bd6', '🧔', '☕'], ['#cbbd9e', '?', '?'], ['#3fa34d', '👨', '🐟']];
+      const size = kind.match(/^einstein-(\d)$/);
+      const badge = kind === 'einstein-dia'
+        ? `<span class="sudoku-badge day"><b>${new Date().getDate()}</b>${new Date().toLocaleDateString('pt-BR', { month: 'short' }).replace('.', '')}</span>`
+        : size ? `<span class="sudoku-badge">${size[1] === '6' ? '5 casas · 6' : `${size[1]} casas`}</span>` : '';
+      return `<div class="art art-einstein${big ? ' big' : ''}"><div class="erow">${houses.map(([c, a, b]) => `<span class="eh"><i style="--hc:${c}"></i><b>${a}</b><b>${b}</b></span>`).join('')}</div>${badge}</div>`;
     }
     if (kind.startsWith('travessia')) {
       // Rio com a canoa no meio e personagens nas margens.
@@ -531,7 +568,7 @@
       </a>`;
   }
 
-  // Partidas salvas pelos jogos que guardam progresso (Sudoku, Canteiros, Ponto-Cruz, Pontes, Kakuro, Acampamento e Travessia).
+  // Partidas salvas pelos jogos que guardam progresso (Sudoku, Canteiros, Ponto-Cruz, Pontes, Kakuro, Acampamento, Travessia e Enigma de Einstein).
   function continueCards() {
     let html = '';
     const sv = store.get('sudoku:save');
@@ -557,6 +594,18 @@
         ${art('canteiros')}
         <span class="record">${fmtTime(Math.floor(cv.elapsed / 1000))}</span>
         <div class="card-title">Canteiros<small>${esc(cv.daily ? 'Do dia' : `${cv.n}×${cv.n}`)}</small></div>
+        <span class="progress" style="--p:${pct}%"></span>
+      </a>`;
+    }
+    const ev = store.get('einstein:save');
+    if (ev && !ev.won && Array.isArray(ev.cand)) {
+      const done = ev.cand.reduce((t, row) => t + row.filter((m) => m && !(m & (m - 1))).length, 0);
+      const pct = Math.round((done / (ev.n * ev.K)) * 100);
+      html += `
+      <a class="card mode" href="games/einstein/index.html?mode=continuar" aria-label="Continuar Enigma de Einstein, ${pct}% resolvido">
+        ${art('einstein')}
+        <span class="record">${fmtTime(Math.floor(ev.elapsed / 1000))}</span>
+        <div class="card-title">Enigma de Einstein<small>${esc(ev.daily ? 'Do dia' : `${ev.n} casas`)}</small></div>
         <span class="progress" style="--p:${pct}%"></span>
       </a>`;
     }

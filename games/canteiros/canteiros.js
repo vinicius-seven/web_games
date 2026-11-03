@@ -173,7 +173,7 @@
     render();
     save();
   }
-  const save = () => { if (game) store.set('save', game); };
+  const save = () => { if (game && !game.won) store.set('save', game); };
 
   /* ================= Cronômetro ================= */
   let tick = null, lastT = 0, sinceSave = 0;

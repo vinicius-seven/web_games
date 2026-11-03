@@ -14,6 +14,7 @@ Um catálogo de jogos de navegador no estilo "streaming": destaque no topo, file
 | **Pontes** (`games/pontes/`) | Disponível | Ligar ilhas com pontes (gênero Hashi), num arquipélago tropical |
 | **Prensa** (`games/prensa/`) | Disponível | Adivinhar palavras de 5 letras: 1, 2 ou 4 por dia, e modo livre |
 | **Palavra do Dia** (`games/palavradodia/`) | Disponível | Dois jogos diários: Colmeia (7 letras) e Proximidade (distância de sentido) |
+| **Enigma de Einstein** (`games/einstein/`) | Disponível | Quem mora em cada casa: dedução com pistas, 4 tamanhos e enigma do dia |
 | **Travessia** (`games/travessia/`) | Disponível | Atravessar o rio com personagens que não podem ficar ou ir juntos |
 | **Acampamento** (`games/acampamento/`) | Disponível | Lógica: uma barraca ao lado de cada árvore, sem barracas encostadas |
 | **Kakuro** (`games/kakuro/`) | Disponível | Somas cruzadas numa lousa, 4 tamanhos e lousa do dia |
@@ -97,6 +98,16 @@ Página inicial com dois jogos de palavras diários (iguais para todo mundo) e m
 - **Proximidade** (`proximidade.html`): digite palavras e veja a posição de cada uma numa fila de ~13.500 palavras ordenadas pela proximidade de sentido com a palavra secreta (1 = acertou). Plural, feminino e verbo conjugado contam como a forma básica. Dica, desistir, 60 jogos anteriores e as 100 palavras mais próximas no fim. Distâncias calculadas por `tools/proximidade_dados.py` com os vetores fastText do modelo `pt_core_news_lg` do spaCy (**CC BY-SA 4.0**; os dados derivados em `games/palavradodia/proximidade/` seguem a mesma licença — veja o `LEIA-ME.txt` da pasta).
 
 Links diretos: `games/palavradodia/?mode=colmeia|colmeia-livre|proximidade|proximidade-livre`.
+
+### Enigma de Einstein
+
+O enigma de lógica clássico (casas em fila e pistas), com pistas em português e visual de caderno de detetive.
+
+- Fácil (3 casas × 3 categorias), Médio (4 × 4), Difícil (5 × 5), Gênio (5 casas × 6 categorias) e o **Enigma do dia** (5 × 5). Categorias sorteadas entre cor, morador, bicho, bebida, esporte, fruta e instrumento (`games/einstein/dados.js`, que também monta as frases das pistas).
+- Gerador (`games/einstein/engine.js`): sorteia a solução, junta pistas verdadeiras (mesma casa, não é, posição, ao lado, logo à esquerda, em algum lugar à esquerda) até um resolvedor só de dedução fechar tudo, e depois tira as que sobram. Resultado: **solução única e sem chute** (conferido por força bruta nos tamanhos menores).
+- Grade de candidatos: toque risca, tocar e segurar escolhe (ou troque o modo do toque). O valor escolhido sai das outras casas sozinho. Pistas com pictograma e riscáveis. Dica corrige um engano ou faz a próxima dedução e destaca a pista usada. Desfazer, recomeçar, pausa, progresso salvo e recorde por tamanho. No celular, a grade fica presa no topo enquanto as pistas rolam.
+
+Links diretos: `games/einstein/?mode=facil|medio|dificil|genio|diario|continuar`.
 
 ### Travessia
 

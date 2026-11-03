@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Enigma de Einstein · Jogateca</title>
+  <meta name="description" content="Enigma de Einstein — descubra quem mora em cada casa da rua usando só as pistas.">
+  <meta name="theme-color" content="#211c26">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23211c26'/%3E%3Cpath d='M6 15 L16 6 L26 15 V26 H6 Z' fill='%23f6efdd'/%3E%3Ctext x='16' y='24' font-family='Georgia' font-weight='700' font-size='12' text-anchor='middle' fill='%23c0392b'%3E%3F%3C/text%3E%3C/svg%3E">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="apple-touch-icon" href="../../icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Jogateca">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="stylesheet" href="einstein.css">
+</head>
+<body>
+  <header class="bar">
+    <span class="bar-left">
+      <a href="../../index.html" class="back" id="backLink">‹ Jogateca</a>
+      <button class="menu-back" id="menuBack" hidden><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>Menu</button>
+    </span>
+    <button class="brand" id="homeBtn" aria-label="Menu do Enigma de Einstein">ENIGMA</button>
+    <span class="bar-right" id="barRight"></span>
+  </header>
+
+  <!-- Menu -->
+  <section class="screen" id="s-home">
+    <div class="wrap">
+      <div class="home-hero">
+        <div class="street" aria-hidden="true">
+          <i style="--hc:#e5484d"></i><i style="--hc:#3e7bd6"></i><i style="--hc:#f6efdd" class="q"></i><i style="--hc:#3fa34d"></i><i style="--hc:#f2c14e"></i>
+        </div>
+        <h1 class="logo">Enigma de Einstein</h1>
+        <p>Uma rua, algumas casas e um punhado de pistas. Descubra a cor de cada casa, quem mora nela e tudo o mais — só com dedução.</p>
+      </div>
+
+      <button class="resume" id="resumeBtn" hidden>
+        <span class="resume-body"><small>Continuar</small><strong id="resumeTitle"></strong><span id="resumeInfo"></span></span>
+        <span class="resume-go" aria-hidden="true">›</span>
+      </button>
+
+      <div class="home-grid">
+        <div class="panel daily">
+          <h2>Enigma do dia</h2>
+          <p class="muted" id="dailyText"></p>
+          <button class="btn primary" id="dailyBtn"></button>
+        </div>
+        <div class="panel">
+          <h2>Escolha o tamanho</h2>
+          <div class="sizes" id="sizes"></div>
+        </div>
+      </div>
+
+      <details class="howto">
+        <summary>Como jogar</summary>
+        <ul>
+          <li>As casas ficam em fila, numeradas da <b>esquerda para a direita</b>. Cada casa tem exatamente um valor de cada categoria, e nenhum valor se repete.</li>
+          <li>Cada quadrinho da grade mostra o que ainda é possível. <b>Toque</b> num símbolo para riscar; <b>toque e segure</b> para escolher (ou troque o modo do toque).</li>
+          <li>Ao escolher um valor, ele some das outras casas sozinho.</li>
+          <li>"Ao lado" = casa vizinha; "logo à esquerda" = a casa imediatamente antes; "em algum lugar à esquerda" = qualquer casa antes.</li>
+          <li>Toque numa pista para riscá-la quando já tiver usado. A dica mostra qual pista usar e o que ela elimina.</li>
+          <li>Todo enigma tem uma única solução e fecha só com raciocínio, sem chute.</li>
+        </ul>
+      </details>
+      <p class="tip"><button class="btn ghost" data-pwa-install hidden>Instalar a Jogateca como app</button></p>
+    </div>
+  </section>
+
+  <!-- Jogo -->
+  <section class="screen" id="s-play">
+    <div class="play">
+      <div class="play-info">
+        <span id="infoTitle"></span>
+        <span id="infoDone"></span>
+        <button class="pause" id="pauseBtn" aria-label="Pausar">
+          <span id="timer">00:00</span>
+          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>
+        </button>
+      </div>
+
+      <div class="layout">
+        <div class="stick">
+          <div class="notebook" id="notebook">
+            <div class="grid" id="grid" role="grid" aria-label="Grade de deduções"></div>
+            <div class="paused" id="paused" hidden><p>Pausado</p><button class="btn primary" id="resumePlay">Continuar</button></div>
+          </div>
+          <p class="status" id="status" aria-live="polite"></p>
+          <div class="tools">
+            <button class="tool" id="undoBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12.5 8c-2.65 0-5.05 1-6.9 2.6L2 7v9h9l-3.62-3.62A7.95 7.95 0 0 1 12.5 10.5c3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/></svg><span>Desfazer</span></button>
+            <button class="tool" id="modeBtn" aria-pressed="false"><span class="mode-ico" id="modeIco" aria-hidden="true">✕</span><span>Toque: <em id="modeState">riscar</em></span></button>
+            <button class="tool" id="hintBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M9 21h6v-1H9v1zm3-19a7 7 0 0 0-4 12.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26A7 7 0 0 0 12 2z"/></svg><span>Dica</span></button>
+            <button class="tool" id="clearBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 5V2L7 6l5 4V7a5 5 0 1 1-5 5H5a7 7 0 1 0 7-7z"/></svg><span>Recomeçar</span></button>
+          </div>
+        </div>
+        <div class="side">
+          <h3 class="clues-title">Pistas <small id="cluesCount"></small></h3>
+          <ol class="clues" id="clues"></ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Vitória -->
+  <section class="screen" id="s-win">
+    <div class="wrap narrow center">
+      <p class="eyebrow" id="winEyebrow"></p>
+      <h2 class="win-title">Elementar!</h2>
+      <div class="win-street" id="winStreet" aria-hidden="true"></div>
+      <div class="win-time" id="winTime"></div>
+      <p class="muted" id="winSub"></p>
+      <div class="end-actions">
+        <button class="btn primary" id="winShare">Compartilhar</button>
+        <button class="btn" id="winNew">Novo enigma</button>
+        <button class="btn ghost" id="winHome">Menu</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="engine.js"></script>
+  <script src="dados.js"></script>
+  <script src="einstein.js"></script>
+  <script src="../../pwa.js"></script>
+</body>
+</html>

@@ -2,7 +2,7 @@
   "id": "./",
   "name": "Jogateca",
   "short_name": "Jogateca",
-  "description": "Catálogo de jogos de navegador: Travessia, Acampamento, Prensa, Palavra do Dia, Kakuro, Croma, Tamanho Certo, Sudoku, Canteiros, Ponto-Cruz e Pontes.",
+  "description": "Catálogo de jogos de navegador: Enigma de Einstein, Travessia, Acampamento, Prensa, Palavra do Dia, Kakuro, Croma, Tamanho Certo, Sudoku, Canteiros, Ponto-Cruz e Pontes.",
   "lang": "pt-BR",
   "dir": "ltr",
   "start_url": "./",
@@ -42,6 +42,18 @@
     }
   ],
   "shortcuts": [
+    {
+      "name": "Enigma de Einstein do dia",
+      "short_name": "Enigma",
+      "url": "games/einstein/index.html?mode=diario",
+      "icons": [
+        {
+          "src": "icons/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
     {
       "name": "Travessia: próxima fase",
       "short_name": "Travessia",
@@ -142,18 +154,6 @@
       "name": "Sudoku do dia",
       "short_name": "Sudoku",
       "url": "games/sudoku/index.html?mode=diario",
-      "icons": [
-        {
-          "src": "icons/icon-192.png",
-          "sizes": "192x192",
-          "type": "image/png"
-        }
-      ]
-    },
-    {
-      "name": "Tamanho Certo: Ilimitado",
-      "short_name": "Tamanho Certo",
-      "url": "games/tamanho/index.html?mode=ilimitado",
       "icons": [
         {
           "src": "icons/icon-192.png",

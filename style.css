@@ -269,6 +269,20 @@ button { font: inherit; color: inherit; }
 .art-treino i:nth-child(3) { width: 64%; }
 .art-treino i:nth-child(4) { width: 28%; background: #ffcf3f; }
 
+.art-einstein { background: linear-gradient(135deg, #3c3145, #211c26 65%); }
+.art-einstein .erow {
+  position: absolute; top: 50%; right: 5%; transform: translateY(-50%) rotate(-2deg); height: 92%;
+  display: flex; align-items: flex-end; gap: 6px; padding: 8px; border-radius: 6px;
+  background: repeating-linear-gradient(180deg, #f6efdd 0 13px, #d8c9a6 13px 14px); box-shadow: 0 10px 24px rgba(0,0,0,.45);
+}
+.art-einstein.big .erow { height: 70%; right: 9%; }
+.art-einstein .eh { display: grid; justify-items: center; gap: 2px; }
+.art-einstein .eh i { width: clamp(26px, 3.2vw, 46px); aspect-ratio: 1.1; background: var(--hc); clip-path: polygon(50% 0, 100% 40%, 100% 100%, 0 100%, 0 40%); box-shadow: inset 0 -6px 0 rgba(0,0,0,.12); }
+.art-einstein .eh b { font-size: clamp(13px, 1.6vw, 22px); line-height: 1.1; color: #c0392b; font-family: Georgia, serif; }
+.art-einstein:not(.big)::after {
+  content: ""; position: absolute; inset: 0; z-index: 1;
+  background: linear-gradient(to top, rgba(14,15,19,.85) 0%, rgba(14,15,19,.3) 45%, transparent 70%);
+}
 .art-travessia { background: linear-gradient(180deg, #2c5a6e, #0f2a3a); }
 .art-travessia .tv-scene {
   position: absolute; top: 50%; right: 6%; transform: translateY(-50%) rotate(-2deg); height: 100%; aspect-ratio: 1;

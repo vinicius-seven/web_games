@@ -146,7 +146,7 @@
     render();
     save();
   }
-  const save = () => { if (game) store.set('save', game); };
+  const save = () => { if (game && !game.won) store.set('save', game); };
   const degree = (g, i) => g.edges.reduce((s, e, k) => s + (e.a === i || e.b === i ? g.counts[k] : 0), 0);
 
   // Cruzamentos e vizinhos de cada ilha por direção (0 dir., 1 baixo, 2 esq., 3 cima).
