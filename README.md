@@ -229,6 +229,10 @@ Links diretos: `games/kakuro/?mode=6|8|10|12|diario|continuar`.
 
 Recordes ficam no `localStorage` do navegador.
 
+## Publicar empacotado
+
+`python3 tools/empacotar.py <pasta_saida>` copia o site e põe o CSS e o JS de cada página dentro dela (um pedido só por página em vez de 5 a 9). Use essa pasta para publicar em hospedagens lentas ou sem cache; o código no repositório continua em arquivos separados. Com `--artefato`, gera também `jogateca.html` (o catálogo no formato da página publicada no Claude).
+
 ## Rodar localmente
 
 ```bash

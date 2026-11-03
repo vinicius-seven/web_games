@@ -2,7 +2,7 @@
    Estratégia: cache primeiro, atualizando por trás (as páginas abrem na hora; a versão nova aparece
    na visita seguinte). Mudar VERSION faz o navegador baixar tudo de novo na instalação.
    Ao adicionar arquivos ou jogos, inclua-os em ASSETS e aumente VERSION. */
-const VERSION = 'jogateca-v22';
+const VERSION = 'jogateca-v23';
 const ASSETS = [
   './',
   './index.html',

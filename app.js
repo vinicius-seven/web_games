@@ -1132,6 +1132,23 @@
     }
   });
 
+  // Pré-carrega a página de um jogo assim que o dedo encosta (ou o mouse passa) no card:
+  // quando o toque termina, boa parte do caminho já foi feito.
+  const prefetched = new Set();
+  function prefetch(href) {
+    if (!href || prefetched.has(href)) return;
+    prefetched.add(href);
+    const l = document.createElement('link');
+    l.rel = 'prefetch'; l.href = href.split('?')[0];
+    document.head.appendChild(l);
+  }
+  const prefetchFrom = (e) => { const a = e.target.closest && e.target.closest('a[href^="games/"]'); if (a) prefetch(a.getAttribute('href')); };
+  document.addEventListener('pointerdown', prefetchFrom, { passive: true });
+  document.addEventListener('mouseover', prefetchFrom, { passive: true });
+  // Os jogos em andamento são os mais prováveis: ficam prontos quando o catálogo está parado.
+  const idle = window.requestIdleCallback || ((fn) => setTimeout(fn, 1200));
+  idle(() => document.querySelectorAll('#row-continuar a[href^="games/"]').forEach((a) => prefetch(a.getAttribute('href'))));
+
   const topbar = document.getElementById('topbar');
   const onScroll = () => topbar.classList.toggle('solid', window.scrollY > 40);
   window.addEventListener('scroll', onScroll, { passive: true });

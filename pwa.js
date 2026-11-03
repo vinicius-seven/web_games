@@ -4,7 +4,8 @@
 (() => {
   'use strict';
   const script = document.currentScript;
-  const root = new URL('./', script.src);
+  // Normalmente vem de <script src=".../pwa.js">; numa página empacotada (script embutido), data-root diz onde fica a raiz.
+  const root = script && script.src ? new URL('./', script.src) : new URL((script && script.dataset.root) || './', location.href);
   const buttons = () => document.querySelectorAll('[data-pwa-install]');
 
   const ua = navigator.userAgent;
