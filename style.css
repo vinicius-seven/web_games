@@ -269,6 +269,23 @@ button { font: inherit; color: inherit; }
 .art-treino i:nth-child(3) { width: 64%; }
 .art-treino i:nth-child(4) { width: 28%; background: #ffcf3f; }
 
+.art-lampioes { background: radial-gradient(circle at 70% 40%, #2d2a24 0, #11131f 65%); }
+.art-lampioes .lgrid {
+  position: absolute; top: 50%; right: 6%; transform: translateY(-50%) rotate(2deg); height: 96%; aspect-ratio: 1;
+  display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px; padding: 4px; border-radius: 8px; background: #07080d;
+  box-shadow: 0 0 30px rgba(255,200,90,.25), 0 10px 24px rgba(0,0,0,.5);
+}
+.art-lampioes.big .lgrid { height: 78%; right: 9%; }
+.art-lampioes .lgrid i { border-radius: 2px; background: #343c58; display: grid; place-items: center; font-style: normal; }
+.art-lampioes .lgrid i.o { background: #6b5a33; }
+.art-lampioes .lgrid i.l { background: radial-gradient(circle, #ffe696, #c99a45 75%); }
+.art-lampioes .lgrid i.l svg { width: 80%; height: 80%; }
+.art-lampioes .lgrid i.w { background: #0a0b11; }
+.art-lampioes .lgrid i.w b { background: #e9dcc0; color: #2a2216; border-radius: 3px; width: 64%; height: 64%; display: grid; place-items: center; font: 700 clamp(10px, 1.2vw, 16px) Georgia, serif; }
+.art-lampioes:not(.big)::after {
+  content: ""; position: absolute; inset: 0; z-index: 1;
+  background: linear-gradient(to top, rgba(14,15,19,.85) 0%, rgba(14,15,19,.3) 45%, transparent 70%);
+}
 .art-cerca { background: linear-gradient(135deg, #2a4234, #16261e 65%); }
 .art-cerca .cfield {
   position: absolute; top: 50%; right: 6%; transform: translateY(-50%) rotate(-3deg); height: 100%; aspect-ratio: 1;

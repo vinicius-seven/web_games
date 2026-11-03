@@ -2,7 +2,7 @@
   "id": "./",
   "name": "Jogateca",
   "short_name": "Jogateca",
-  "description": "Catálogo de jogos de navegador: Cerca, Enigma de Einstein, Travessia, Acampamento, Prensa, Palavra do Dia, Kakuro, Croma, Tamanho Certo, Sudoku, Canteiros, Ponto-Cruz e Pontes.",
+  "description": "Catálogo de jogos de navegador: Lampiões, Cerca, Enigma de Einstein, Travessia, Acampamento, Prensa, Palavra do Dia, Kakuro, Croma, Tamanho Certo, Sudoku, Canteiros, Ponto-Cruz e Pontes.",
   "lang": "pt-BR",
   "dir": "ltr",
   "start_url": "./",
@@ -42,6 +42,18 @@
     }
   ],
   "shortcuts": [
+    {
+      "name": "Lampiões: praça do dia",
+      "short_name": "Lampiões",
+      "url": "games/lampioes/index.html?mode=diario",
+      "icons": [
+        {
+          "src": "icons/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
     {
       "name": "Cerca: pasto do dia",
       "short_name": "Cerca",
@@ -142,18 +154,6 @@
       "name": "Ponto-Cruz: motivo do dia",
       "short_name": "Ponto-Cruz",
       "url": "games/pontocruz/index.html?mode=diario",
-      "icons": [
-        {
-          "src": "icons/icon-192.png",
-          "sizes": "192x192",
-          "type": "image/png"
-        }
-      ]
-    },
-    {
-      "name": "Canteiros: jardim do dia",
-      "short_name": "Canteiros",
-      "url": "games/canteiros/index.html?mode=diario",
       "icons": [
         {
           "src": "icons/icon-192.png",

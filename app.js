@@ -97,6 +97,21 @@
       duration: '3–20 min por mapa',
     },
     {
+      id: 'lampioes',
+      title: 'Lampiões',
+      status: 'available',
+      href: 'games/lampioes/index.html',
+      tagline: 'Ilumine a praça sem um lampião iluminar outro.',
+      description:
+        'Quebra-cabeça de lógica numa praça antiga à noite: cada lampião ilumina em linha reta até bater num muro. Ilumine todo o calçamento sem que um lampião ilumine outro, respeitando os números nos muros. Praças novas a cada partida, sempre com uma única solução, e uma praça do dia.',
+      tags: ['Lógica', 'Clássico'],
+      year: 2026,
+      age: 'L',
+      meta: '4 tamanhos',
+      match: 96,
+      duration: '3–20 min por praça',
+    },
+    {
       id: 'cerca',
       title: 'Cerca',
       status: 'available',
@@ -231,6 +246,11 @@
     { id: 'dois', game: 'prensa', art: 'prensa-2', title: '2 palavras', text: 'Duas palavras ao mesmo tempo, 7 tentativas.' },
     { id: 'quatro', game: 'prensa', art: 'prensa-4', title: '4 palavras', text: 'Quatro palavras ao mesmo tempo, 9 tentativas.' },
     { id: 'livre', game: 'prensa', art: 'prensa-livre', title: 'Livre', text: 'Palavras sorteadas sem limite, para treinar.' },
+    { id: 'diario', game: 'lampioes', art: 'lampioes-dia', title: 'Praça do dia', text: 'A mesma praça 10×10 para todo mundo hoje.' },
+    { id: '7', game: 'lampioes', art: 'lampioes-7', title: 'Fácil', text: '7×7, para aprender as regras.' },
+    { id: '9', game: 'lampioes', art: 'lampioes-9', title: 'Médio', text: '9×9, pede pensar nas sombras.' },
+    { id: '10', game: 'lampioes', art: 'lampioes-10', title: 'Difícil', text: '10×10, com deduções em cadeia.' },
+    { id: '12', game: 'lampioes', art: 'lampioes-12', title: 'Desafio', text: '12×12, para sessões longas.' },
     { id: 'diario', game: 'cerca', art: 'cerca-dia', title: 'Pasto do dia', text: 'O mesmo pasto 8×8 para todo mundo hoje.' },
     { id: '5', game: 'cerca', art: 'cerca-5', title: 'Fácil', text: '5×5, para aprender as regras.' },
     { id: '7', game: 'cerca', art: 'cerca-7', title: 'Médio', text: '7×7, pede pensar em dentro e fora.' },
@@ -335,6 +355,14 @@
       if (today && today.done) return today.won ? `Hoje ✓ · sequência ${stats ? stats.streak : 1}` : 'Hoje ✗';
       return 'Novo hoje';
     }
+    if (key === 'lampioes:diario') {
+      const r = store.get(`lampioes:daily:${todayKey()}`);
+      return r ? `Hoje ${fmtTime(r.time)}` : 'Novo hoje';
+    }
+    if (m.game === 'lampioes') {
+      const best = store.get(`lampioes:best:${m.id}`);
+      return best ? `Melhor ${fmtTime(best)}` : '';
+    }
     if (key === 'cerca:diario') {
       const r = store.get(`cerca:daily:${todayKey()}`);
       return r ? `Hoje ${fmtTime(r.time)}` : 'Novo hoje';
@@ -418,6 +446,17 @@
     if (kind === 'diario') {
       const c = ['#e76f51', '#f4a261', '#e9c46a', '#2a9d8f', '#8ab17d'];
       return `<div class="art art-diario">${c.map((x) => `<i style="background:${x}"></i>`).join('')}</div>`;
+    }
+    if (kind.startsWith('lampioes')) {
+      // Trecho de praça 5×5: muros (w), lampiões (L), casas iluminadas (o) e no escuro (.).
+      const g = ['L o w 0 o', 'o w L o o', 'o 1 o w L', 'w L o o o', '. o w 0 o'].map((r) => r.split(' '));
+      const lamp = '<svg viewBox="0 0 100 100"><path d="M34 24 H66 L60 70 H40 Z" fill="#ffd36b"/><path d="M50 36 C58 46 56 56 50 60 C44 56 42 46 50 36 Z" fill="#ff8f2e"/><path d="M30 22 H70 M38 70 H62 M48 72 H52 V92 H48 Z" stroke="#2b2b3a" stroke-width="5"/></svg>';
+      const size = kind.match(/^lampioes-(\d+)$/);
+      const badge = kind === 'lampioes-dia'
+        ? `<span class="sudoku-badge day"><b>${new Date().getDate()}</b>${new Date().toLocaleDateString('pt-BR', { month: 'short' }).replace('.', '')}</span>`
+        : size ? `<span class="sudoku-badge">${size[1]}×${size[1]}</span>` : '';
+      const cell = (x) => (x === 'L' ? `<i class="l">${lamp}</i>` : x === 'o' ? '<i class="o"></i>' : x === '.' ? '<i></i>' : `<i class="w">${x === 'w' ? '' : `<b>${x}</b>`}</i>`);
+      return `<div class="art art-lampioes${big ? ' big' : ''}"><div class="lgrid">${g.flat().map(cell).join('')}</div>${badge}</div>`;
     }
     if (kind.startsWith('cerca')) {
       // Pasto 4×4 com um cercado de madeira e números.
@@ -609,7 +648,7 @@
       </a>`;
   }
 
-  // Partidas salvas pelos jogos que guardam progresso (Sudoku, Canteiros, Ponto-Cruz, Pontes, Kakuro, Acampamento, Travessia, Enigma de Einstein e Cerca).
+  // Partidas salvas pelos jogos que guardam progresso (Sudoku, Canteiros, Ponto-Cruz, Pontes, Kakuro, Acampamento, Travessia, Enigma de Einstein, Cerca e Lampiões).
   function continueCards() {
     let html = '';
     const sv = store.get('sudoku:save');
@@ -635,6 +674,18 @@
         ${art('canteiros')}
         <span class="record">${fmtTime(Math.floor(cv.elapsed / 1000))}</span>
         <div class="card-title">Canteiros<small>${esc(cv.daily ? 'Do dia' : `${cv.n}×${cv.n}`)}</small></div>
+        <span class="progress" style="--p:${pct}%"></span>
+      </a>`;
+    }
+    const lv = store.get('lampioes:save');
+    if (lv && !lv.won && Array.isArray(lv.cells)) {
+      const lamps = lv.cells.filter((v) => v === 1).length;
+      const pct = Math.min(100, Math.round((lamps / lv.lamps.length) * 100));
+      html += `
+      <a class="card mode" href="games/lampioes/index.html?mode=continuar" aria-label="Continuar Lampiões, ${lamps} lampiões">
+        ${art('lampioes')}
+        <span class="record">${fmtTime(Math.floor(lv.elapsed / 1000))}</span>
+        <div class="card-title">Lampiões<small>${esc(lv.daily ? 'Do dia' : `${lv.n}×${lv.n}`)}</small></div>
         <span class="progress" style="--p:${pct}%"></span>
       </a>`;
     }

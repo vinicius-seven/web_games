@@ -2,7 +2,7 @@
    Estratégia: rede primeiro (sempre pega a versão nova quando há internet),
    cache como reserva quando está offline.
    Ao adicionar arquivos ou jogos, inclua-os em ASSETS e aumente VERSION. */
-const VERSION = 'jogateca-v17';
+const VERSION = 'jogateca-v18';
 const ASSETS = [
   './',
   './index.html',
@@ -41,6 +41,10 @@ const ASSETS = [
   './games/prensa/prensa.css',
   './games/prensa/prensa.js',
   './games/prensa/palavras.js',
+  './games/lampioes/index.html',
+  './games/lampioes/lampioes.css',
+  './games/lampioes/lampioes.js',
+  './games/lampioes/engine.js',
   './games/cerca/index.html',
   './games/cerca/cerca.css',
   './games/cerca/cerca.js',
