@@ -141,12 +141,58 @@
     const vals = cats.map((c) => shuffle([...CATS[c].values.keys()], rnd).slice(0, spec.n));
     const p = E.generate(spec.n, spec.K, rnd, spec.level);
     game = {
-      size, n: spec.n, K: spec.K, cats, vals, sol: p.sol, clues: p.clues, cand: E.fresh(spec.n, spec.K),
+      size, n: spec.n, K: spec.K, cats, vals, sol: p.sol, clues: p.clues,
+      chosen: blankChosen(spec.n, spec.K), crossed: blankCrossed(spec.n, spec.K),
       struck: [], history: [], daily, elapsed: 0, hints: 0, won: false,
     };
+    derive();
     startPlay();
   }
-  function resume(sv) { game = sv; game.history = game.history || []; startPlay(); }
+  function resume(sv) {
+    game = sv;
+    // Partidas salvas antes desta versão só tinham a grade pronta: vira escolhas + riscos.
+    if (!game.chosen) {
+      const full = (1 << game.n) - 1;
+      game.chosen = game.cand.map((row) => row.map((m) => (E.bits(m) === 1 ? E.low(m) : -1)));
+      game.crossed = game.cand.map((row) => row.map((m) => (E.bits(m) === 1 ? 0 : full & ~m)));
+      game.history = [];
+    }
+    game.history = game.history || [];
+    derive();
+    startPlay();
+  }
+  const blankChosen = (n, K) => Array.from({ length: K }, () => new Array(n).fill(-1));
+  const blankCrossed = (n, K) => Array.from({ length: K }, () => new Array(n).fill(0));
+
+  /* A grade que aparece (game.cand) é calculada a partir do que o jogador fez:
+     - chosen[c][h]: valor escolhido na casa (ou -1);
+     - crossed[c][h]: valores que o jogador riscou na casa.
+     Um valor escolhido (ou que sobrou sozinho numa casa) sai das outras casas da linha.
+     Assim, reabrir uma casa devolve o valor às outras e mantém os riscos que já existiam. */
+  function derive() {
+    const { n, K, chosen, crossed } = game;
+    const full = (1 << n) - 1;
+    const cand = [];
+    for (let c = 0; c < K; c++) {
+      const taken = chosen[c].reduce((m, v) => (v >= 0 ? m | (1 << v) : m), 0);
+      cand.push(chosen[c].map((v, h) => (v >= 0 ? 1 << v : full & ~crossed[c][h] & ~taken)));
+    }
+    // valores que sobraram sozinhos numa casa saem das outras (sem esvaziar nenhuma)
+    let changed = true;
+    while (changed) {
+      changed = false;
+      for (let c = 0; c < K; c++) {
+        for (let h = 0; h < n; h++) {
+          const m = cand[c][h];
+          if (E.bits(m) !== 1) continue;
+          for (let o = 0; o < n; o++) {
+            if (o !== h && (cand[c][o] & m) && E.bits(cand[c][o]) > 1) { cand[c][o] &= ~m; changed = true; }
+          }
+        }
+      }
+    }
+    game.cand = cand;
+  }
   function startPlay() {
     $('#paused').hidden = true;
     $('#grid').style.visibility = '';
@@ -158,7 +204,7 @@
   const save = () => {
     if (!game || game.won) return;
     if (game.history.length > 200) game.history = game.history.slice(-200);
-    store.set('save', game);
+    store.set('save', game); // a grade (cand) também vai junto, para o menu mostrar o progresso
   };
 
   const item = (c, v) => {
@@ -204,6 +250,7 @@
       const seen = {};
       for (let h = 0; h < game.n; h++) {
         const m = game.cand[c][h];
+        if (m === 0) { bad.add(`${c}:${h}`); continue; }
         if (E.bits(m) !== 1) continue;
         if (seen[m] != null) { bad.add(`${c}:${h}`); bad.add(`${c}:${seen[m]}`); }
         else seen[m] = h;
@@ -233,7 +280,7 @@
         const cls = `${fl.has(`${c}:${h}`) ? ' flash' : ''}${bad.has(`${c}:${h}`) ? ' bad' : ''}`;
         if (E.bits(m) === 1) {
           const v = E.low(m);
-          html += `<button class="cell solved${cls}" data-c="${c}" data-h="${h}" aria-label="${cat.name}, casa ${h + 1}: ${label(c, v)}"${bad.has(`${c}:${h}`) ? ' style="box-shadow: inset 0 0 0 2px var(--red)"' : ''}><span class="big">${icon(c, v)}</span><span class="nm">${label(c, v)}</span></button>`;
+          html += `<button class="cell solved${cls}" data-c="${c}" data-h="${h}" title="Toque para reabrir" aria-label="${cat.name}, casa ${h + 1}: ${label(c, v)}. Toque para reabrir"${bad.has(`${c}:${h}`) ? ' style="box-shadow: inset 0 0 0 2px var(--red)"' : ''}><span class="big">${icon(c, v)}</span><span class="nm">${label(c, v)}</span></button>`;
         } else {
           html += `<div class="cell${cls}" role="gridcell" aria-label="${cat.name}, casa ${h + 1}">` +
             [...Array(n).keys()].map((v) => `<button class="c${m & (1 << v) ? '' : ' x'}" data-c="${c}" data-h="${h}" data-v="${v}" aria-label="${label(c, v)}${m & (1 << v) ? '' : ' (riscado)'}">${icon(c, v)}</button>`).join('') +
@@ -248,11 +295,11 @@
     $('#timer').textContent = fmtTime(game.elapsed / 1000);
     const st = $('#status');
     let msg = '', isBad = false;
-    if (bad.size) { msg = 'Um mesmo valor ficou em duas casas da mesma linha.'; isBad = true; }
+    if (bad.size) { msg = 'Um mesmo valor ficou em duas casas da mesma linha (ou uma casa ficou sem opções).'; isBad = true; }
     else if (done === n * K) {
       if (isWin()) msg = 'Resolvido!';
       else { msg = 'A grade está cheia, mas algo não bate. A dica aponta o erro.'; isBad = true; }
-    } else msg = chooseMode ? 'Toque para escolher; segure para riscar.' : 'Toque para riscar; segure para escolher.';
+    } else msg = `${chooseMode ? 'Toque para escolher; segure para riscar.' : 'Toque para riscar; segure para escolher.'} Toque numa casa pronta para reabrir.`;
     st.textContent = msg; st.classList.toggle('bad', isBad);
     $('#modeBtn').setAttribute('aria-pressed', String(chooseMode));
     $('#modeState').textContent = chooseMode ? 'escolher' : 'riscar';
@@ -283,35 +330,35 @@
   });
 
   /* ================= Jogadas ================= */
-  function snapshot() { game.history.push(game.cand.map((r) => r.slice())); }
-  // Valor escolhido numa casa sai das outras casas da mesma linha (sem esvaziar nenhuma).
-  function cascade() {
-    let changed = true;
-    while (changed) {
-      changed = false;
-      for (let c = 0; c < game.K; c++) {
-        for (let h = 0; h < game.n; h++) {
-          const m = game.cand[c][h];
-          if (E.bits(m) !== 1) continue;
-          for (let o = 0; o < game.n; o++) {
-            if (o !== h && (game.cand[c][o] & m) && E.bits(game.cand[c][o]) > 1) { game.cand[c][o] &= ~m; changed = true; }
-          }
-        }
-      }
-    }
-  }
+  function snapshot() { game.history.push({ chosen: game.chosen.map((r) => r.slice()), crossed: game.crossed.map((r) => r.slice()) }); }
+  const after = (cells) => { derive(); render(cells); save(); };
   function toggle(c, h, v) {
     const m = game.cand[c][h], b = 1 << v;
     if ((m & b) && E.bits(m) === 1) return; // a casa nunca fica vazia
+    if (!(m & b) && !(game.crossed[c][h] & b)) {
+      // não foi riscado: saiu porque já está escolhido (ou sobrou sozinho) em outra casa da linha
+      const o = game.cand[c].findIndex((x, k) => k !== h && x === b);
+      toast(`${label(c, v)} já está na casa ${o + 1}. Toque nela para reabrir.`);
+      return;
+    }
     snapshot();
-    game.cand[c][h] = m ^ b;
-    cascade(); render([[c, h]]); save();
+    game.crossed[c][h] ^= b;
+    after([[c, h]]);
   }
   function choose(c, h, v) {
-    if (game.cand[c][h] === 1 << v) return;
+    if (game.chosen[c][h] === v) return;
     snapshot();
-    game.cand[c][h] = 1 << v;
-    cascade(); render([[c, h]]); save();
+    game.chosen[c][h] = v;
+    // escolher um valor que estava escolhido em outra casa da linha tira de lá
+    game.chosen[c].forEach((x, k) => { if (k !== h && x === v) game.chosen[c][k] = -1; });
+    after([[c, h]]);
+  }
+  // Reabre uma casa pronta: tira a escolha (ou, se ela fechou só por riscos, desfaz esses riscos).
+  function reopen(c, h) {
+    snapshot();
+    if (game.chosen[c][h] >= 0) game.chosen[c][h] = -1;
+    else game.crossed[c][h] = 0;
+    after([[c, h]]);
   }
 
   // Toque curto = ação do modo; tocar e segurar = a outra ação.
@@ -350,23 +397,25 @@
     if (b && game && !game.won && !press) toggle(+b.dataset.c, +b.dataset.h, +b.dataset.v);
   });
   grid.addEventListener('click', (e) => {
-    if (e.target.closest('.cell.solved')) toast('Para mudar uma casa resolvida, use Desfazer.');
+    const cell = e.target.closest('.cell.solved');
+    if (cell && game && !game.won) reopen(+cell.dataset.c, +cell.dataset.h);
   });
 
   function undo() {
     const h = game.history.pop();
     if (!h) return;
-    game.cand = h;
-    render(); save();
+    game.chosen = h.chosen; game.crossed = h.crossed;
+    after();
   }
   $('#undoBtn').addEventListener('click', undo);
   $('#modeBtn').addEventListener('click', () => { chooseMode = !chooseMode; store.set('chooseMode', chooseMode); render(); });
   $('#clearBtn').addEventListener('click', () => {
     if (!game || game.won || !game.history.length) return;
     snapshot();
-    game.cand = E.fresh(game.n, game.K);
+    game.chosen = blankChosen(game.n, game.K);
+    game.crossed = blankCrossed(game.n, game.K);
     game.struck = [];
-    renderClues(); render(); save();
+    renderClues(); after();
     toast('Grade limpa. Dá para desfazer.');
   });
 
@@ -374,15 +423,29 @@
   function hint() {
     if (!game || game.won) return;
     const { n, K, sol } = game;
+    // Enganos: primeiro uma escolha errada; depois o valor certo riscado.
+    for (let c = 0; c < K; c++) {
+      for (let h = 0; h < n; h++) {
+        const v = game.chosen[c][h];
+        if (v >= 0 && v !== sol[c][h]) {
+          snapshot();
+          game.chosen[c][h] = -1;
+          game.hints++;
+          after([[c, h]]);
+          toast(`Engano na casa ${h + 1} (${CATS[game.cats[c]].name}): não é ${label(c, v)}. A casa foi reaberta.`, 4200);
+          return;
+        }
+      }
+    }
     for (let c = 0; c < K; c++) {
       for (let h = 0; h < n; h++) {
         const right = 1 << sol[c][h];
-        if (!(game.cand[c][h] & right)) {
+        if (game.crossed[c][h] & right) {
           snapshot();
-          game.cand[c][h] |= right;
+          game.crossed[c][h] &= ~right;
           game.hints++;
-          render([[c, h]]); save();
-          toast(`Engano na casa ${h + 1} (${CATS[game.cats[c]].name}): ${label(c, sol[c][h])} tinha sido descartado, mas ainda é possível.`, 4200);
+          after([[c, h]]);
+          toast(`Engano na casa ${h + 1} (${CATS[game.cats[c]].name}): ${label(c, sol[c][h])} tinha sido riscado, mas ainda é possível.`, 4200);
           return;
         }
       }
@@ -391,11 +454,10 @@
     const s = E.step(next, n, game.clues);
     if (!s) { toast('Nada mais a deduzir.'); return; }
     snapshot();
-    game.cand = next;
-    cascade();
+    if (s.kind === 'place') game.chosen[s.c][s.h] = s.v;
+    else for (const [c, h, v] of s.changes) if (game.chosen[c][h] < 0) game.crossed[c][h] |= 1 << v;
     game.hints++;
-    const cells = s.changes.map(([c, h]) => [c, h]);
-    render(cells); save();
+    after(s.changes.map(([c, h]) => [c, h]));
     document.querySelectorAll('#clues li.hl').forEach((li) => li.classList.remove('hl'));
     if (s.kind === 'clue') {
       const li = document.querySelector(`#clues li[data-i="${s.clue}"]`);
