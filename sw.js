@@ -1,8 +1,8 @@
 /* Service worker da Jogateca: deixa o app instalável e jogável offline.
-   Estratégia: rede primeiro (sempre pega a versão nova quando há internet),
-   cache como reserva quando está offline.
+   Estratégia: cache primeiro, atualizando por trás (as páginas abrem na hora; a versão nova aparece
+   na visita seguinte). Mudar VERSION faz o navegador baixar tudo de novo na instalação.
    Ao adicionar arquivos ou jogos, inclua-os em ASSETS e aumente VERSION. */
-const VERSION = 'jogateca-v21';
+const VERSION = 'jogateca-v22';
 const ASSETS = [
   './',
   './index.html',
@@ -132,20 +132,22 @@ self.addEventListener('fetch', (event) => {
   const isPage = req.mode === 'navigate';
   const key = isPage ? url.origin + url.pathname : req;
 
+  // Responde na hora com o que está guardado e busca a versão nova por trás (fica para a próxima visita).
+  // Sem nada guardado, vai à rede; sem rede, cai no que houver (ou no catálogo).
   event.respondWith((async () => {
     const cache = await caches.open(VERSION);
-    try {
-      const res = await fetch(req);
+    const cached = await cache.match(key, { ignoreSearch: isPage });
+    const fresh = fetch(req).then((res) => {
       if (res.ok && res.type === 'basic') cache.put(key, res.clone());
       return res;
-    } catch {
-      const cached = await cache.match(key, { ignoreSearch: isPage });
-      if (cached) return cached;
-      if (isPage) {
-        const home = await cache.match('./index.html');
-        if (home) return home;
-      }
-      return Response.error();
+    }).catch(() => null);
+    if (cached) { event.waitUntil(fresh); return cached; }
+    const res = await fresh;
+    if (res) return res;
+    if (isPage) {
+      const home = await cache.match('./index.html');
+      if (home) return home;
     }
+    return Response.error();
   })());
 });

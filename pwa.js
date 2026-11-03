@@ -39,6 +39,18 @@
     toast('Jogateca instalada! Procure o ícone na sua tela inicial.');
   });
 
+  // "‹ Jogateca": se a pessoa veio do catálogo, volta no histórico em vez de abrir o catálogo de novo.
+  // O navegador reaproveita a página que já estava pronta na memória, e a volta é instantânea.
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest('a.back');
+    if (!a || e.defaultPrevented || e.button > 0 || e.metaKey || e.ctrlKey || e.shiftKey) return;
+    let ref = null;
+    try { ref = document.referrer ? new URL(document.referrer) : null; } catch { ref = null; }
+    const home = new URL(a.getAttribute('href'), location.href);
+    const same = (u) => u && u.origin === home.origin && u.pathname.replace(/index\.html$/, '') === home.pathname.replace(/index\.html$/, '');
+    if (same(ref) && history.length > 1) { e.preventDefault(); history.back(); }
+  });
+
   document.addEventListener('click', async (e) => {
     const btn = e.target.closest('[data-pwa-install]');
     if (!btn) return;

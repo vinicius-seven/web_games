@@ -118,6 +118,10 @@ button { font: inherit; color: inherit; }
 /* ---------- Rows ---------- */
 .rows { position: relative; z-index: 3; margin-top: -40px; padding-bottom: 40px; }
 .row { margin: 0 0 34px; scroll-margin-top: 80px; }
+/* Fileiras fora da tela não são montadas até chegarem perto: o catálogo abre bem mais rápido. */
+.row:not(:first-child) { content-visibility: auto; contain-intrinsic-size: auto 230px; }
+/* Cards fora da tela (para os lados) também só são desenhados quando aparecem. */
+.row-track > .card { content-visibility: auto; }
 .row h2 {
   margin: 0 var(--gutter) 10px; font-size: clamp(17px, 1.6vw, 22px); font-weight: 700;
 }
@@ -205,8 +209,9 @@ button { font: inherit; color: inherit; }
     radial-gradient(circle at 25% 85%, #3a86ff 0, transparent 40%),
     radial-gradient(circle at 90% 70%, #b14aed 0, transparent 35%),
     #1a1030;
-  animation: hue 14s linear infinite;
 }
+/* A troca de cores contínua fica só no destaque (nos cards ela redesenhava a página o tempo todo). */
+.art-croma.big { animation: hue 14s linear infinite; }
 .art-croma.big {
   background:
     radial-gradient(circle at 70% 30%, #ff3d6e 0, transparent 30%),

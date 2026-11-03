@@ -1136,11 +1136,12 @@
   const onScroll = () => topbar.classList.toggle('solid', window.scrollY > 40);
   window.addEventListener('scroll', onScroll, { passive: true });
 
-  // Recordes podem mudar quando o jogador volta do jogo (bfcache).
-  window.addEventListener('pageshow', (e) => { if (e.persisted) renderRows(); });
+  // Recordes podem mudar quando o jogador volta do jogo (bfcache): atualiza depois de mostrar a página.
+  window.addEventListener('pageshow', (e) => { if (e.persisted) requestAnimationFrame(() => setTimeout(renderRows, 0)); });
 
   function render() { renderRows(); }
   renderHero();
   render();
-  onScroll();
+  // Ler a rolagem logo de cara forçava o navegador a calcular o layout da página inteira antes de pintar.
+  requestAnimationFrame(onScroll);
 })();
