@@ -14,6 +14,7 @@ Um catálogo de jogos de navegador no estilo "streaming": destaque no topo, file
 | **Pontes** (`games/pontes/`) | Disponível | Ligar ilhas com pontes (gênero Hashi), num arquipélago tropical |
 | **Prensa** (`games/prensa/`) | Disponível | Adivinhar palavras de 5 letras: 1, 2 ou 4 por dia, e modo livre |
 | **Palavra do Dia** (`games/palavradodia/`) | Disponível | Dois jogos diários: Colmeia (7 letras) e Proximidade (distância de sentido) |
+| **Travessia** (`games/travessia/`) | Disponível | Atravessar o rio com personagens que não podem ficar ou ir juntos |
 | **Acampamento** (`games/acampamento/`) | Disponível | Lógica: uma barraca ao lado de cada árvore, sem barracas encostadas |
 | **Kakuro** (`games/kakuro/`) | Disponível | Somas cruzadas numa lousa, 4 tamanhos e lousa do dia |
 
@@ -96,6 +97,16 @@ Página inicial com dois jogos de palavras diários (iguais para todo mundo) e m
 - **Proximidade** (`proximidade.html`): digite palavras e veja a posição de cada uma numa fila de ~13.500 palavras ordenadas pela proximidade de sentido com a palavra secreta (1 = acertou). Plural, feminino e verbo conjugado contam como a forma básica. Dica, desistir, 60 jogos anteriores e as 100 palavras mais próximas no fim. Distâncias calculadas por `tools/proximidade_dados.py` com os vetores fastText do modelo `pt_core_news_lg` do spaCy (**CC BY-SA 4.0**; os dados derivados em `games/palavradodia/proximidade/` seguem a mesma licença — veja o `LEIA-ME.txt` da pasta).
 
 Links diretos: `games/palavradodia/?mode=colmeia|colmeia-livre|proximidade|proximidade-livre`.
+
+### Travessia
+
+Quebra-cabeças de travessia de rio com histórias e personagens próprios: leve todo mundo para a outra margem num barco pequeno.
+
+- 9 fases (`games/travessia/fases.js`) que combinam regras de **margem** (quem não pode ficar junto sem alguém por perto), de **barco** (quem não pode ir junto), de **maioria** (um grupo não pode ser maior que outro numa margem), de **tutela** (aprendiz só perto de outro mágico com o próprio mestre), **peso máximo**, **lugares** e **quem sabe remar**.
+- O motor (`games/travessia/engine.js`) acha por busca em largura o menor número de viagens de cada fase; `node games/travessia/conferir.js` confere que todas têm solução. Fechar no mínimo e sem dicas vale 3 estrelas.
+- Toque para embarcar/desembarcar, **Atravessar** para ir. Regra de barco quebrada impede a saída; regra de margem quebrada mostra quem brigou e pede para desfazer. Dica (embarca o próximo passo de um caminho mais curto a partir de onde você está), desfazer, recomeçar e progresso salvo. Fases liberadas aos poucos.
+
+Links diretos: `games/travessia/?mode=proxima|continuar|<id da fase>` (ex.: `feira`, `circo`, `junina`).
 
 ### Acampamento
 

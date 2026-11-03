@@ -97,6 +97,21 @@
       duration: '3–20 min por mapa',
     },
     {
+      id: 'travessia',
+      title: 'Travessia',
+      status: 'available',
+      href: 'games/travessia/index.html',
+      tagline: 'Todo mundo para o outro lado do rio.',
+      description:
+        'Quebra-cabeças de travessia: leve personagens e bichos para a outra margem num barco pequeno. Há quem não pode ficar junto numa margem, quem não pode ir junto no barco, peso máximo e quem não sabe remar. Nove fases, cada uma com o menor número de viagens para buscar as 3 estrelas.',
+      tags: ['Lógica', 'Raciocínio', 'Casual'],
+      year: 2026,
+      age: 'L',
+      meta: '9 fases',
+      match: 96,
+      duration: '2–10 min por fase',
+    },
+    {
       id: 'acampamento',
       title: 'Acampamento',
       status: 'available',
@@ -186,6 +201,11 @@
     { id: 'dois', game: 'prensa', art: 'prensa-2', title: '2 palavras', text: 'Duas palavras ao mesmo tempo, 7 tentativas.' },
     { id: 'quatro', game: 'prensa', art: 'prensa-4', title: '4 palavras', text: 'Quatro palavras ao mesmo tempo, 9 tentativas.' },
     { id: 'livre', game: 'prensa', art: 'prensa-livre', title: 'Livre', text: 'Palavras sorteadas sem limite, para treinar.' },
+    { id: 'proxima', game: 'travessia', art: 'travessia', title: 'Próxima fase', text: 'Continue a trilha de onde parou.' },
+    { id: 'feira', game: 'travessia', art: 'travessia-1', title: 'Volta da feira', text: 'Fase 1: a onça, a cabra e a couve.' },
+    { id: 'gatos', game: 'travessia', art: 'travessia-3', title: 'Gatos e ratos', text: 'Fase 3: os gatos nunca podem ser maioria.' },
+    { id: 'circo', game: 'travessia', art: 'travessia-5', title: 'O circo vai à cidade', text: 'Fase 5: leão, coelho, bolo e artistas.' },
+    { id: 'junina', game: 'travessia', art: 'travessia-8', title: 'Festa junina', text: 'Fase 8: família, bichos e uma canoa só.' },
     { id: 'diario', game: 'acampamento', art: 'acampamento-dia', title: 'Camping do dia', text: 'O mesmo campo 8×8 para todo mundo hoje.' },
     { id: '6', game: 'acampamento', art: 'acampamento-6', title: 'Fácil', text: '6×6, para aprender as regras.' },
     { id: '8', game: 'acampamento', art: 'acampamento-8', title: 'Médio', text: '8×8, o tamanho clássico.' },
@@ -275,6 +295,14 @@
       if (today && today.done) return today.won ? `Hoje ✓ · sequência ${stats ? stats.streak : 1}` : 'Hoje ✗';
       return 'Novo hoje';
     }
+    if (m.game === 'travessia') {
+      const prog = store.get('travessia:prog', {});
+      if (m.id === 'proxima') {
+        const stars = Object.values(prog).reduce((t, r) => t + r.stars, 0);
+        return stars ? `${stars} ★` : '';
+      }
+      return prog[m.id] ? '★'.repeat(prog[m.id].stars) : '';
+    }
     if (key === 'acampamento:diario') {
       const r = store.get(`acampamento:daily:${todayKey()}`);
       return r ? `Hoje ${fmtTime(r.time)}` : 'Novo hoje';
@@ -334,6 +362,13 @@
     if (kind === 'diario') {
       const c = ['#e76f51', '#f4a261', '#e9c46a', '#2a9d8f', '#8ab17d'];
       return `<div class="art art-diario">${c.map((x) => `<i style="background:${x}"></i>`).join('')}</div>`;
+    }
+    if (kind.startsWith('travessia')) {
+      // Rio com a canoa no meio e personagens nas margens.
+      const num = kind.match(/^travessia-(\d+)$/);
+      const cast = { 1: ['👨‍🌾', '🐆', '🐐', '🥬'], 3: ['🐭', '🐱', '🐭', '🐱'], 5: ['🦁', '🐇', '🤡', '🎂'], 8: ['👩‍🌾', '🐕', '🐈', '🐓'] }[num ? num[1] : 0] || ['🐆', '🐐', '🧙‍♂️', '🐔'];
+      const badge = num ? `<span class="sudoku-badge">Fase ${num[1]}</span>` : '';
+      return `<div class="art art-travessia${big ? ' big' : ''}"><div class="tv-scene"><span class="tv-bank">${cast.slice(0, 2).map((e) => `<i>${e}</i>`).join('')}</span><span class="tv-river"><b>🛶</b></span><span class="tv-bank">${cast.slice(2).map((e) => `<i>${e}</i>`).join('')}</span></div>${badge}</div>`;
     }
     if (kind.startsWith('acampamento')) {
       // Campo 5×5 resolvido: cada árvore com a sua barraca, nenhuma barraca encostada em outra.
@@ -496,7 +531,7 @@
       </a>`;
   }
 
-  // Partidas salvas pelos jogos que guardam progresso (Sudoku, Canteiros, Ponto-Cruz, Pontes, Kakuro e Acampamento).
+  // Partidas salvas pelos jogos que guardam progresso (Sudoku, Canteiros, Ponto-Cruz, Pontes, Kakuro, Acampamento e Travessia).
   function continueCards() {
     let html = '';
     const sv = store.get('sudoku:save');
@@ -523,6 +558,15 @@
         <span class="record">${fmtTime(Math.floor(cv.elapsed / 1000))}</span>
         <div class="card-title">Canteiros<small>${esc(cv.daily ? 'Do dia' : `${cv.n}×${cv.n}`)}</small></div>
         <span class="progress" style="--p:${pct}%"></span>
+      </a>`;
+    }
+    const tv = store.get('travessia:save');
+    if (tv && !tv.won && typeof tv.state === 'number') {
+      html += `
+      <a class="card mode" href="games/travessia/index.html?mode=continuar" aria-label="Continuar Travessia, fase ${tv.k + 1}">
+        ${art('travessia')}
+        <span class="record">${tv.trips} ${tv.trips === 1 ? 'viagem' : 'viagens'}</span>
+        <div class="card-title">Travessia<small>Fase ${tv.k + 1}</small></div>
       </a>`;
     }
     const av = store.get('acampamento:save');

@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Travessia · Jogateca</title>
+  <meta name="description" content="Travessia — leve todo mundo para o outro lado do rio sem deixar juntos quem não pode ficar junto.">
+  <meta name="theme-color" content="#0f2a3a">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232a8fb0'/%3E%3Cpath d='M5 17 H27 L23 24 H9 Z' fill='%23a0622d'/%3E%3Cpath d='M16 6 V17 M16 7 L23 15 H16' stroke='%23fff' stroke-width='1.6' fill='%23fff'/%3E%3C/svg%3E">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="apple-touch-icon" href="../../icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Jogateca">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="stylesheet" href="travessia.css">
+</head>
+<body>
+  <header class="bar">
+    <span class="bar-left">
+      <a href="../../index.html" class="back" id="backLink">‹ Jogateca</a>
+      <button class="menu-back" id="menuBack" hidden><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>Menu</button>
+    </span>
+    <button class="brand" id="homeBtn" aria-label="Menu da Travessia">TRAVESSIA</button>
+    <span class="bar-right" id="barRight"></span>
+  </header>
+
+  <!-- Menu: lista de fases -->
+  <section class="screen" id="s-home">
+    <div class="wrap">
+      <div class="home-hero">
+        <div class="hero-river" aria-hidden="true"><span class="hero-boat">🛶</span></div>
+        <h1 class="logo">Travessia</h1>
+        <p>Leve todo mundo para o outro lado do rio. Só que há quem não pode ficar junto numa margem, quem não pode ir junto no barco, e nem todo mundo sabe remar.</p>
+      </div>
+      <h2 class="section-title">Fases <small id="starsTotal"></small></h2>
+      <div class="levels" id="levels"></div>
+      <details class="howto">
+        <summary>Como jogar</summary>
+        <ul>
+          <li>Toque num personagem da margem onde o barco está para ele embarcar; toque de novo para ele descer.</li>
+          <li>Toque em <b>Atravessar</b>. O barco precisa de alguém que saiba remar (🛶) e respeita os lugares e o peso.</li>
+          <li>Quem está no barco atracado conta como estando naquela margem. Depois da viagem, os passageiros continuam no barco — dá para voltar direto.</li>
+          <li>Se uma regra for quebrada, a viagem não vale: desfaça e tente outro caminho.</li>
+          <li>Cada fase mostra o menor número de viagens possível. Fechar nesse número, sem dicas, vale 3 estrelas.</li>
+        </ul>
+      </details>
+      <p class="tip"><button class="btn ghost" data-pwa-install hidden>Instalar a Jogateca como app</button></p>
+    </div>
+  </section>
+
+  <!-- Jogo -->
+  <section class="screen" id="s-play">
+    <div class="play">
+      <div class="play-head">
+        <div>
+          <p class="eyebrow small" id="lvNum"></p>
+          <h2 class="lv-title" id="lvTitle"></h2>
+        </div>
+        <div class="counter"><b id="trips">0</b><span>viagens</span><small id="minTrips"></small></div>
+      </div>
+      <p class="story" id="story"></p>
+      <ul class="rules" id="rules"></ul>
+
+      <div class="scene" id="scene">
+        <section class="bank top" id="bank0" aria-label="Margem de cá">
+          <span class="bank-label">Margem de cá</span>
+          <div class="tokens" id="tokens0"></div>
+        </section>
+        <div class="river" id="river">
+          <div class="waves" aria-hidden="true"></div>
+          <div class="boat at0" id="boat">
+            <div class="hull"><div class="seats" id="seats"></div></div>
+            <span class="load" id="load"></span>
+          </div>
+        </div>
+        <section class="bank bottom" id="bank1" aria-label="Margem de lá">
+          <div class="tokens" id="tokens1"></div>
+          <span class="bank-label">Margem de lá</span>
+        </section>
+        <div class="oops" id="oops" hidden>
+          <p class="oops-title">Ops!</p>
+          <p id="oopsMsg"></p>
+          <button class="btn primary" id="oopsUndo">Desfazer a viagem</button>
+        </div>
+      </div>
+
+      <button class="btn primary go" id="goBtn">Atravessar ⛵</button>
+      <div class="tools">
+        <button class="tool" id="undoBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12.5 8c-2.65 0-5.05 1-6.9 2.6L2 7v9h9l-3.62-3.62A7.95 7.95 0 0 1 12.5 10.5c3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/></svg><span>Desfazer</span></button>
+        <button class="tool" id="hintBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M9 21h6v-1H9v1zm3-19a7 7 0 0 0-4 12.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26A7 7 0 0 0 12 2z"/></svg><span>Dica</span></button>
+        <button class="tool" id="restartBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 5V2L7 6l5 4V7a5 5 0 1 1-5 5H5a7 7 0 1 0 7-7z"/></svg><span>Recomeçar</span></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Vitória -->
+  <section class="screen" id="s-win">
+    <div class="wrap narrow center">
+      <p class="eyebrow" id="winEyebrow"></p>
+      <h2 class="win-title">Todos do outro lado!</h2>
+      <div class="win-stars" id="winStars" aria-hidden="true"></div>
+      <p class="win-trips" id="winTrips"></p>
+      <p class="muted" id="winSub"></p>
+      <div class="end-actions">
+        <button class="btn primary" id="winNext">Próxima fase</button>
+        <button class="btn" id="winRetry">Jogar de novo</button>
+        <button class="btn" id="winShare">Compartilhar</button>
+        <button class="btn ghost" id="winHome">Fases</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="engine.js"></script>
+  <script src="fases.js"></script>
+  <script src="travessia.js"></script>
+  <script src="../../pwa.js"></script>
+</body>
+</html>

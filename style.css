@@ -269,6 +269,20 @@ button { font: inherit; color: inherit; }
 .art-treino i:nth-child(3) { width: 64%; }
 .art-treino i:nth-child(4) { width: 28%; background: #ffcf3f; }
 
+.art-travessia { background: linear-gradient(180deg, #2c5a6e, #0f2a3a); }
+.art-travessia .tv-scene {
+  position: absolute; top: 50%; right: 6%; transform: translateY(-50%) rotate(-2deg); height: 100%; aspect-ratio: 1;
+  display: grid; grid-template-rows: 1fr 1.2fr 1fr; border-radius: 10px; overflow: hidden; box-shadow: 0 10px 24px rgba(0,0,0,.4);
+}
+.art-travessia.big .tv-scene { height: 82%; right: 9%; }
+.art-travessia .tv-bank { background: linear-gradient(180deg, #7db85a, #6aa64a); display: flex; justify-content: center; align-items: center; gap: 8%; }
+.art-travessia .tv-bank i { font-style: normal; font-size: clamp(16px, 2.2vw, 30px); }
+.art-travessia .tv-river { background: #2a8fb0; display: grid; place-items: center; border-block: 4px solid #e3cf9a; }
+.art-travessia .tv-river b { font-size: clamp(20px, 3vw, 40px); }
+.art-travessia:not(.big)::after {
+  content: ""; position: absolute; inset: 0; z-index: 1;
+  background: linear-gradient(to top, rgba(14,15,19,.85) 0%, rgba(14,15,19,.3) 45%, transparent 70%);
+}
 .art-acampamento { background: linear-gradient(180deg, #2b4a5a, #1d3a3a 55%, #24402a); }
 .art-acampamento .agrid {
   position: absolute; top: 50%; right: 6%; transform: translateY(-50%) rotate(2deg); height: 96%; aspect-ratio: 1;
