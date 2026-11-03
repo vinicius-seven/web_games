@@ -14,6 +14,7 @@ Um catálogo de jogos de navegador no estilo "streaming": destaque no topo, file
 | **Pontes** (`games/pontes/`) | Disponível | Ligar ilhas com pontes (gênero Hashi), num arquipélago tropical |
 | **Prensa** (`games/prensa/`) | Disponível | Adivinhar palavras de 5 letras: 1, 2 ou 4 por dia, e modo livre |
 | **Palavra do Dia** (`games/palavradodia/`) | Disponível | Dois jogos diários: Colmeia (7 letras) e Proximidade (distância de sentido) |
+| **Fios** (`games/fios/`) | Disponível | Ligar pinos da mesma cor sem cruzar, usando a placa inteira |
 | **Lampiões** (`games/lampioes/`) | Disponível | Lógica: iluminar a praça sem um lampião iluminar outro |
 | **Cerca** (`games/cerca/`) | Disponível | Lógica: um único cercado; os números dizem quantos lados têm cerca |
 | **Enigma de Einstein** (`games/einstein/`) | Disponível | Quem mora em cada casa: dedução com pistas, 4 tamanhos e enigma do dia |
@@ -100,6 +101,16 @@ Página inicial com dois jogos de palavras diários (iguais para todo mundo) e m
 - **Proximidade** (`proximidade.html`): digite palavras e veja a posição de cada uma numa fila de ~13.500 palavras ordenadas pela proximidade de sentido com a palavra secreta (1 = acertou). Plural, feminino e verbo conjugado contam como a forma básica. Dica, desistir, 60 jogos anteriores e as 100 palavras mais próximas no fim. Distâncias calculadas por `tools/proximidade_dados.py` com os vetores fastText do modelo `pt_core_news_lg` do spaCy (**CC BY-SA 4.0**; os dados derivados em `games/palavradodia/proximidade/` seguem a mesma licença — veja o `LEIA-ME.txt` da pasta).
 
 Links diretos: `games/palavradodia/?mode=colmeia|colmeia-livre|proximidade|proximidade-livre`.
+
+### Fios
+
+Quebra-cabeça do gênero *Numberlink*, com tema de placa de circuito: ligue os dois pinos de cada cor com um fio, sem cruzar outros fios, usando todas as casas da placa.
+
+- Fácil (5×5), Médio (7×7), Difícil (9×9), Desafio (10×10) e a **Placa do dia** (8×8), gerados no navegador por `games/fios/engine.js`: a placa é dividida em caminhos aleatórios (que preferem casas com poucas saídas e não encostam em si mesmos), e só é aceita se tiver **uma única solução**.
+- A unicidade é conferida por um contador exato de soluções (programação dinâmica casa a casa, guardando só a fronteira entre a parte feita e a que falta), validado contra força bruta em centenas de placas pequenas.
+- Arraste a partir de um pino ou da ponta de um fio; voltar encolhe o fio; passar por cima de outro fio corta o outro (que volta se você recuar). Tocar num pino solta o fio. Dica coloca um fio inteiro no lugar certo. Desfazer, recomeçar, pausa, progresso salvo e recorde por tamanho.
+
+Links diretos: `games/fios/?mode=5|7|9|10|diario|continuar`.
 
 ### Lampiões
 

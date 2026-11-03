@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Fios · Jogateca</title>
+  <meta name="description" content="Fios — ligue os pinos da mesma cor sem cruzar os fios e use a placa inteira.">
+  <meta name="theme-color" content="#0c1a16">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2312493a'/%3E%3Cpath d='M8 8 H24 V16 H12 V24' fill='none' stroke='%23ff5d5d' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='8' cy='8' r='4' fill='%23ff5d5d'/%3E%3Ccircle cx='12' cy='24' r='4' fill='%23ff5d5d'/%3E%3C/svg%3E">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="apple-touch-icon" href="../../icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Jogateca">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="stylesheet" href="fios.css">
+</head>
+<body>
+  <header class="bar">
+    <span class="bar-left">
+      <a href="../../index.html" class="back" id="backLink">‹ Jogateca</a>
+      <button class="menu-back" id="menuBack" hidden><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>Menu</button>
+    </span>
+    <button class="brand" id="homeBtn" aria-label="Menu do Fios">FIOS</button>
+    <span class="bar-right" id="barRight"></span>
+  </header>
+
+  <!-- Menu -->
+  <section class="screen" id="s-home">
+    <div class="wrap">
+      <div class="home-hero">
+        <svg class="hero-board" viewBox="0 0 120 50" aria-hidden="true">
+          <rect width="120" height="50" rx="10" fill="#12493a"/>
+          <g fill="none" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 12 H54 V38 H70" stroke="#ff5d5d"/>
+            <path d="M14 26 H40 V38 H24" stroke="#ffd23f"/>
+            <path d="M68 12 H106 V24 H84" stroke="#4fa3ff"/>
+            <path d="M84 38 H106" stroke="#5ee07a"/>
+          </g>
+          <g stroke="#0c1a16" stroke-width="1.6">
+            <circle cx="14" cy="12" r="4.5" fill="#ff5d5d"/><circle cx="70" cy="38" r="4.5" fill="#ff5d5d"/>
+            <circle cx="14" cy="26" r="4.5" fill="#ffd23f"/><circle cx="24" cy="38" r="4.5" fill="#ffd23f"/>
+            <circle cx="68" cy="12" r="4.5" fill="#4fa3ff"/><circle cx="84" cy="24" r="4.5" fill="#4fa3ff"/>
+            <circle cx="84" cy="38" r="4.5" fill="#5ee07a"/><circle cx="106" cy="38" r="4.5" fill="#5ee07a"/>
+          </g>
+        </svg>
+        <h1 class="logo">Fios</h1>
+        <p>Ligue cada par de pinos da mesma cor com um fio. Os fios não se cruzam, e a placa inteira precisa ser usada.</p>
+      </div>
+
+      <button class="resume" id="resumeBtn" hidden>
+        <span class="resume-body"><small>Continuar</small><strong id="resumeTitle"></strong><span id="resumeInfo"></span></span>
+        <span class="resume-go" aria-hidden="true">›</span>
+      </button>
+
+      <div class="home-grid">
+        <div class="panel daily">
+          <h2>Placa do dia</h2>
+          <p class="muted" id="dailyText"></p>
+          <button class="btn primary" id="dailyBtn"></button>
+        </div>
+        <div class="panel">
+          <h2>Escolha o tamanho</h2>
+          <div class="sizes" id="sizes"></div>
+        </div>
+      </div>
+
+      <div class="rules">
+        <h2>Regras</h2>
+        <ol>
+          <li>Ligue os <b>dois pinos de cada cor</b> com um fio que anda pelas casas, para cima, para baixo e para os lados.</li>
+          <li>Fios <b>não se cruzam</b> e não dividem casa.</li>
+          <li>Toda casa da placa precisa ser <b>usada</b> por algum fio.</li>
+        </ol>
+        <p class="muted">Arraste a partir de um pino (ou da ponta de um fio) para desenhar. Voltar o dedo encolhe o fio; passar por cima de outro fio corta o outro. Toque num pino para soltar o fio dele. Toda placa tem uma única solução.</p>
+      </div>
+      <p class="tip"><button class="btn ghost" data-pwa-install hidden>Instalar a Jogateca como app</button></p>
+    </div>
+  </section>
+
+  <!-- Jogo -->
+  <section class="screen" id="s-play">
+    <div class="play">
+      <div class="play-info">
+        <span id="infoTitle"></span>
+        <span>Fios <b id="infoWires">0</b></span>
+        <span>Placa <b id="infoFill">0%</b></span>
+        <button class="pause" id="pauseBtn" aria-label="Pausar">
+          <span id="timer">00:00</span>
+          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>
+        </button>
+      </div>
+
+      <div class="board-frame" id="frame">
+        <svg class="board" id="board" role="img" aria-label="Placa de circuito"></svg>
+        <div class="paused" id="paused" hidden>
+          <p>Pausado</p>
+          <button class="btn primary" id="resumePlay">Continuar</button>
+        </div>
+        <div class="loading" id="loading" hidden><p>Montando a placa…</p></div>
+      </div>
+
+      <p class="status" id="status" aria-live="polite"></p>
+
+      <div class="tools">
+        <button class="tool" id="undoBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12.5 8c-2.65 0-5.05 1-6.9 2.6L2 7v9h9l-3.62-3.62A7.95 7.95 0 0 1 12.5 10.5c3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/></svg><span>Desfazer</span></button>
+        <button class="tool" id="hintBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M9 21h6v-1H9v1zm3-19a7 7 0 0 0-4 12.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26A7 7 0 0 0 12 2z"/></svg><span>Dica</span></button>
+        <button class="tool" id="clearBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg><span>Recomeçar</span></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Vitória -->
+  <section class="screen" id="s-win">
+    <div class="wrap narrow center">
+      <p class="eyebrow" id="winEyebrow"></p>
+      <h2 class="win-title">Circuito completo!</h2>
+      <svg class="board win-board" id="winBoard" aria-hidden="true"></svg>
+      <div class="win-time" id="winTime"></div>
+      <p class="muted" id="winSub"></p>
+      <div class="end-actions">
+        <button class="btn primary" id="winShare">Compartilhar</button>
+        <button class="btn" id="winNew">Nova placa</button>
+        <button class="btn ghost" id="winHome">Menu</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="engine.js"></script>
+  <script src="fios.js"></script>
+  <script src="../../pwa.js"></script>
+</body>
+</html>

@@ -97,6 +97,21 @@
       duration: '3–20 min por mapa',
     },
     {
+      id: 'fios',
+      title: 'Fios',
+      status: 'available',
+      href: 'games/fios/index.html',
+      tagline: 'Ligue os pinos da mesma cor e use a placa inteira.',
+      description:
+        'Quebra-cabeça numa placa de circuito: puxe um fio entre os dois pinos de cada cor, sem cruzar outros fios, até preencher todas as casas. Placas novas a cada partida, sempre com uma única solução, e uma placa do dia.',
+      tags: ['Lógica', 'Casual'],
+      year: 2026,
+      age: 'L',
+      meta: '4 tamanhos',
+      match: 97,
+      duration: '1–10 min por placa',
+    },
+    {
       id: 'lampioes',
       title: 'Lampiões',
       status: 'available',
@@ -246,6 +261,11 @@
     { id: 'dois', game: 'prensa', art: 'prensa-2', title: '2 palavras', text: 'Duas palavras ao mesmo tempo, 7 tentativas.' },
     { id: 'quatro', game: 'prensa', art: 'prensa-4', title: '4 palavras', text: 'Quatro palavras ao mesmo tempo, 9 tentativas.' },
     { id: 'livre', game: 'prensa', art: 'prensa-livre', title: 'Livre', text: 'Palavras sorteadas sem limite, para treinar.' },
+    { id: 'diario', game: 'fios', art: 'fios-dia', title: 'Placa do dia', text: 'A mesma placa 8×8 para todo mundo hoje.' },
+    { id: '5', game: 'fios', art: 'fios-5', title: 'Fácil', text: '5×5, para pegar o jeito.' },
+    { id: '7', game: 'fios', art: 'fios-7', title: 'Médio', text: '7×7, mais fios para encaixar.' },
+    { id: '9', game: 'fios', art: 'fios-9', title: 'Difícil', text: '9×9, caminhos longos.' },
+    { id: '10', game: 'fios', art: 'fios-10', title: 'Desafio', text: '10×10, para sessões longas.' },
     { id: 'diario', game: 'lampioes', art: 'lampioes-dia', title: 'Praça do dia', text: 'A mesma praça 10×10 para todo mundo hoje.' },
     { id: '7', game: 'lampioes', art: 'lampioes-7', title: 'Fácil', text: '7×7, para aprender as regras.' },
     { id: '9', game: 'lampioes', art: 'lampioes-9', title: 'Médio', text: '9×9, pede pensar nas sombras.' },
@@ -355,6 +375,14 @@
       if (today && today.done) return today.won ? `Hoje ✓ · sequência ${stats ? stats.streak : 1}` : 'Hoje ✗';
       return 'Novo hoje';
     }
+    if (key === 'fios:diario') {
+      const r = store.get(`fios:daily:${todayKey()}`);
+      return r ? `Hoje ${fmtTime(r.time)}` : 'Novo hoje';
+    }
+    if (m.game === 'fios') {
+      const best = store.get(`fios:best:${m.id}`);
+      return best ? `Melhor ${fmtTime(best)}` : '';
+    }
     if (key === 'lampioes:diario') {
       const r = store.get(`lampioes:daily:${todayKey()}`);
       return r ? `Hoje ${fmtTime(r.time)}` : 'Novo hoje';
@@ -446,6 +474,23 @@
     if (kind === 'diario') {
       const c = ['#e76f51', '#f4a261', '#e9c46a', '#2a9d8f', '#8ab17d'];
       return `<div class="art art-diario">${c.map((x) => `<i style="background:${x}"></i>`).join('')}</div>`;
+    }
+    if (kind.startsWith('fios')) {
+      // Placa 5×5 resolvida, com fios coloridos.
+      const wires = [['#ff5d5d', [[0, 0], [3, 0], [3, 1], [1, 1]]], ['#ffd23f', [[4, 0], [4, 4], [2, 4]]], ['#4fa3ff', [[0, 1], [0, 4], [1, 4]]],
+        ['#5ee07a', [[1, 2], [3, 2], [3, 3]]], ['#b583ff', [[1, 3], [2, 3]]]];
+      const size = kind.match(/^fios-(\d+)$/);
+      const badge = kind === 'fios-dia'
+        ? `<span class="sudoku-badge day"><b>${new Date().getDate()}</b>${new Date().toLocaleDateString('pt-BR', { month: 'short' }).replace('.', '')}</span>`
+        : size ? `<span class="sudoku-badge">${size[1]}×${size[1]}</span>` : '';
+      const P = (x) => x + 0.5;
+      const svg = wires.map(([c, pts]) => {
+        const d = pts.map(([x, y], j) => `${j ? 'L' : 'M'}${P(x)} ${P(y)}`).join(' ');
+        const a = pts[0], z = pts[pts.length - 1];
+        return `<path d="${d}" stroke="${c}" stroke-width=".38" fill="none" stroke-linecap="round" stroke-linejoin="round"/>` +
+          [a, z].map(([x, y]) => `<circle cx="${P(x)}" cy="${P(y)}" r=".33" fill="${c}" stroke="#0b1512" stroke-width=".06"/>`).join('');
+      }).join('');
+      return `<div class="art art-fios${big ? ' big' : ''}"><svg class="fboard" viewBox="0 0 5 5"><rect width="5" height="5" fill="#12493a"/>${svg}</svg>${badge}</div>`;
     }
     if (kind.startsWith('lampioes')) {
       // Trecho de praça 5×5: muros (w), lampiões (L), casas iluminadas (o) e no escuro (.).
@@ -648,7 +693,7 @@
       </a>`;
   }
 
-  // Partidas salvas pelos jogos que guardam progresso (Sudoku, Canteiros, Ponto-Cruz, Pontes, Kakuro, Acampamento, Travessia, Enigma de Einstein, Cerca e Lampiões).
+  // Partidas salvas pelos jogos que guardam progresso (Sudoku, Canteiros, Ponto-Cruz, Pontes, Kakuro, Acampamento, Travessia, Enigma de Einstein, Cerca, Lampiões e Fios).
   function continueCards() {
     let html = '';
     const sv = store.get('sudoku:save');
@@ -674,6 +719,17 @@
         ${art('canteiros')}
         <span class="record">${fmtTime(Math.floor(cv.elapsed / 1000))}</span>
         <div class="card-title">Canteiros<small>${esc(cv.daily ? 'Do dia' : `${cv.n}×${cv.n}`)}</small></div>
+        <span class="progress" style="--p:${pct}%"></span>
+      </a>`;
+    }
+    const fv = store.get('fios:save');
+    if (fv && !fv.won && Array.isArray(fv.paths)) {
+      const pct = Math.round((new Set(fv.paths.flat()).size / (fv.n * fv.n)) * 100);
+      html += `
+      <a class="card mode" href="games/fios/index.html?mode=continuar" aria-label="Continuar Fios, ${pct}% da placa">
+        ${art('fios')}
+        <span class="record">${fmtTime(Math.floor(fv.elapsed / 1000))}</span>
+        <div class="card-title">Fios<small>${esc(fv.daily ? 'Do dia' : `${fv.n}×${fv.n}`)}</small></div>
         <span class="progress" style="--p:${pct}%"></span>
       </a>`;
     }

@@ -269,6 +269,16 @@ button { font: inherit; color: inherit; }
 .art-treino i:nth-child(3) { width: 64%; }
 .art-treino i:nth-child(4) { width: 28%; background: #ffcf3f; }
 
+.art-fios { background: linear-gradient(135deg, #1d3830, #0c1a16 65%); }
+.art-fios .fboard {
+  position: absolute; top: 50%; right: 6%; transform: translateY(-50%) rotate(-3deg); height: 96%; aspect-ratio: 1;
+  border: 5px solid #2b2f2c; border-radius: 10px; box-shadow: 0 10px 24px rgba(0,0,0,.45);
+}
+.art-fios.big .fboard { height: 80%; right: 9%; }
+.art-fios:not(.big)::after {
+  content: ""; position: absolute; inset: 0; z-index: 1;
+  background: linear-gradient(to top, rgba(14,15,19,.85) 0%, rgba(14,15,19,.3) 45%, transparent 70%);
+}
 .art-lampioes { background: radial-gradient(circle at 70% 40%, #2d2a24 0, #11131f 65%); }
 .art-lampioes .lgrid {
   position: absolute; top: 50%; right: 6%; transform: translateY(-50%) rotate(2deg); height: 96%; aspect-ratio: 1;
