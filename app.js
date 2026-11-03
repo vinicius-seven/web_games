@@ -97,6 +97,51 @@
       duration: '3–20 min por mapa',
     },
     {
+      id: 'binario',
+      title: 'Binário',
+      status: 'available',
+      href: 'games/binario/index.html',
+      tagline: 'Zeros e uns num painel de azulejos.',
+      description:
+        'Complete o painel com azulejos brancos (0) e azuis (1): nunca três iguais seguidos, metade de cada em toda linha e coluna, e nenhuma linha ou coluna repetida. Painéis novos a cada partida, sempre com uma única solução, e um painel do dia.',
+      tags: ['Lógica', 'Casual'],
+      year: 2026,
+      age: 'L',
+      meta: '4 tamanhos',
+      match: 97,
+      duration: '2–15 min por painel',
+    },
+    {
+      id: 'garimpo',
+      title: 'Garimpo',
+      status: 'available',
+      href: 'games/garimpo/index.html',
+      tagline: 'Cave sem cair nos buracos — e sem precisar chutar.',
+      description:
+        'Os números dizem quantos buracos há nas oito casas em volta. Cave todo o terreno seguro e marque os buracos com estacas. Todo terreno é gerado para fechar só com lógica, sem aquele chute no fim. Quatro tamanhos e um terreno do dia.',
+      tags: ['Lógica', 'Clássico'],
+      year: 2026,
+      age: 'L',
+      meta: '4 tamanhos',
+      match: 98,
+      duration: '2–15 min por terreno',
+    },
+    {
+      id: 'escada',
+      title: 'Escada',
+      status: 'available',
+      href: 'games/escada/index.html',
+      tagline: 'De uma palavra a outra, uma letra por vez.',
+      description:
+        'Suba de GATO a PELO trocando uma letra por degrau, sempre formando palavras de verdade. Escadas do dia de 4 e de 5 letras, iguais para todo mundo, e escadas livres sem limite. Chegue no mínimo de degraus para levar 3 estrelas.',
+      tags: ['Palavras', 'Diário', 'Raciocínio'],
+      year: 2026,
+      age: 'L',
+      meta: '4 modos',
+      match: 96,
+      duration: '1–5 min por escada',
+    },
+    {
       id: 'fios',
       title: 'Fios',
       status: 'available',
@@ -261,6 +306,20 @@
     { id: 'dois', game: 'prensa', art: 'prensa-2', title: '2 palavras', text: 'Duas palavras ao mesmo tempo, 7 tentativas.' },
     { id: 'quatro', game: 'prensa', art: 'prensa-4', title: '4 palavras', text: 'Quatro palavras ao mesmo tempo, 9 tentativas.' },
     { id: 'livre', game: 'prensa', art: 'prensa-livre', title: 'Livre', text: 'Palavras sorteadas sem limite, para treinar.' },
+    { id: 'diario', game: 'binario', art: 'binario-dia', title: 'Painel do dia', text: 'O mesmo painel 10×10 para todo mundo hoje.' },
+    { id: '6', game: 'binario', art: 'binario-6', title: 'Fácil', text: '6×6, para aprender as regras.' },
+    { id: '8', game: 'binario', art: 'binario-8', title: 'Médio', text: '8×8, pede olhar a linha inteira.' },
+    { id: '10', game: 'binario', art: 'binario-10', title: 'Difícil', text: '10×10, com deduções em cadeia.' },
+    { id: '12', game: 'binario', art: 'binario-12', title: 'Desafio', text: '12×12, para sessões longas.' },
+    { id: 'diario', game: 'garimpo', art: 'garimpo-dia', title: 'Terreno do dia', text: 'O mesmo terreno para todo mundo hoje.' },
+    { id: 'facil', game: 'garimpo', art: 'garimpo-1', title: 'Fácil', text: '8×10, 13 buracos.' },
+    { id: 'medio', game: 'garimpo', art: 'garimpo-2', title: 'Médio', text: '10×13, 25 buracos.' },
+    { id: 'dificil', game: 'garimpo', art: 'garimpo-3', title: 'Difícil', text: '12×16, 44 buracos.' },
+    { id: 'desafio', game: 'garimpo', art: 'garimpo-4', title: 'Desafio', text: '14×20, 66 buracos.' },
+    { id: 'dia4', game: 'escada', art: 'escada-4', title: 'Do dia · 4 letras', text: 'A mesma escada para todo mundo hoje.' },
+    { id: 'dia5', game: 'escada', art: 'escada-5', title: 'Do dia · 5 letras', text: 'A escada mais longa do dia.' },
+    { id: 'livre4', game: 'escada', art: 'escada-4', title: 'Livre · 4 letras', text: 'Escadas sorteadas, sem limite.' },
+    { id: 'livre5', game: 'escada', art: 'escada-5', title: 'Livre · 5 letras', text: 'Escadas sorteadas, sem limite.' },
     { id: 'diario', game: 'fios', art: 'fios-dia', title: 'Placa do dia', text: 'A mesma placa 8×8 para todo mundo hoje.' },
     { id: '5', game: 'fios', art: 'fios-5', title: 'Fácil', text: '5×5, para pegar o jeito.' },
     { id: '7', game: 'fios', art: 'fios-7', title: 'Médio', text: '7×7, mais fios para encaixar.' },
@@ -375,6 +434,30 @@
       if (today && today.done) return today.won ? `Hoje ✓ · sequência ${stats ? stats.streak : 1}` : 'Hoje ✗';
       return 'Novo hoje';
     }
+    if (key === 'binario:diario') {
+      const r = store.get(`binario:daily:${todayKey()}`);
+      return r ? `Hoje ${fmtTime(r.time)}` : 'Novo hoje';
+    }
+    if (m.game === 'binario') {
+      const best = store.get(`binario:best:${m.id}`);
+      return best ? `Melhor ${fmtTime(best)}` : '';
+    }
+    if (key === 'garimpo:diario') {
+      const r = store.get(`garimpo:daily:${todayKey()}`);
+      return r ? `Hoje ${fmtTime(r.time)}` : 'Novo hoje';
+    }
+    if (m.game === 'garimpo') {
+      const best = store.get(`garimpo:best:${m.id}`);
+      return best ? `Melhor ${fmtTime(best)}` : '';
+    }
+    if (m.game === 'escada') {
+      const L = m.id.slice(-1);
+      if (m.id.startsWith('livre')) { const w = store.get(`escada:wins:${L}`, 0); return w ? `${w} ${w === 1 ? 'escada' : 'escadas'}` : ''; }
+      const d = new Date();
+      const day = Math.round((Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) - Date.UTC(2026, 0, 1)) / 86400000) + 1;
+      const r = store.get(`escada:dia:${L}:${day}`);
+      return r && r.done ? (r.won ? `Hoje ${'★'.repeat(r.stars)}${'☆'.repeat(3 - r.stars)}` : 'Hoje ✗') : 'Novo hoje';
+    }
     if (key === 'fios:diario') {
       const r = store.get(`fios:daily:${todayKey()}`);
       return r ? `Hoje ${fmtTime(r.time)}` : 'Novo hoje';
@@ -474,6 +557,31 @@
     if (kind === 'diario') {
       const c = ['#e76f51', '#f4a261', '#e9c46a', '#2a9d8f', '#8ab17d'];
       return `<div class="art art-diario">${c.map((x) => `<i style="background:${x}"></i>`).join('')}</div>`;
+    }
+    if (kind.startsWith('binario')) {
+      // Painel 4×4 de azulejos brancos (0) e azuis (1), já resolvido.
+      const g = [1, 0, 0, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 1, 1];
+      const size = kind.match(/^binario-(\d+)$/);
+      const badge = kind === 'binario-dia'
+        ? `<span class="sudoku-badge day"><b>${new Date().getDate()}</b>${new Date().toLocaleDateString('pt-BR', { month: 'short' }).replace('.', '')}</span>`
+        : size ? `<span class="sudoku-badge">${size[1]}×${size[1]}</span>` : '';
+      return `<div class="art art-binario${big ? ' big' : ''}"><div class="bgrid">${g.map((v) => `<i class="b${v}">${v}</i>`).join('')}</div>${badge}</div>`;
+    }
+    if (kind.startsWith('garimpo')) {
+      // Terreno 5×5: capim (h), terra cavada com números e uma estaca.
+      const g = ['h h 1 . .', 'h f 2 1 .', 'h h h 1 .', '1 2 2 1 .', '. . . . .'].map((r) => r.split(' ')).flat();
+      const stake = '<svg viewBox="0 0 100 100"><path d="M44 20 H54 V88 L49 96 L44 88 Z" fill="#8a5a2b"/><path d="M54 20 L86 32 L54 46 Z" fill="#e5483b"/></svg>';
+      const lvl = kind.match(/^garimpo-(\d)$/);
+      const badge = kind === 'garimpo-dia'
+        ? `<span class="sudoku-badge day"><b>${new Date().getDate()}</b>${new Date().toLocaleDateString('pt-BR', { month: 'short' }).replace('.', '')}</span>`
+        : lvl ? `<span class="sudoku-badge">${'●'.repeat(+lvl[1])}${'○'.repeat(4 - lvl[1])}</span>` : '';
+      return `<div class="art art-garimpo${big ? ' big' : ''}"><div class="ggrid">${g.map((x) => (x === 'h' ? '<i class="h"></i>' : x === 'f' ? `<i class="h">${stake}</i>` : `<i class="n${x}">${x === '.' ? '' : x}</i>`)).join('')}</div>${badge}</div>`;
+    }
+    if (kind.startsWith('escada')) {
+      // Escada de madeira com três degraus de palavras.
+      const five = kind === 'escada-5';
+      const rungs = five ? [['PRATO', -1], ['PRATA', 4], ['PRAIA', 3]] : [['GALO', -1], ['GELO', 1], ['PELO', 0]];
+      return `<div class="art art-escada${big ? ' big' : ''}"><div class="eladder">${rungs.map(([w, c]) => `<div>${[...w].map((ch, i) => `<i${i === c ? ' class="c"' : ''}>${ch}</i>`).join('')}</div>`).join('')}</div>${kind === 'escada-4' || five ? `<span class="sudoku-badge">${five ? 5 : 4} letras</span>` : ''}</div>`;
     }
     if (kind.startsWith('fios')) {
       // Placa 5×5 resolvida, com fios coloridos.
@@ -693,7 +801,7 @@
       </a>`;
   }
 
-  // Partidas salvas pelos jogos que guardam progresso (Sudoku, Canteiros, Ponto-Cruz, Pontes, Kakuro, Acampamento, Travessia, Enigma de Einstein, Cerca, Lampiões e Fios).
+  // Partidas salvas pelos jogos que guardam progresso (Sudoku, Canteiros, Ponto-Cruz, Pontes, Kakuro, Acampamento, Travessia, Enigma de Einstein, Cerca, Lampiões, Fios, Binário e Garimpo).
   function continueCards() {
     let html = '';
     const sv = store.get('sudoku:save');
@@ -719,6 +827,29 @@
         ${art('canteiros')}
         <span class="record">${fmtTime(Math.floor(cv.elapsed / 1000))}</span>
         <div class="card-title">Canteiros<small>${esc(cv.daily ? 'Do dia' : `${cv.n}×${cv.n}`)}</small></div>
+        <span class="progress" style="--p:${pct}%"></span>
+      </a>`;
+    }
+    const bs = store.get('binario:save');
+    if (bs && !bs.won && Array.isArray(bs.cells)) {
+      const empty = bs.givens.filter((v) => v < 0).length;
+      const pct = empty ? Math.round((bs.cells.filter((v, i) => v >= 0 && bs.givens[i] < 0).length / empty) * 100) : 0;
+      html += `
+      <a class="card mode" href="games/binario/index.html?mode=continuar" aria-label="Continuar Binário, ${pct}% preenchido">
+        ${art('binario')}
+        <span class="record">${fmtTime(Math.floor(bs.elapsed / 1000))}</span>
+        <div class="card-title">Binário<small>${esc(bs.daily ? 'Do dia' : `${bs.n}×${bs.n}`)}</small></div>
+        <span class="progress" style="--p:${pct}%"></span>
+      </a>`;
+    }
+    const gs = store.get('garimpo:save');
+    if (gs && !gs.won && !gs.gaveUp && Array.isArray(gs.open)) {
+      const pct = Math.round((gs.open.filter(Boolean).length / (gs.W * gs.H - gs.B)) * 100);
+      html += `
+      <a class="card mode" href="games/garimpo/index.html?mode=continuar" aria-label="Continuar Garimpo, ${pct}% cavado">
+        ${art('garimpo')}
+        <span class="record">${fmtTime(Math.floor(gs.elapsed / 1000))}</span>
+        <div class="card-title">Garimpo<small>${esc(gs.daily ? 'Do dia' : `${gs.W}×${gs.H}`)}</small></div>
         <span class="progress" style="--p:${pct}%"></span>
       </a>`;
     }

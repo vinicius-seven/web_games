@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Escada · Jogateca</title>
+  <meta name="description" content="Escada — vá de uma palavra a outra trocando uma letra por vez.">
+  <meta name="theme-color" content="#1f1912">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231f1912'/%3E%3Cpath d='M9 3 V29 M23 3 V29' stroke='%23b98552' stroke-width='3'/%3E%3Cpath d='M9 9 H23 M9 16 H23 M9 23 H23' stroke='%23e0b77a' stroke-width='3'/%3E%3C/svg%3E">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="apple-touch-icon" href="../../icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Jogateca">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="stylesheet" href="escada.css">
+</head>
+<body>
+  <header class="bar">
+    <span class="bar-left">
+      <a href="../../index.html" class="back" id="backLink">‹ Jogateca</a>
+      <button class="menu-back" id="menuBack" hidden><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>Menu</button>
+    </span>
+    <button class="brand" id="homeBtn" aria-label="Menu da Escada">ESCADA</button>
+    <span class="bar-right" id="barRight"></span>
+  </header>
+
+  <!-- Menu -->
+  <section class="screen" id="s-home">
+    <div class="wrap">
+      <div class="home-hero">
+        <div class="hero-ladder" aria-hidden="true">
+          <div class="rung"><i>G</i><i>A</i><i>T</i><i>O</i></div>
+          <div class="rung"><i>G</i><i>A</i><i class="ch">L</i><i>O</i></div>
+          <div class="rung"><i>G</i><i class="ch">E</i><i>L</i><i>O</i></div>
+          <div class="rung"><i class="ch">P</i><i>E</i><i>L</i><i>O</i></div>
+        </div>
+        <h1 class="logo">Escada</h1>
+        <p>Suba de uma palavra a outra trocando uma letra por vez. Todo degrau precisa ser uma palavra de verdade.</p>
+      </div>
+      <div class="modes" id="modes"></div>
+      <details class="howto">
+        <summary>Como jogar</summary>
+        <ul>
+          <li>Escreva uma palavra que mude <b>só uma letra</b> da anterior, no mesmo lugar (sem mudar a ordem nem o tamanho).</li>
+          <li>Continue até chegar à palavra de baixo. Acentos não importam na hora de digitar.</li>
+          <li>Cada escada mostra o <b>mínimo de degraus</b> possível. Chegar no mínimo, sem dica, vale 3 estrelas.</li>
+          <li>Letras que já estão no lugar certo da palavra final ficam verdes. Toque num degrau para voltar a ele.</li>
+          <li>A escada do dia é a mesma para todo mundo; a livre sorteia uma nova sempre que você quiser.</li>
+        </ul>
+      </details>
+      <p class="tip"><button class="btn ghost" data-pwa-install hidden>Instalar a Jogateca como app</button></p>
+    </div>
+  </section>
+
+  <!-- Jogo -->
+  <section class="screen" id="s-play">
+    <div class="play">
+      <div class="play-info">
+        <span id="infoTitle"></span>
+        <span>Degraus <b id="infoSteps">0</b> <small id="infoPar"></small></span>
+      </div>
+      <div class="ladder-wrap" id="ladderWrap">
+        <div class="ladder" id="ladder" aria-live="polite"></div>
+      </div>
+      <div class="done-panel" id="donePanel" hidden>
+        <div class="stars" id="doneStars" aria-hidden="true"></div>
+        <p class="done-title" id="doneTitle"></p>
+        <p class="muted" id="doneSub"></p>
+        <p class="muted small" id="doneSolution"></p>
+        <div class="end-actions">
+          <button class="btn primary" id="shareBtn">Compartilhar</button>
+          <button class="btn" id="nextBtn">Nova escada</button>
+          <button class="btn ghost" id="doneMenu">Menu</button>
+        </div>
+      </div>
+      <div class="tools" id="tools">
+        <button class="tool" id="undoBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12.5 8c-2.65 0-5.05 1-6.9 2.6L2 7v9h9l-3.62-3.62A7.95 7.95 0 0 1 12.5 10.5c3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/></svg><span>Desfazer</span></button>
+        <button class="tool" id="hintBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M9 21h6v-1H9v1zm3-19a7 7 0 0 0-4 12.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26A7 7 0 0 0 12 2z"/></svg><span>Dica</span></button>
+        <button class="tool" id="giveBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M14.4 6 14 4H5v17h2v-7h5.6l.4 2h7V6z"/></svg><span>Desistir</span></button>
+      </div>
+      <div class="kb" id="kb" aria-label="Teclado"></div>
+    </div>
+  </section>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="palavras.js"></script>
+  <script src="escada.js"></script>
+  <script src="../../pwa.js"></script>
+</body>
+</html>

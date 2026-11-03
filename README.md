@@ -14,6 +14,9 @@ Um catálogo de jogos de navegador no estilo "streaming": destaque no topo, file
 | **Pontes** (`games/pontes/`) | Disponível | Ligar ilhas com pontes (gênero Hashi), num arquipélago tropical |
 | **Prensa** (`games/prensa/`) | Disponível | Adivinhar palavras de 5 letras: 1, 2 ou 4 por dia, e modo livre |
 | **Palavra do Dia** (`games/palavradodia/`) | Disponível | Dois jogos diários: Colmeia (7 letras) e Proximidade (distância de sentido) |
+| **Escada** (`games/escada/`) | Disponível | Palavras: de uma palavra a outra trocando uma letra por vez |
+| **Garimpo** (`games/garimpo/`) | Disponível | Campo minado em que toda partida fecha só com lógica |
+| **Binário** (`games/binario/`) | Disponível | Lógica: 0 e 1 num painel de azulejos |
 | **Fios** (`games/fios/`) | Disponível | Ligar pinos da mesma cor sem cruzar, usando a placa inteira |
 | **Lampiões** (`games/lampioes/`) | Disponível | Lógica: iluminar a praça sem um lampião iluminar outro |
 | **Cerca** (`games/cerca/`) | Disponível | Lógica: um único cercado; os números dizem quantos lados têm cerca |
@@ -101,6 +104,34 @@ Página inicial com dois jogos de palavras diários (iguais para todo mundo) e m
 - **Proximidade** (`proximidade.html`): digite palavras e veja a posição de cada uma numa fila de ~13.500 palavras ordenadas pela proximidade de sentido com a palavra secreta (1 = acertou). Plural, feminino e verbo conjugado contam como a forma básica. Dica, desistir, 60 jogos anteriores e as 100 palavras mais próximas no fim. Distâncias calculadas por `tools/proximidade_dados.py` com os vetores fastText do modelo `pt_core_news_lg` do spaCy (**CC BY-SA 4.0**; os dados derivados em `games/palavradodia/proximidade/` seguem a mesma licença — veja o `LEIA-ME.txt` da pasta).
 
 Links diretos: `games/palavradodia/?mode=colmeia|colmeia-livre|proximidade|proximidade-livre`.
+
+### Binário
+
+Quebra-cabeça do gênero *Takuzu* (*Binairo*), com tema de painel de azulejos: brancos (0) e azuis (1). Nunca três iguais seguidos, metade de cada em toda linha e coluna, e nenhuma linha ou coluna repetida.
+
+- Fácil (6×6), Médio (8×8), Difícil (10×10), Desafio (12×12) e o **Painel do dia** (10×10), gerados por `games/binario/engine.js` (grade completa sorteada; azulejos tirados enquanto o resolvedor ainda fecha tudo).
+- Resolvedor em três níveis: par, sanduíche e conta; todas as formas de completar uma linha (sem repetir uma linha pronta); hipótese curta. **Solução única e sem chute**, conferida por força bruta.
+- Toque: vazio → 0 → 1; segurar faz o caminho inverso; teclas 0 e 1. Erros pelas regras em vermelho, algarismos podem ser escondidos, dica que explica a regra e destaca a linha usada.
+
+Links diretos: `games/binario/?mode=6|8|10|12|diario|continuar`.
+
+### Garimpo
+
+Campo minado **sem chute**, com tema de garimpo: cave o terreno sem cair nos buracos; os números contam os buracos nas oito casas em volta.
+
+- Fácil (8×10, 13 buracos), Médio (10×13, 25), Difícil (12×16, 44), Desafio (14×20, 66) e o **Terreno do dia**. A partida começa com uma área aberta, e `games/garimpo/engine.js` só aceita terrenos que um resolvedor abre por inteiro a partir dali (números completos, pares de números vizinhos e a conta total de buracos).
+- Toque cava, tocar e segurar põe estaca (ou troque o modo do toque); tocar num número com as estacas certas cava o resto. Caiu num buraco? Dá para voltar a jogada (conta como tropeço). Dica mostra a próxima casa certa e explica por quê. Pepitas de ouro no fim.
+
+Links diretos: `games/garimpo/?mode=facil|medio|dificil|desafio|diario|continuar`.
+
+### Escada
+
+Jogo de palavras: vá de uma palavra a outra trocando uma letra por degrau, sempre formando palavras de verdade (acentos não importam).
+
+- **Escada do dia** de 4 e de 5 letras (iguais para todo mundo) e **escadas livres**. Cada escada mostra o mínimo de degraus (busca em largura sobre a lista); chegar no mínimo sem dica vale 3 estrelas. Dica dá o próximo degrau do melhor caminho; dá para voltar tocando num degrau.
+- Listas em `games/escada/palavras.js`, geradas por `tools/escada_palavras.py` a partir da lista de frequência FrequencyWords (MIT), conferida no dicionário VERO só como filtro, mais as listas do Prensa.
+
+Links diretos: `games/escada/?mode=dia4|dia5|livre4|livre5`.
 
 ### Fios
 

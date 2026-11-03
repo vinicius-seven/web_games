@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Garimpo · Jogateca</title>
+  <meta name="description" content="Garimpo — cave o terreno sem cair nos buracos. Toda partida fecha só com lógica.">
+  <meta name="theme-color" content="#1b2414">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2356843a'/%3E%3Crect x='6' y='6' width='20' height='20' rx='3' fill='%23d9c39a'/%3E%3Ctext x='16' y='22' font-family='Arial' font-weight='800' font-size='15' text-anchor='middle' fill='%232f62c9'%3E1%3C/text%3E%3C/svg%3E">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="apple-touch-icon" href="../../icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Jogateca">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="stylesheet" href="garimpo.css">
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <symbol id="stake" viewBox="0 0 100 100">
+        <path d="M44 20 H54 V88 L49 96 L44 88 Z" fill="#8a5a2b"/>
+        <path d="M54 20 L86 32 L54 46 Z" fill="#e5483b"/>
+        <path d="M54 20 L86 32 L70 38 Z" fill="#ff7a6e"/>
+      </symbol>
+      <symbol id="nugget" viewBox="0 0 100 100">
+        <path d="M22 60 L34 36 L58 28 L78 42 L80 64 L60 76 L34 74 Z" fill="#e7b416"/>
+        <path d="M34 36 L58 28 L62 44 L40 50 Z" fill="#ffe37a"/>
+        <path d="M62 44 L78 42 L80 64 L60 60 Z" fill="#c78f0c"/>
+      </symbol>
+    </defs>
+  </svg>
+  <header class="bar">
+    <span class="bar-left">
+      <a href="../../index.html" class="back" id="backLink">‹ Jogateca</a>
+      <button class="menu-back" id="menuBack" hidden><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>Menu</button>
+    </span>
+    <button class="brand" id="homeBtn" aria-label="Menu do Garimpo">GARIMPO</button>
+    <span class="bar-right" id="barRight"></span>
+  </header>
+
+  <!-- Menu -->
+  <section class="screen" id="s-home">
+    <div class="wrap">
+      <div class="home-hero">
+        <div class="hero-field" aria-hidden="true"><i class="o">1</i><i class="o n2">2</i><i class="h"></i><i class="o"></i><i class="o">1</i><i class="f"><svg viewBox="0 0 100 100"><use href="#stake"/></svg></i><i class="o">1</i><i class="h"></i></div>
+        <h1 class="logo">Garimpo</h1>
+        <p>Cave o terreno sem cair nos buracos. Cada número diz quantos buracos há nas oito casas em volta — e toda partida fecha só com lógica, sem precisar chutar.</p>
+      </div>
+
+      <button class="resume" id="resumeBtn" hidden>
+        <span class="resume-body"><small>Continuar</small><strong id="resumeTitle"></strong><span id="resumeInfo"></span></span>
+        <span class="resume-go" aria-hidden="true">›</span>
+      </button>
+
+      <div class="home-grid">
+        <div class="panel daily">
+          <h2>Terreno do dia</h2>
+          <p class="muted" id="dailyText"></p>
+          <button class="btn primary" id="dailyBtn"></button>
+        </div>
+        <div class="panel">
+          <h2>Escolha o tamanho</h2>
+          <div class="sizes" id="sizes"></div>
+        </div>
+      </div>
+
+      <div class="rules">
+        <h2>Regras</h2>
+        <ol>
+          <li>Cave todas as casas <b>sem buraco</b>. A partida já começa com uma área aberta.</li>
+          <li>Cada número diz <b>quantos buracos</b> há nas <b>oito casas em volta</b> (inclusive nas diagonais).</li>
+          <li>Marque com uma <b>estaca</b> onde você tem certeza de que há buraco.</li>
+        </ol>
+        <p class="muted">Toque para cavar; toque e segure (ou troque o modo do toque) para pôr ou tirar uma estaca. Tocar num número que já tem todas as estacas em volta cava o resto de uma vez. Se cair num buraco, dá para voltar a jogada. Todo terreno fecha só com raciocínio.</p>
+      </div>
+      <p class="tip"><button class="btn ghost" data-pwa-install hidden>Instalar a Jogateca como app</button></p>
+    </div>
+  </section>
+
+  <!-- Jogo -->
+  <section class="screen" id="s-play">
+    <div class="play">
+      <div class="play-info">
+        <span id="infoTitle"></span>
+        <span>Buracos <b id="infoMines">0</b></span>
+        <button class="pause" id="pauseBtn" aria-label="Pausar">
+          <span id="timer">00:00</span>
+          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>
+        </button>
+      </div>
+
+      <div class="board-frame" id="frame">
+        <div class="board" id="board" role="grid" aria-label="Terreno"></div>
+        <div class="loading" id="loading" hidden><p>Preparando o terreno…</p></div>
+        <div class="oops" id="oops" hidden>
+          <p class="oops-title">Caiu num buraco!</p>
+          <p class="muted" id="oopsMsg">Dá para voltar a jogada e pensar de novo.</p>
+          <div class="row"><button class="btn primary" id="oopsUndo">Voltar a jogada</button><button class="btn" id="oopsGive">Ver o terreno</button></div>
+        </div>
+        <div class="paused" id="paused" hidden>
+          <p>Pausado</p>
+          <button class="btn primary" id="resumePlay">Continuar</button>
+        </div>
+      </div>
+
+      <p class="status" id="status" aria-live="polite"></p>
+
+      <div class="tools">
+        <button class="tool" id="undoBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12.5 8c-2.65 0-5.05 1-6.9 2.6L2 7v9h9l-3.62-3.62A7.95 7.95 0 0 1 12.5 10.5c3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/></svg><span>Desfazer</span></button>
+        <button class="tool" id="modeBtn" aria-pressed="false"><span class="mode-ico" id="modeIco" aria-hidden="true">⛏️</span><span>Toque: <em id="modeState">cavar</em></span></button>
+        <button class="tool" id="hintBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M9 21h6v-1H9v1zm3-19a7 7 0 0 0-4 12.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26A7 7 0 0 0 12 2z"/></svg><span>Dica</span></button>
+        <button class="tool" id="clearBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg><span>Recomeçar</span></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Vitória -->
+  <section class="screen" id="s-win">
+    <div class="wrap narrow center">
+      <p class="eyebrow" id="winEyebrow"></p>
+      <h2 class="win-title">Terreno garimpado!</h2>
+      <div class="win-board" id="winBoard" aria-hidden="true"></div>
+      <div class="win-time" id="winTime"></div>
+      <p class="muted" id="winSub"></p>
+      <div class="end-actions">
+        <button class="btn primary" id="winShare">Compartilhar</button>
+        <button class="btn" id="winNew">Novo terreno</button>
+        <button class="btn ghost" id="winHome">Menu</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="engine.js"></script>
+  <script src="garimpo.js"></script>
+  <script src="../../pwa.js"></script>
+</body>
+</html>

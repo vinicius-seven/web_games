@@ -269,6 +269,38 @@ button { font: inherit; color: inherit; }
 .art-treino i:nth-child(3) { width: 64%; }
 .art-treino i:nth-child(4) { width: 28%; background: #ffcf3f; }
 
+.art-binario { background: linear-gradient(135deg, #20304d, #0f1a2e 65%); }
+.art-binario .bgrid {
+  position: absolute; top: 50%; right: 6%; transform: translateY(-50%) rotate(-3deg); height: 96%; aspect-ratio: 1;
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 3px; padding: 5px; border-radius: 8px; background: #bdb5a3; box-shadow: 0 10px 24px rgba(0,0,0,.45);
+}
+.art-binario.big .bgrid { height: 78%; right: 9%; }
+.art-binario .bgrid i { border-radius: 3px; display: grid; place-items: center; font: 700 clamp(13px, 1.6vw, 22px) Georgia, serif; font-style: normal; }
+.art-binario .bgrid i.b1 { background: radial-gradient(circle at 0 0, #f4f1e8 0 14%, transparent 15%), radial-gradient(circle at 100% 100%, #f4f1e8 0 14%, transparent 15%), #1f4fa8; color: #f4f1e8; }
+.art-binario .bgrid i.b0 { background: radial-gradient(circle at 100% 0, #1f4fa8 0 14%, transparent 15%), radial-gradient(circle at 0 100%, #1f4fa8 0 14%, transparent 15%), #f4f1e8; color: #1f4fa8; }
+.art-garimpo { background: linear-gradient(135deg, #2f3d23, #1b2414 65%); }
+.art-garimpo .ggrid {
+  position: absolute; top: 50%; right: 6%; transform: translateY(-50%) rotate(2deg); height: 96%; aspect-ratio: 1;
+  display: grid; grid-template-columns: repeat(5, 1fr); gap: 1px; padding: 4px; border-radius: 8px; background: #3b2a18; box-shadow: 0 10px 24px rgba(0,0,0,.45);
+}
+.art-garimpo.big .ggrid { height: 78%; right: 9%; }
+.art-garimpo .ggrid i { border-radius: 2px; display: grid; place-items: center; background: #dcc69c; font: 800 clamp(12px, 1.5vw, 20px) system-ui, sans-serif; font-style: normal; }
+.art-garimpo .ggrid i.h { background: linear-gradient(180deg, #7cb24e, #5f9238); }
+.art-garimpo .ggrid i svg { width: 80%; height: 80%; }
+.art-garimpo .ggrid i.n1 { color: #2f62c9; } .art-garimpo .ggrid i.n2 { color: #2e8b3a; }
+.art-escada { background: radial-gradient(circle at 70% 40%, #4a3a28 0, #1f1912 65%); }
+.art-escada .eladder {
+  position: absolute; top: 50%; right: 8%; transform: translateY(-50%) rotate(-4deg); display: grid; gap: 5px; padding: 6px 14px;
+  border-left: 7px solid #b98552; border-right: 7px solid #b98552; border-radius: 4px;
+}
+.art-escada.big .eladder { right: 12%; }
+.art-escada .eladder div { display: flex; gap: 3px; padding: 3px 4px; border-radius: 4px; background: linear-gradient(180deg, #c99561, #8f6136); }
+.art-escada .eladder i { width: clamp(14px, 1.6vw, 22px); height: clamp(16px, 1.8vw, 24px); display: grid; place-items: center; font: 700 clamp(11px, 1.3vw, 17px) Georgia, serif; font-style: normal; background: #f6ecd4; color: #2c2116; border-radius: 2px; }
+.art-escada .eladder i.c { background: #f08a3c; color: #fff; }
+.art-binario:not(.big)::after, .art-garimpo:not(.big)::after, .art-escada:not(.big)::after {
+  content: ""; position: absolute; inset: 0; z-index: 1;
+  background: linear-gradient(to top, rgba(14,15,19,.85) 0%, rgba(14,15,19,.3) 45%, transparent 70%);
+}
 .art-fios { background: linear-gradient(135deg, #1d3830, #0c1a16 65%); }
 .art-fios .fboard {
   position: absolute; top: 50%; right: 6%; transform: translateY(-50%) rotate(-3deg); height: 96%; aspect-ratio: 1;

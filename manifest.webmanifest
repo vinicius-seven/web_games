@@ -2,7 +2,7 @@
   "id": "./",
   "name": "Jogateca",
   "short_name": "Jogateca",
-  "description": "Catálogo de jogos de navegador: Fios, Lampiões, Cerca, Enigma de Einstein, Travessia, Acampamento, Prensa, Palavra do Dia, Kakuro, Croma, Tamanho Certo, Sudoku, Canteiros, Ponto-Cruz e Pontes.",
+  "description": "Catálogo de jogos de navegador: Escada, Garimpo, Binário, Fios, Lampiões, Cerca, Enigma de Einstein, Travessia, Acampamento, Prensa, Palavra do Dia, Kakuro, Croma, Tamanho Certo, Sudoku, Canteiros, Ponto-Cruz e Pontes.",
   "lang": "pt-BR",
   "dir": "ltr",
   "start_url": "./",
@@ -42,6 +42,42 @@
     }
   ],
   "shortcuts": [
+    {
+      "name": "Escada do dia",
+      "short_name": "Escada",
+      "url": "games/escada/index.html?mode=dia4",
+      "icons": [
+        {
+          "src": "icons/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Garimpo: terreno do dia",
+      "short_name": "Garimpo",
+      "url": "games/garimpo/index.html?mode=diario",
+      "icons": [
+        {
+          "src": "icons/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Binário: painel do dia",
+      "short_name": "Binário",
+      "url": "games/binario/index.html?mode=diario",
+      "icons": [
+        {
+          "src": "icons/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
     {
       "name": "Fios: placa do dia",
       "short_name": "Fios",
@@ -118,42 +154,6 @@
       "name": "Kakuro: lousa do dia",
       "short_name": "Kakuro",
       "url": "games/kakuro/index.html?mode=diario",
-      "icons": [
-        {
-          "src": "icons/icon-192.png",
-          "sizes": "192x192",
-          "type": "image/png"
-        }
-      ]
-    },
-    {
-      "name": "Palavra do Dia",
-      "short_name": "Palavra do Dia",
-      "url": "games/palavradodia/index.html",
-      "icons": [
-        {
-          "src": "icons/icon-192.png",
-          "sizes": "192x192",
-          "type": "image/png"
-        }
-      ]
-    },
-    {
-      "name": "Prensa: palavra do dia",
-      "short_name": "Prensa",
-      "url": "games/prensa/index.html?mode=um",
-      "icons": [
-        {
-          "src": "icons/icon-192.png",
-          "sizes": "192x192",
-          "type": "image/png"
-        }
-      ]
-    },
-    {
-      "name": "Pontes: mapa do dia",
-      "short_name": "Pontes",
-      "url": "games/pontes/index.html?mode=diario",
       "icons": [
         {
           "src": "icons/icon-192.png",
