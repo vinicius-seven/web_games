@@ -97,6 +97,21 @@
       duration: '3–20 min por mapa',
     },
     {
+      id: 'acampamento',
+      title: 'Acampamento',
+      status: 'available',
+      href: 'games/acampamento/index.html',
+      tagline: 'Uma barraca ao lado de cada árvore.',
+      description:
+        'Quebra-cabeça de lógica num camping: arme uma barraca encostada em cada árvore, sem que duas barracas se encostem, seguindo quantas barracas há em cada linha e coluna. Campos novos a cada partida, sempre com uma única solução, e um camping do dia igual para todo mundo.',
+      tags: ['Lógica', 'Clássico'],
+      year: 2026,
+      age: 'L',
+      meta: '4 tamanhos',
+      match: 97,
+      duration: '3–20 min por campo',
+    },
+    {
       id: 'kakuro',
       title: 'Kakuro',
       status: 'available',
@@ -171,6 +186,11 @@
     { id: 'dois', game: 'prensa', art: 'prensa-2', title: '2 palavras', text: 'Duas palavras ao mesmo tempo, 7 tentativas.' },
     { id: 'quatro', game: 'prensa', art: 'prensa-4', title: '4 palavras', text: 'Quatro palavras ao mesmo tempo, 9 tentativas.' },
     { id: 'livre', game: 'prensa', art: 'prensa-livre', title: 'Livre', text: 'Palavras sorteadas sem limite, para treinar.' },
+    { id: 'diario', game: 'acampamento', art: 'acampamento-dia', title: 'Camping do dia', text: 'O mesmo campo 8×8 para todo mundo hoje.' },
+    { id: '6', game: 'acampamento', art: 'acampamento-6', title: 'Fácil', text: '6×6, para aprender as regras.' },
+    { id: '8', game: 'acampamento', art: 'acampamento-8', title: 'Médio', text: '8×8, o tamanho clássico.' },
+    { id: '10', game: 'acampamento', art: 'acampamento-10', title: 'Difícil', text: '10×10, pede contas de linha.' },
+    { id: '12', game: 'acampamento', art: 'acampamento-12', title: 'Desafio', text: '12×12, para sessões longas.' },
     { id: 'diario', game: 'kakuro', art: 'kakuro-dia', title: 'Lousa do dia', text: 'A mesma lousa 8×8 para todo mundo hoje.' },
     { id: '6', game: 'kakuro', art: 'kakuro-6', title: 'Fácil', text: '6×6, para aprender as combinações.' },
     { id: '8', game: 'kakuro', art: 'kakuro-8', title: 'Médio', text: '8×8, o tamanho clássico.' },
@@ -255,6 +275,14 @@
       if (today && today.done) return today.won ? `Hoje ✓ · sequência ${stats ? stats.streak : 1}` : 'Hoje ✗';
       return 'Novo hoje';
     }
+    if (key === 'acampamento:diario') {
+      const r = store.get(`acampamento:daily:${todayKey()}`);
+      return r ? `Hoje ${fmtTime(r.time)}` : 'Novo hoje';
+    }
+    if (m.game === 'acampamento') {
+      const best = store.get(`acampamento:best:${m.id}`);
+      return best ? `Melhor ${fmtTime(best)}` : '';
+    }
     if (key === 'kakuro:diario') {
       const r = store.get(`kakuro:daily:${todayKey()}`);
       return r ? `Hoje ${fmtTime(r.time)}` : 'Novo hoje';
@@ -306,6 +334,21 @@
     if (kind === 'diario') {
       const c = ['#e76f51', '#f4a261', '#e9c46a', '#2a9d8f', '#8ab17d'];
       return `<div class="art art-diario">${c.map((x) => `<i style="background:${x}"></i>`).join('')}</div>`;
+    }
+    if (kind.startsWith('acampamento')) {
+      // Campo 5×5 resolvido: cada árvore com a sua barraca, nenhuma barraca encostada em outra.
+      const g = ['tT.Pt', '.....', 'Pt..P', '....t', '.tT..'];
+      const pine = '<svg viewBox="0 0 100 100"><rect x="45" y="72" width="10" height="20" fill="#7a4a26"/><path d="M50 6 L76 40 H62 L84 64 H66 L88 84 H12 L34 64 H16 L38 40 H24 Z" fill="#1f5e3a"/></svg>';
+      const oak = '<svg viewBox="0 0 100 100"><rect x="45" y="64" width="10" height="28" fill="#7a4a26"/><circle cx="32" cy="50" r="20" fill="#2f7a3a"/><circle cx="68" cy="50" r="20" fill="#28693a"/><circle cx="50" cy="32" r="25" fill="#358a40"/></svg>';
+      const tent = (c, d) => `<svg viewBox="0 0 100 100"><path d="M50 12 L92 86 H8 Z" fill="${c}"/><path d="M50 12 L92 86 H50 Z" fill="${d}"/><path d="M50 40 L63 86 H37 Z" fill="#3a1f14"/></svg>`;
+      const cols = [['#f08a3c', '#c9622a'], ['#f2c14e', '#d39a24'], ['#4fb3bf', '#2f8a96'], ['#e45b6b', '#b83a4b']];
+      let k = 0;
+      const cell = (ch) => ch === 'T' ? oak : ch === 'P' ? pine : ch === 't' ? tent(...cols[k++ % cols.length]) : '';
+      const size = kind.match(/^acampamento-(\d+)$/);
+      const badge = kind === 'acampamento-dia'
+        ? `<span class="sudoku-badge day"><b>${new Date().getDate()}</b>${new Date().toLocaleDateString('pt-BR', { month: 'short' }).replace('.', '')}</span>`
+        : size ? `<span class="sudoku-badge">${size[1]}×${size[1]}</span>` : '';
+      return `<div class="art art-acampamento${big ? ' big' : ''}"><div class="agrid">${g.join('').split('').map((ch, i) => `<i${(Math.floor(i / 5) + i) % 2 ? ' class="a"' : ''}>${cell(ch)}</i>`).join('')}</div>${badge}</div>`;
     }
     if (kind.startsWith('kakuro')) {
       // Trecho de lousa: pistas em giz branco e algarismos em giz amarelo.
@@ -453,7 +496,7 @@
       </a>`;
   }
 
-  // Partidas salvas pelos jogos que guardam progresso (Sudoku, Canteiros, Ponto-Cruz, Pontes e Kakuro).
+  // Partidas salvas pelos jogos que guardam progresso (Sudoku, Canteiros, Ponto-Cruz, Pontes, Kakuro e Acampamento).
   function continueCards() {
     let html = '';
     const sv = store.get('sudoku:save');
@@ -479,6 +522,18 @@
         ${art('canteiros')}
         <span class="record">${fmtTime(Math.floor(cv.elapsed / 1000))}</span>
         <div class="card-title">Canteiros<small>${esc(cv.daily ? 'Do dia' : `${cv.n}×${cv.n}`)}</small></div>
+        <span class="progress" style="--p:${pct}%"></span>
+      </a>`;
+    }
+    const av = store.get('acampamento:save');
+    if (av && !av.won && Array.isArray(av.cells)) {
+      const tents = av.cells.filter((v) => v === 3).length;
+      const pct = Math.min(100, Math.round((tents / av.trees.length) * 100));
+      html += `
+      <a class="card mode" href="games/acampamento/index.html?mode=continuar" aria-label="Continuar Acampamento, ${tents} de ${av.trees.length} barracas">
+        ${art('acampamento')}
+        <span class="record">${fmtTime(Math.floor(av.elapsed / 1000))}</span>
+        <div class="card-title">Acampamento<small>${esc(av.daily ? 'Do dia' : `${av.n}×${av.n}`)}</small></div>
         <span class="progress" style="--p:${pct}%"></span>
       </a>`;
     }

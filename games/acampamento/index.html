@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Acampamento · Jogateca</title>
+  <meta name="description" content="Acampamento — arme uma barraca ao lado de cada árvore, sem que duas barracas se encostem.">
+  <meta name="theme-color" content="#172a33">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23172a33'/%3E%3Cpath d='M16 6 L28 26 H4 Z' fill='%23f08a3c'/%3E%3Cpath d='M16 6 L28 26 H16 Z' fill='%23c9622a'/%3E%3Cpath d='M16 15 L20 26 H12 Z' fill='%23472317'/%3E%3C/svg%3E">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="apple-touch-icon" href="../../icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Jogateca">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="stylesheet" href="acampamento.css">
+</head>
+<body>
+  <!-- Desenhos: dois tipos de árvore, a barraca (cor em --tc / --td) e o tufo de grama. -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <symbol id="pine" viewBox="0 0 100 100">
+        <ellipse cx="50" cy="93" rx="26" ry="5" fill="rgba(20,40,20,.28)"/>
+        <rect x="45" y="74" width="10" height="20" rx="2" fill="#7a4a26"/>
+        <path d="M50 4 L74 38 H62 L82 62 H66 L86 82 H14 L34 62 H18 L38 38 H26 Z" fill="#1f5e3a"/>
+        <path d="M50 4 L74 38 H62 L82 62 H66 L86 82 H50 Z" fill="#174a2d"/>
+        <path d="M50 12 L40 32 M48 42 L34 58 M50 64 L30 78" stroke="rgba(255,255,255,.14)" stroke-width="3" stroke-linecap="round"/>
+      </symbol>
+      <symbol id="oak" viewBox="0 0 100 100">
+        <ellipse cx="50" cy="93" rx="26" ry="5" fill="rgba(20,40,20,.28)"/>
+        <path d="M45 94 V66 Q50 60 55 66 V94 Z" fill="#7a4a26"/>
+        <circle cx="32" cy="50" r="20" fill="#2f7a3a"/>
+        <circle cx="68" cy="50" r="20" fill="#28693a"/>
+        <circle cx="50" cy="32" r="25" fill="#358a40"/>
+        <circle cx="50" cy="58" r="18" fill="#2c7438"/>
+        <circle cx="40" cy="26" r="7" fill="rgba(255,255,255,.16)"/>
+        <g fill="#e2513b"><circle cx="62" cy="34" r="3.2"/><circle cx="34" cy="52" r="3.2"/><circle cx="58" cy="60" r="3.2"/></g>
+      </symbol>
+      <symbol id="tent" viewBox="0 0 100 100">
+        <ellipse cx="50" cy="88" rx="42" ry="6" fill="rgba(20,40,20,.28)"/>
+        <path d="M50 10 L92 86 H8 Z" style="fill: var(--tc)"/>
+        <path d="M50 10 L92 86 H50 Z" style="fill: var(--td)"/>
+        <path d="M50 38 L64 86 H36 Z" fill="#3a1f14"/>
+        <path d="M50 38 L36 86 H44 L50 52 Z" style="fill: var(--tc)" opacity=".85"/>
+        <path d="M50 4 V12" stroke="#5a3a24" stroke-width="4" stroke-linecap="round"/>
+        <path d="M8 86 L2 92 M92 86 L98 92" stroke="#5a3a24" stroke-width="3" stroke-linecap="round"/>
+      </symbol>
+      <symbol id="tuft" viewBox="0 0 100 100">
+        <path d="M50 74 Q46 52 34 40 M50 74 Q50 46 52 30 M50 74 Q56 54 68 44 M50 74 Q40 62 26 60 M50 74 Q62 64 76 64" stroke="currentColor" stroke-width="7" fill="none" stroke-linecap="round"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <header class="bar">
+    <span class="bar-left">
+      <a href="../../index.html" class="back" id="backLink">‹ Jogateca</a>
+      <button class="menu-back" id="menuBack" hidden><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>Menu</button>
+    </span>
+    <button class="brand" id="homeBtn" aria-label="Menu do Acampamento">ACAMPAMENTO</button>
+    <span class="bar-right" id="barRight"></span>
+  </header>
+
+  <!-- Menu -->
+  <section class="screen" id="s-home">
+    <div class="wrap">
+      <div class="home-hero">
+        <div class="hero-camp" aria-hidden="true">
+          <svg class="h-tree"><use href="#pine"/></svg>
+          <svg class="h-tent" style="--tc:#f08a3c;--td:#c9622a"><use href="#tent"/></svg>
+          <svg class="h-tree"><use href="#oak"/></svg>
+          <svg class="h-tent" style="--tc:#f2c14e;--td:#d39a24"><use href="#tent"/></svg>
+          <svg class="h-tree"><use href="#pine"/></svg>
+        </div>
+        <h1 class="logo">Acampamento</h1>
+        <p>Cada árvore ganha uma barraca ao lado. As barracas não podem se encostar, e os números dizem quantas há em cada linha e coluna.</p>
+      </div>
+
+      <button class="resume" id="resumeBtn" hidden>
+        <span class="resume-body"><small>Continuar</small><strong id="resumeTitle"></strong><span id="resumeInfo"></span></span>
+        <span class="resume-go" aria-hidden="true">›</span>
+      </button>
+
+      <div class="home-grid">
+        <div class="panel daily">
+          <h2>Camping do dia</h2>
+          <p class="muted" id="dailyText"></p>
+          <button class="btn primary" id="dailyBtn"></button>
+        </div>
+        <div class="panel">
+          <h2>Escolha o tamanho</h2>
+          <div class="sizes" id="sizes"></div>
+        </div>
+      </div>
+
+      <div class="rules">
+        <h2>Regras</h2>
+        <ol>
+          <li><b>Uma barraca por árvore</b>, encostada nela pelo lado (em cima, embaixo, à esquerda ou à direita). Cada barraca pertence a uma árvore só.</li>
+          <li><b>Barracas não se encostam</b>, nem pelos lados, nem pelas diagonais.</li>
+          <li>Os números fora do campo dizem <b>quantas barracas</b> há em cada linha e em cada coluna.</li>
+        </ol>
+        <p class="muted">Toque numa casa para armar uma barraca; toque de novo para marcar grama <svg class="tuft-inline" aria-hidden="true"><use href="#tuft"/></svg> (aqui não tem barraca) e mais uma vez para limpar. Arraste para marcar grama em várias casas. Toque num número com a conta fechada para gramar o resto da linha. Cada campo tem uma única solução, e dá para chegar nela só com lógica.</p>
+      </div>
+      <p class="tip"><button class="btn ghost" data-pwa-install hidden>Instalar a Jogateca como app</button></p>
+    </div>
+  </section>
+
+  <!-- Jogo -->
+  <section class="screen" id="s-play">
+    <div class="play">
+      <div class="play-info">
+        <span id="infoTitle"></span>
+        <span>Barracas <b id="infoTents">0</b></span>
+        <button class="pause" id="pauseBtn" aria-label="Pausar">
+          <span id="timer">00:00</span>
+          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>
+        </button>
+      </div>
+
+      <div class="board-frame" id="frame">
+        <div class="board" id="board" role="grid" aria-label="Campo do acampamento"></div>
+        <div class="paused" id="paused" hidden>
+          <p>Pausado</p>
+          <button class="btn primary" id="resumePlay">Continuar</button>
+        </div>
+      </div>
+
+      <p class="status" id="status" aria-live="polite"></p>
+
+      <div class="tools">
+        <button class="tool" id="undoBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12.5 8c-2.65 0-5.05 1-6.9 2.6L2 7v9h9l-3.62-3.62A7.95 7.95 0 0 1 12.5 10.5c3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/></svg><span>Desfazer</span></button>
+        <button class="tool" id="autoBtn" aria-pressed="false"><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#tuft"/></svg><span>Grama auto <em id="autoState">desl.</em></span></button>
+        <button class="tool" id="hintBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M9 21h6v-1H9v1zm3-19a7 7 0 0 0-4 12.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26A7 7 0 0 0 12 2z"/></svg><span>Dica</span></button>
+        <button class="tool" id="clearBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg><span>Recomeçar</span></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Vitória -->
+  <section class="screen" id="s-win">
+    <div class="wrap narrow center">
+      <p class="eyebrow" id="winEyebrow"></p>
+      <h2 class="win-title">Acampamento armado!</h2>
+      <div class="win-board" id="winBoard" aria-hidden="true"></div>
+      <div class="win-time" id="winTime"></div>
+      <p class="muted" id="winSub"></p>
+      <div class="end-actions">
+        <button class="btn primary" id="winShare">Compartilhar</button>
+        <button class="btn" id="winNew">Novo campo</button>
+        <button class="btn ghost" id="winHome">Menu</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="fireflies" id="fireflies" aria-hidden="true"></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="engine.js"></script>
+  <script src="acampamento.js"></script>
+  <script src="../../pwa.js"></script>
+</body>
+</html>

@@ -14,6 +14,7 @@ Um catálogo de jogos de navegador no estilo "streaming": destaque no topo, file
 | **Pontes** (`games/pontes/`) | Disponível | Ligar ilhas com pontes (gênero Hashi), num arquipélago tropical |
 | **Prensa** (`games/prensa/`) | Disponível | Adivinhar palavras de 5 letras: 1, 2 ou 4 por dia, e modo livre |
 | **Palavra do Dia** (`games/palavradodia/`) | Disponível | Dois jogos diários: Colmeia (7 letras) e Proximidade (distância de sentido) |
+| **Acampamento** (`games/acampamento/`) | Disponível | Lógica: uma barraca ao lado de cada árvore, sem barracas encostadas |
 | **Kakuro** (`games/kakuro/`) | Disponível | Somas cruzadas numa lousa, 4 tamanhos e lousa do dia |
 
 ### Croma
@@ -95,6 +96,17 @@ Página inicial com dois jogos de palavras diários (iguais para todo mundo) e m
 - **Proximidade** (`proximidade.html`): digite palavras e veja a posição de cada uma numa fila de ~13.500 palavras ordenadas pela proximidade de sentido com a palavra secreta (1 = acertou). Plural, feminino e verbo conjugado contam como a forma básica. Dica, desistir, 60 jogos anteriores e as 100 palavras mais próximas no fim. Distâncias calculadas por `tools/proximidade_dados.py` com os vetores fastText do modelo `pt_core_news_lg` do spaCy (**CC BY-SA 4.0**; os dados derivados em `games/palavradodia/proximidade/` seguem a mesma licença — veja o `LEIA-ME.txt` da pasta).
 
 Links diretos: `games/palavradodia/?mode=colmeia|colmeia-livre|proximidade|proximidade-livre`.
+
+### Acampamento
+
+Quebra-cabeça do gênero "barracas e árvores", com tema e visual próprios de camping: arme uma barraca encostada (pelo lado) em cada árvore, cada barraca pertencendo a uma árvore só, sem que duas barracas se encostem (nem na diagonal). Os números nas placas dizem quantas barracas há em cada linha e coluna.
+
+- Tamanhos Fácil (6×6), Médio (8×8), Difícil (10×10) e Desafio (12×12), e o **Camping do dia** (8×8), todos gerados no navegador por `games/acampamento/engine.js` em milissegundos.
+- Cada campo é conferido por um resolvedor "humano": **solução única e sem chute**. Deduções básicas (casas longe de árvores, vizinhas de barraca, contas de linha fechadas, árvore com uma só opção, pares árvore–barraca) e avançadas (casa vizinha de todas as opções de uma árvore; testar as formas possíveis de completar uma linha). O Fácil usa só as básicas; Difícil, Desafio e o do dia exigem as avançadas.
+- Toque: vazio → barraca → grama → vazio; arrastar marca grama; botão direito do mouse marca grama; tocar num número com a conta fechada grama o resto da linha. Teclado: setas, Enter/Espaço, T, G, Backspace, Z, H, P.
+- Barracas encostadas, barraca sem árvore, árvore sem lugar e linha com barracas demais aparecem em vermelho. Grama automática opcional, dica (desfaz um engano ou arma a próxima barraca dedutível), desfazer, recomeçar, pausa, progresso salvo e recorde por tamanho.
+
+Links diretos: `games/acampamento/?mode=6|8|10|12|diario|continuar`.
 
 ### Kakuro
 
