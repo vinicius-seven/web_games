@@ -803,13 +803,19 @@
   }
 
   /* ---------- Hero ---------- */
-  function renderHero() {
-    const g = GAMES[0];
-    document.getElementById('hero').innerHTML = `
+  // O destaque alterna entre os jogos disponíveis: troca sozinho, tem setas, arrastar no celular
+  // e pausa quando a pessoa está olhando (mouse/foco em cima) ou com a aba em segundo plano.
+  const HERO_MS = 7000;
+  const heroGames = () => GAMES.filter((g) => g.status === 'available');
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let heroIdx = 0, heroTimer = null, heroHold = false;
+
+  function heroSlide(g) {
+    return `
       <div class="hero-art">${art(g.id, true)}</div>
       <div class="hero-content">
         <span class="kicker"><b>J</b> Original Jogateca</span>
-        <h1 class="hero-title">${esc(g.title)}</h1>
+        <h1 class="hero-title" style="--L:${Math.max(6, ...g.title.split(/\s+/).map((w) => w.length))}">${esc(g.title)}</h1>
         <p class="hero-tagline">${esc(g.tagline)}</p>
         <div class="meta">
           <span class="match">${g.match}% relevante</span><span>${g.year}</span>
@@ -822,6 +828,75 @@
         </div>
       </div>`;
   }
+  function renderHero() {
+    const list = heroGames();
+    // cada visita começa num jogo diferente
+    heroIdx = store.get('jogateca:hero', 0) % list.length;
+    store.set('jogateca:hero', heroIdx + 1);
+    const hero = document.getElementById('hero');
+    hero.setAttribute('aria-roledescription', 'carrossel');
+    hero.innerHTML = `
+      <div class="hero-slide" id="heroSlide">${heroSlide(list[heroIdx])}</div>
+      <div class="hero-ctrl">
+        <button class="hero-nav" data-hero="-1" aria-label="Jogo anterior">‹</button>
+        <span class="hero-count" id="heroCount"></span>
+        <span class="hero-bar" aria-hidden="true"><i id="heroBar"></i></span>
+        <button class="hero-nav" data-hero="1" aria-label="Próximo jogo">›</button>
+      </div>`;
+    heroCount();
+    heroSchedule();
+  }
+  function heroCount() {
+    const list = heroGames();
+    document.getElementById('heroCount').textContent = `${heroIdx + 1}/${list.length}`;
+    const bar = document.getElementById('heroBar');
+    bar.classList.remove('run'); void bar.offsetWidth;
+    if (!reduceMotion) bar.classList.add('run');
+    bar.style.animationPlayState = heroHold ? 'paused' : 'running';
+  }
+  function heroGo(step) {
+    const list = heroGames();
+    heroIdx = (heroIdx + step + list.length) % list.length;
+    const slide = document.getElementById('heroSlide');
+    if (reduceMotion) { slide.innerHTML = heroSlide(list[heroIdx]); heroCount(); heroSchedule(); return; }
+    slide.classList.add('out');
+    setTimeout(() => {
+      slide.innerHTML = heroSlide(list[heroIdx]);
+      slide.classList.remove('out');
+      heroCount();
+    }, 280);
+    heroSchedule();
+  }
+  function heroSchedule() {
+    clearTimeout(heroTimer);
+    if (reduceMotion || heroHold || document.hidden) return;
+    heroTimer = setTimeout(() => heroGo(1), HERO_MS);
+  }
+  function heroPause(hold) {
+    heroHold = hold;
+    const bar = document.getElementById('heroBar');
+    if (bar) bar.style.animationPlayState = hold ? 'paused' : 'running';
+    if (hold) clearTimeout(heroTimer);
+    else { heroCount(); heroSchedule(); }
+  }
+  (() => {
+    const hero = document.getElementById('hero');
+    hero.addEventListener('mouseenter', () => heroPause(true));
+    hero.addEventListener('mouseleave', () => heroPause(false));
+    hero.addEventListener('focusin', () => heroPause(true));
+    hero.addEventListener('focusout', (e) => { if (!hero.contains(e.relatedTarget)) heroPause(false); });
+    hero.addEventListener('click', (e) => { const b = e.target.closest('[data-hero]'); if (b) heroGo(+b.dataset.hero); });
+    document.addEventListener('visibilitychange', () => { if (document.hidden) clearTimeout(heroTimer); else if (!heroHold) { heroCount(); heroSchedule(); } });
+    // arrastar para o lado no celular
+    let sx = null, sy = 0;
+    hero.addEventListener('touchstart', (e) => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: true });
+    hero.addEventListener('touchend', (e) => {
+      if (sx == null) return;
+      const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
+      sx = null;
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) heroGo(dx < 0 ? 1 : -1);
+    }, { passive: true });
+  })();
 
   /* ---------- Fileiras ---------- */
   function gameCard(g) {
@@ -1051,6 +1126,7 @@
   function openModal(id) {
     const g = GAMES.find((x) => x.id === id);
     if (!g) return;
+    heroPause(true);
     const soon = g.status === 'soon';
     const modes = MODES.filter((m) => m.game === g.id);
     document.getElementById('modalBody').innerHTML = `
@@ -1098,6 +1174,7 @@
 
   function closeModal() {
     modal.hidden = true;
+    heroPause(false);
     document.body.style.overflow = '';
     if (lastFocus && document.contains(lastFocus)) lastFocus.focus();
   }
