@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Sopa Relâmpago · Jogateca</title>
+  <meta name="description" content="Sopa Relâmpago — ache o máximo de palavras ligando letras vizinhas antes do tempo acabar. Sozinho ou em duelo.">
+  <meta name="theme-color" content="#2a120c">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232a120c'/%3E%3Ccircle cx='16' cy='16' r='12' fill='%23e98a2f'/%3E%3Ctext x='16' y='21' font-family='Georgia' font-weight='700' font-size='14' text-anchor='middle' fill='%23fff3d6'%3EA%3C/text%3E%3C/svg%3E">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="apple-touch-icon" href="../../icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Jogateca">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="stylesheet" href="sopa.css">
+  <link rel="stylesheet" href="../../shared/duelo.css">
+</head>
+<body>
+  <header class="bar">
+    <span class="bar-left">
+      <a href="../../index.html" class="back" id="backLink">‹ Jogateca</a>
+      <button class="menu-back" id="menuBack" hidden><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>Menu</button>
+    </span>
+    <button class="brand" id="homeBtn" aria-label="Menu da Sopa Relâmpago">SOPA RELÂMPAGO</button>
+    <span class="bar-right"></span>
+  </header>
+
+  <!-- Menu -->
+  <section class="screen" id="s-home">
+    <div class="wrap">
+      <div class="home-hero">
+        <div class="hero-bowl" aria-hidden="true"><i>S</i><i>O</i><i>P</i><i>A</i></div>
+        <h1 class="logo">Sopa Relâmpago</h1>
+        <p>Ache o máximo de palavras ligando letras vizinhas — inclusive na diagonal — antes do tempo acabar. Sozinho ou em duelo, passando o aparelho.</p>
+      </div>
+      <div class="panel opts">
+        <div class="opt"><span>Tigela</span><div class="chips" id="optSize"></div></div>
+        <div class="opt"><span>Tempo</span><div class="chips" id="optTime"></div></div>
+      </div>
+      <div class="modes">
+        <button class="mode" id="soloBtn"><strong>Sozinho</strong><span id="soloInfo"></span></button>
+        <button class="mode duel" id="duelBtn"><strong>Duelo</strong><span>2 a 4 pessoas no mesmo aparelho, a mesma tigela para todos.</span></button>
+      </div>
+      <details class="howto">
+        <summary>Como jogar</summary>
+        <ul>
+          <li>Arraste o dedo de letra em letra (vizinhas, inclusive na diagonal) e solte para enviar a palavra. Não vale usar a mesma letra duas vezes na palavra.</li>
+          <li>Palavras de 3 letras ou mais. Acentos e cedilha não importam; a peça <b>QU</b> vale as duas letras.</li>
+          <li>Pontos: 3 letras = 1, 4 = 2, 5 = 3, 6 = 5, 7 = 8, 8 ou mais = 11.</li>
+          <li>No computador dá para digitar a palavra e apertar Enter.</li>
+          <li>No duelo, todo mundo recebe a mesma tigela; o placar só aparece no fim.</li>
+        </ul>
+      </details>
+      <p class="tip"><button class="btn ghost" data-pwa-install hidden>Instalar a Jogateca como app</button></p>
+    </div>
+  </section>
+
+  <!-- Jogo -->
+  <section class="screen" id="s-play">
+    <div class="play">
+      <div class="hud">
+        <span class="who" id="who"></span>
+        <span class="clock" id="clock">2:00</span>
+        <span class="score"><b id="score">0</b> pts · <span id="count">0</span></span>
+      </div>
+      <div class="word" id="word" aria-live="polite">&nbsp;</div>
+      <div class="bowl" id="bowl">
+        <div class="tiles" id="tiles" role="grid" aria-label="Letras"></div>
+        <svg class="trail" id="trail" aria-hidden="true"></svg>
+      </div>
+      <div class="found" id="found" aria-label="Palavras achadas"></div>
+    </div>
+  </section>
+
+  <!-- Fim (sozinho) -->
+  <section class="screen" id="s-end">
+    <div class="wrap narrow center">
+      <p class="eyebrow">Tempo!</p>
+      <h2 class="end-score"><span id="endScore">0</span> pontos</h2>
+      <p class="muted" id="endSub"></p>
+      <div class="end-words" id="endWords"></div>
+      <p class="muted small" id="endMissed"></p>
+      <div class="end-actions">
+        <button class="btn primary" id="againBtn">Outra tigela</button>
+        <button class="btn ghost" id="endMenu">Menu</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Duelo -->
+  <section class="screen" id="s-duel"><div class="wrap" id="duel"></div></section>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="palavras.js"></script>
+  <script src="engine.js"></script>
+  <script src="../../shared/duelo.js"></script>
+  <script src="sopa.js"></script>
+  <script src="../../pwa.js"></script>
+</body>
+</html>

@@ -269,6 +269,30 @@ button { font: inherit; color: inherit; }
 .art-treino i:nth-child(3) { width: 64%; }
 .art-treino i:nth-child(4) { width: 28%; background: #ffcf3f; }
 
+.art-sopa { background: radial-gradient(circle at 70% 50%, #5a2a18 0, #2a120c 70%); }
+.art-sopa .sbowl {
+  position: absolute; top: 50%; right: 6%; transform: translateY(-50%); height: 110%; aspect-ratio: 1; border-radius: 50%;
+  background: radial-gradient(circle, #e98a2f 0 58%, #c96a1c 64%, transparent 66%), radial-gradient(circle, #fbf6ea 0 68%, #c9bda4 71%);
+  box-shadow: 0 10px 24px rgba(0,0,0,.45);
+}
+.art-sopa.big .sbowl { height: 86%; right: 9%; }
+.art-sopa .sgr { position: absolute; inset: 21%; display: grid; grid-template-columns: repeat(4, 1fr); gap: 5%; }
+.art-sopa .sgr i { display: grid; place-items: center; border-radius: 18%; background: #fff3d6; color: #6a3410; font: 700 clamp(10px, 1.3vw, 18px) Georgia, serif; font-style: normal; transform: rotate(var(--r)); box-shadow: 0 2px 0 rgba(120,60,20,.45); }
+.art-sopa .sgr i.on { background: #ffd166; }
+.art-contas { background: radial-gradient(circle at 70% 50%, #1f3346 0, #0b0f14 70%); }
+.art-contas .cled {
+  position: absolute; top: 50%; right: 7%; transform: translateY(-50%) rotate(-3deg); display: grid; justify-items: center; gap: 2px;
+  padding: 10px 18px; border-radius: 12px; background: #000; box-shadow: inset 0 0 0 2px #222, 0 10px 24px rgba(0,0,0,.5);
+  font-family: ui-monospace, Menlo, Consolas, monospace; color: #ffb000; text-shadow: 0 0 10px rgba(255,176,0,.6);
+}
+.art-contas.big .cled { right: 10%; transform: translateY(-50%) rotate(-3deg) scale(1.3); }
+.art-contas .cled span { font-size: clamp(12px, 1.4vw, 20px); opacity: .8; }
+.art-contas .cled b { font-size: clamp(22px, 2.8vw, 40px); }
+.art-contas .cled small { font-size: clamp(9px, 1vw, 13px); color: #ffd27a; }
+.art-sopa:not(.big)::after, .art-contas:not(.big)::after {
+  content: ""; position: absolute; inset: 0; z-index: 1;
+  background: linear-gradient(to top, rgba(14,15,19,.85) 0%, rgba(14,15,19,.3) 45%, transparent 70%);
+}
 .art-binario { background: linear-gradient(135deg, #20304d, #0f1a2e 65%); }
 .art-binario .bgrid {
   position: absolute; top: 50%; right: 6%; transform: translateY(-50%) rotate(-3deg); height: 96%; aspect-ratio: 1;

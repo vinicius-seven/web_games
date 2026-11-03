@@ -97,6 +97,36 @@
       duration: '3–20 min por mapa',
     },
     {
+      id: 'sopa',
+      title: 'Sopa Relâmpago',
+      status: 'available',
+      href: 'games/sopa/index.html',
+      tagline: 'Palavras contra o relógio — sozinho ou em duelo.',
+      description:
+        'Uma tigela de sopa de letrinhas e 2 minutos para achar palavras ligando letras vizinhas. Jogue sozinho atrás do recorde ou em duelo com até 4 pessoas no mesmo aparelho: todo mundo recebe a mesma tigela e o placar aparece no fim.',
+      tags: ['Palavras', 'Duelo', 'Rápido'],
+      year: 2026,
+      age: 'L',
+      meta: 'Duelo até 4',
+      match: 98,
+      duration: '1–3 min por rodada',
+    },
+    {
+      id: 'contas',
+      title: 'Contas Relâmpago',
+      status: 'available',
+      href: 'games/contas/index.html',
+      tagline: 'Quantas contas de cabeça em 60 segundos?',
+      description:
+        'Soma, subtração, multiplicação e divisão num placar de LED, cada vez mais difíceis. Acertos seguidos valem bônus. Sozinho ou em duelo com até 4 pessoas no mesmo aparelho, com as mesmas contas para todos.',
+      tags: ['Números', 'Duelo', 'Rápido'],
+      year: 2026,
+      age: 'L',
+      meta: 'Duelo até 4',
+      match: 96,
+      duration: '1–2 min por rodada',
+    },
+    {
       id: 'binario',
       title: 'Binário',
       status: 'available',
@@ -306,6 +336,10 @@
     { id: 'dois', game: 'prensa', art: 'prensa-2', title: '2 palavras', text: 'Duas palavras ao mesmo tempo, 7 tentativas.' },
     { id: 'quatro', game: 'prensa', art: 'prensa-4', title: '4 palavras', text: 'Quatro palavras ao mesmo tempo, 9 tentativas.' },
     { id: 'livre', game: 'prensa', art: 'prensa-livre', title: 'Livre', text: 'Palavras sorteadas sem limite, para treinar.' },
+    { id: 'solo', game: 'sopa', art: 'sopa', title: 'Sozinho', text: 'Bata o seu recorde de palavras.' },
+    { id: 'duelo', game: 'sopa', art: 'sopa-duelo', title: 'Duelo', text: '2 a 4 pessoas, a mesma tigela para todos.' },
+    { id: 'solo', game: 'contas', art: 'contas', title: 'Sozinho', text: 'Bata o seu recorde de contas.' },
+    { id: 'duelo', game: 'contas', art: 'contas-duelo', title: 'Duelo', text: '2 a 4 pessoas, as mesmas contas para todos.' },
     { id: 'diario', game: 'binario', art: 'binario-dia', title: 'Painel do dia', text: 'O mesmo painel 10×10 para todo mundo hoje.' },
     { id: '6', game: 'binario', art: 'binario-6', title: 'Fácil', text: '6×6, para aprender as regras.' },
     { id: '8', game: 'binario', art: 'binario-8', title: 'Médio', text: '8×8, pede olhar a linha inteira.' },
@@ -434,6 +468,15 @@
       if (today && today.done) return today.won ? `Hoje ✓ · sequência ${stats ? stats.streak : 1}` : 'Hoje ✗';
       return 'Novo hoje';
     }
+    if (m.game === 'sopa' || m.game === 'contas') {
+      if (m.id === 'duelo') {
+        const h = store.get(`jogateca:duelo:hist:${m.game}`, []);
+        return h.length ? `${h.length} ${h.length === 1 ? 'duelo' : 'duelos'}` : '';
+      }
+      let best = 0;
+      try { for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k.startsWith(`${m.game}:best:`)) best = Math.max(best, +localStorage.getItem(k) || 0); } } catch { /* sem armazenamento */ }
+      return best ? `Recorde ${best}` : '';
+    }
     if (key === 'binario:diario') {
       const r = store.get(`binario:daily:${todayKey()}`);
       return r ? `Hoje ${fmtTime(r.time)}` : 'Novo hoje';
@@ -557,6 +600,15 @@
     if (kind === 'diario') {
       const c = ['#e76f51', '#f4a261', '#e9c46a', '#2a9d8f', '#8ab17d'];
       return `<div class="art art-diario">${c.map((x) => `<i style="background:${x}"></i>`).join('')}</div>`;
+    }
+    if (kind.startsWith('sopa')) {
+      const letters = ['C', 'A', 'L', 'D', 'O', 'S', 'E', 'R', 'M', 'U', 'P', 'A', 'T', 'I', 'N', 'O'];
+      const badge = kind === 'sopa-duelo' ? '<span class="sudoku-badge">👥 Duelo</span>' : '';
+      return `<div class="art art-sopa${big ? ' big' : ''}"><div class="sbowl"><div class="sgr">${letters.map((l, i) => `<i style="--r:${((i * 37) % 13) - 6}deg"${i === 0 || i === 1 || i === 2 || i === 3 ? ' class="on"' : ''}>${l}</i>`).join('')}</div></div>${badge}</div>`;
+    }
+    if (kind.startsWith('contas')) {
+      const badge = kind === 'contas-duelo' ? '<span class="sudoku-badge">👥 Duelo</span>' : '';
+      return `<div class="art art-contas${big ? ' big' : ''}"><div class="cled"><span>7 × 8</span><b>56</b><small>🔥 6 seguidas</small></div>${badge}</div>`;
     }
     if (kind.startsWith('binario')) {
       // Painel 4×4 de azulejos brancos (0) e azuis (1), já resolvido.
@@ -981,6 +1033,7 @@
     document.getElementById('rows').innerHTML = [
       row('continuar', 'Continuar jogando', continueCards()),
       row('jogar', 'Jogue agora', available.map(gameCard).join('')),
+      row('junto', 'Para jogar junto', MODES.filter((m) => m.id === 'duelo').map(modeCard).join(''), 'duelo no mesmo aparelho'),
       row('minha-lista', 'Minha lista', list.map(gameCard).join('')),
       ...available.map((g) => row(`modos-${g.id}`, `Modos de ${esc(g.title)}`,
         MODES.filter((m) => m.game === g.id).map(modeCard).join(''), 'escolha e vá direto pro jogo')),

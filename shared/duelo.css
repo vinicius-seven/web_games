@@ -1,0 +1,46 @@
+/* Telas do duelo local. Usam as cores de cada jogo (--page-2, --page-3, --text, --muted, --accent, --display). */
+.duelo-box { max-width: 520px; margin: 3vh auto 0; display: grid; gap: 14px; }
+.duelo-box.center { text-align: center; justify-items: center; }
+.duelo-title { font-family: var(--display); font-size: clamp(28px, 7vw, 40px); margin: 0; line-height: 1.1; }
+.duelo-text { color: var(--muted); margin: 0; line-height: 1.5; }
+.duelo-step { text-transform: uppercase; letter-spacing: .2em; font-size: 12px; color: var(--muted); margin: 0; }
+.duelo-info { margin: 0; padding: 10px 14px; border-radius: 12px; background: var(--page-2); }
+.duelo-avatar { font-size: 64px; line-height: 1; }
+.duelo-count { display: flex; gap: 8px; flex-wrap: wrap; }
+.chip {
+  padding: 8px 14px; border-radius: 999px; cursor: pointer; font-weight: 700; font-size: 14px;
+  background: var(--page-2); border: 1px solid rgba(255,255,255,.14); color: var(--text);
+}
+.chip.on { background: var(--accent); color: #241605; border-color: var(--accent); }
+.duelo-form { display: grid; gap: 12px; }
+.duelo-names { display: grid; gap: 8px; }
+.duelo-names label { display: flex; align-items: center; gap: 10px; padding: 6px 10px; border-radius: 12px; background: var(--page-2); }
+.duelo-names label span { font-size: 22px; }
+.duelo-names input {
+  flex: 1; min-width: 0; font: inherit; font-size: 17px; font-weight: 700; color: var(--text);
+  background: transparent; border: 0; border-bottom: 2px solid rgba(255,255,255,.15); padding: 8px 2px; outline: none;
+  -webkit-user-select: text; user-select: text;
+}
+.duelo-names input:focus { border-bottom-color: var(--accent); }
+.duelo-extra { display: grid; gap: 8px; }
+.duelo-extra .opt { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.duelo-extra .opt > span { font-size: 14px; color: var(--muted); min-width: 70px; }
+.duelo-actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+.btn.big { padding: 16px 28px; font-size: 18px; }
+.btn.small { padding: 6px 12px; font-size: 13px; }
+.duelo-rank { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; width: 100%; }
+.duelo-rank li {
+  display: grid; grid-template-columns: 40px 1fr auto; align-items: center; gap: 4px 10px; text-align: left;
+  padding: 12px 14px; border-radius: 14px; background: var(--page-2);
+}
+.duelo-rank li.win { background: var(--page-3); box-shadow: inset 0 0 0 2px var(--accent); }
+.duelo-rank .m { font-size: 26px; text-align: center; font-weight: 800; color: var(--muted); }
+.duelo-rank .n { font-weight: 800; font-size: 18px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.duelo-rank .s { color: var(--muted); font-size: 14px; }
+.duelo-rank .s b { color: var(--text); font-size: 22px; font-family: var(--display); }
+.duelo-rank .d { grid-column: 2 / -1; font-size: 13px; color: var(--muted); line-height: 1.4; }
+.duelo-hist { width: 100%; text-align: left; background: var(--page-2); border-radius: 12px; padding: 10px 14px; }
+.duelo-hist summary { cursor: pointer; font-weight: 700; }
+.duelo-hist table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 14px; }
+.duelo-hist th, .duelo-hist td { padding: 6px 4px; text-align: left; border-bottom: 1px solid rgba(255,255,255,.08); }
+.duelo-hist th { color: var(--muted); font-weight: 600; }

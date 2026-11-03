@@ -2,7 +2,7 @@
   "id": "./",
   "name": "Jogateca",
   "short_name": "Jogateca",
-  "description": "Catálogo de jogos de navegador: Escada, Garimpo, Binário, Fios, Lampiões, Cerca, Enigma de Einstein, Travessia, Acampamento, Prensa, Palavra do Dia, Kakuro, Croma, Tamanho Certo, Sudoku, Canteiros, Ponto-Cruz e Pontes.",
+  "description": "Catálogo de jogos de navegador: Sopa Relâmpago, Contas Relâmpago, Escada, Garimpo, Binário, Fios, Lampiões, Cerca, Enigma de Einstein, Travessia, Acampamento, Prensa, Palavra do Dia, Kakuro, Croma, Tamanho Certo, Sudoku, Canteiros, Ponto-Cruz e Pontes.",
   "lang": "pt-BR",
   "dir": "ltr",
   "start_url": "./",
@@ -42,6 +42,30 @@
     }
   ],
   "shortcuts": [
+    {
+      "name": "Sopa Relâmpago: duelo",
+      "short_name": "Sopa",
+      "url": "games/sopa/index.html?mode=duelo",
+      "icons": [
+        {
+          "src": "icons/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Contas Relâmpago: duelo",
+      "short_name": "Contas",
+      "url": "games/contas/index.html?mode=duelo",
+      "icons": [
+        {
+          "src": "icons/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
     {
       "name": "Escada do dia",
       "short_name": "Escada",
@@ -130,30 +154,6 @@
       "name": "Travessia: próxima fase",
       "short_name": "Travessia",
       "url": "games/travessia/index.html?mode=proxima",
-      "icons": [
-        {
-          "src": "icons/icon-192.png",
-          "sizes": "192x192",
-          "type": "image/png"
-        }
-      ]
-    },
-    {
-      "name": "Acampamento: camping do dia",
-      "short_name": "Acampamento",
-      "url": "games/acampamento/index.html?mode=diario",
-      "icons": [
-        {
-          "src": "icons/icon-192.png",
-          "sizes": "192x192",
-          "type": "image/png"
-        }
-      ]
-    },
-    {
-      "name": "Kakuro: lousa do dia",
-      "short_name": "Kakuro",
-      "url": "games/kakuro/index.html?mode=diario",
       "icons": [
         {
           "src": "icons/icon-192.png",

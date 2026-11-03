@@ -14,6 +14,8 @@ Um catálogo de jogos de navegador no estilo "streaming": destaque no topo, file
 | **Pontes** (`games/pontes/`) | Disponível | Ligar ilhas com pontes (gênero Hashi), num arquipélago tropical |
 | **Prensa** (`games/prensa/`) | Disponível | Adivinhar palavras de 5 letras: 1, 2 ou 4 por dia, e modo livre |
 | **Palavra do Dia** (`games/palavradodia/`) | Disponível | Dois jogos diários: Colmeia (7 letras) e Proximidade (distância de sentido) |
+| **Sopa Relâmpago** (`games/sopa/`) | Disponível | Palavras numa grade de letras contra o relógio; sozinho ou em duelo |
+| **Contas Relâmpago** (`games/contas/`) | Disponível | Contas de cabeça contra o relógio; sozinho ou em duelo |
 | **Escada** (`games/escada/`) | Disponível | Palavras: de uma palavra a outra trocando uma letra por vez |
 | **Garimpo** (`games/garimpo/`) | Disponível | Campo minado em que toda partida fecha só com lógica |
 | **Binário** (`games/binario/`) | Disponível | Lógica: 0 e 1 num painel de azulejos |
@@ -123,6 +125,27 @@ Campo minado **sem chute**, com tema de garimpo: cave o terreno sem cair nos bur
 - Toque cava, tocar e segurar põe estaca (ou troque o modo do toque); tocar num número com as estacas certas cava o resto. Caiu num buraco? Dá para voltar a jogada (conta como tropeço). Dica mostra a próxima casa certa e explica por quê. Pepitas de ouro no fim.
 
 Links diretos: `games/garimpo/?mode=facil|medio|dificil|desafio|diario|continuar`.
+
+### Duelo local (`shared/duelo.js`)
+
+Módulo comum para jogos em dupla (ou até 4 pessoas) **no mesmo aparelho**: escolha dos jogadores (nomes lembrados), tela de "vez de fulano" entre as rodadas (ninguém vê a pontuação dos outros até o fim), placar com medalhas, revanche e histórico de vitórias por jogo no `localStorage`. Os jogos só cuidam da partida; todos recebem a mesma rodada (mesma semente).
+
+### Sopa Relâmpago
+
+Grade de letras numa tigela de sopa: ache palavras ligando letras vizinhas (inclusive na diagonal) antes do tempo acabar.
+
+- Tigela 4×4 ou 5×5, tempo de 1:30, 2:00 ou 3:00. Pontos: 3 letras = 1, 4 = 2, 5 = 3, 6 = 5, 7 = 8, 8+ = 11. Peça "QU"; acentos não importam.
+- `games/sopa/engine.js` sorteia letras com pesos do português e só aceita grades com bastante palavras (busca com prefixos). No fim, mostra o que dava para achar.
+- Lista em `games/sopa/palavras.js` (~19 mil palavras de 3 a 9 letras), gerada por `tools/sopa_palavras.py` com a mesma base da Escada (`tools/palavras_base.py`).
+- Arrastar o dedo pelas letras (ou digitar no computador). Modos: sozinho (recorde por tigela e tempo) e duelo.
+
+Links diretos: `games/sopa/?mode=solo|duelo`.
+
+### Contas Relâmpago
+
+Contas de cabeça num placar de LED: 60 ou 90 segundos, níveis Fácil (+ −), Normal (+ − ×) e Difícil (as quatro, números maiores); fica mais difícil com o tempo. Acerto = 10, com bônus de +5 a partir de 3 seguidos e +10 a partir de 6. A conta é conferida sozinha quando o número de algarismos bate. Modos: sozinho (recorde) e duelo, com a mesma sequência de contas para todos.
+
+Links diretos: `games/contas/?mode=solo|duelo`.
 
 ### Escada
 
