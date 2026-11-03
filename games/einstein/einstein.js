@@ -142,7 +142,7 @@
     const p = E.generate(spec.n, spec.K, rnd, spec.level);
     game = {
       size, n: spec.n, K: spec.K, cats, vals, sol: p.sol, clues: p.clues,
-      chosen: blankChosen(spec.n, spec.K), crossed: blankCrossed(spec.n, spec.K),
+      chosen: blankChosen(spec.n, spec.K), crossed: blankCrossed(spec.n, spec.K), lastX: blankChosen(spec.n, spec.K),
       struck: [], history: [], daily, elapsed: 0, hints: 0, won: false,
     };
     derive();
@@ -158,6 +158,7 @@
       game.history = [];
     }
     game.history = game.history || [];
+    if (!game.lastX) game.lastX = blankChosen(game.n, game.K); // último valor riscado em cada casa
     derive();
     startPlay();
   }
@@ -330,7 +331,7 @@
   });
 
   /* ================= Jogadas ================= */
-  function snapshot() { game.history.push({ chosen: game.chosen.map((r) => r.slice()), crossed: game.crossed.map((r) => r.slice()) }); }
+  function snapshot() { game.history.push({ chosen: game.chosen.map((r) => r.slice()), crossed: game.crossed.map((r) => r.slice()), lastX: game.lastX.map((r) => r.slice()) }); }
   const after = (cells) => { derive(); render(cells); save(); };
   function toggle(c, h, v) {
     const m = game.cand[c][h], b = 1 << v;
@@ -343,6 +344,8 @@
     }
     snapshot();
     game.crossed[c][h] ^= b;
+    if (game.crossed[c][h] & b) game.lastX[c][h] = v;
+    else if (game.lastX[c][h] === v) game.lastX[c][h] = -1;
     after([[c, h]]);
   }
   function choose(c, h, v) {
@@ -353,18 +356,35 @@
     game.chosen[c].forEach((x, k) => { if (k !== h && x === v) game.chosen[c][k] = -1; });
     after([[c, h]]);
   }
-  // Reabre uma casa pronta: tira a escolha (ou, se ela fechou só por riscos, desfaz esses riscos).
+  // Reabre uma casa pronta: tira a escolha; se ela fechou por riscos, desfaz só o último risco.
   function reopen(c, h) {
+    if (game.chosen[c][h] >= 0) {
+      snapshot();
+      game.chosen[c][h] = -1;
+      after([[c, h]]);
+      return;
+    }
+    const x = game.crossed[c][h];
+    if (!x) {
+      // fechou porque os outros valores já estão em outras casas da linha
+      toast('Essa casa fechou por causa das outras casas da linha. Reabra uma delas.');
+      return;
+    }
+    let v = game.lastX[c][h];
+    if (v < 0 || !(x & (1 << v))) v = 31 - Math.clz32(x);
     snapshot();
-    if (game.chosen[c][h] >= 0) game.chosen[c][h] = -1;
-    else game.crossed[c][h] = 0;
+    game.crossed[c][h] &= ~(1 << v);
+    game.lastX[c][h] = -1;
     after([[c, h]]);
   }
 
   // Toque curto = ação do modo; tocar e segurar = a outra ação.
   const grid = $('#grid');
   let press = null;
+  let solvedPress = null;
   grid.addEventListener('pointerdown', (e) => {
+    const sc = e.target.closest('.cell.solved');
+    solvedPress = sc && e.button === 0 ? { c: +sc.dataset.c, h: +sc.dataset.h } : null;
     const b = e.target.closest('.c');
     if (!b || !game || game.won) return;
     if (e.button === 2) return;
@@ -381,7 +401,14 @@
   grid.addEventListener('pointermove', (e) => {
     if (press && Math.hypot(e.clientX - press.x, e.clientY - press.y) > 12) { clearTimeout(press.timer); press = null; }
   });
-  grid.addEventListener('pointerup', () => {
+  grid.addEventListener('pointerup', (e) => {
+    const sc = e.target.closest('.cell.solved');
+    if (solvedPress && sc && +sc.dataset.c === solvedPress.c && +sc.dataset.h === solvedPress.h && game && !game.won) {
+      solvedPress = null;
+      reopen(+sc.dataset.c, +sc.dataset.h);
+      return;
+    }
+    solvedPress = null;
     if (!press) return;
     clearTimeout(press.timer);
     const { c, h, v, long } = press;
@@ -396,15 +423,17 @@
     const b = e.target.closest('.c');
     if (b && game && !game.won && !press) toggle(+b.dataset.c, +b.dataset.h, +b.dataset.v);
   });
+  // Teclado (Enter/Espaço numa casa pronta): o clique vem sem ponteiro (detail = 0).
   grid.addEventListener('click', (e) => {
     const cell = e.target.closest('.cell.solved');
-    if (cell && game && !game.won) reopen(+cell.dataset.c, +cell.dataset.h);
+    if (cell && e.detail === 0 && game && !game.won) reopen(+cell.dataset.c, +cell.dataset.h);
   });
 
   function undo() {
     const h = game.history.pop();
     if (!h) return;
     game.chosen = h.chosen; game.crossed = h.crossed;
+    if (h.lastX) game.lastX = h.lastX;
     after();
   }
   $('#undoBtn').addEventListener('click', undo);
@@ -414,6 +443,7 @@
     snapshot();
     game.chosen = blankChosen(game.n, game.K);
     game.crossed = blankCrossed(game.n, game.K);
+    game.lastX = blankChosen(game.n, game.K);
     game.struck = [];
     renderClues(); after();
     toast('Grade limpa. Dá para desfazer.');
